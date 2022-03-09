@@ -22,7 +22,7 @@ public class DealRequestVO {
     private Long idx;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "state", updatable = true, nullable = true)
@@ -40,8 +40,8 @@ public class DealRequestVO {
     ItemVO responseItem;
 
     @Builder
-    public DealRequestVO(LocalDateTime createdAt, Long state, LocalDateTime tradedAt, ItemVO requestItem, ItemVO responseItem) {
-        this.createdAt = createdAt;
+    public DealRequestVO(Long state, LocalDateTime tradedAt, ItemVO requestItem, ItemVO responseItem) {
+
         this.tradedAt = tradedAt;
         this.state = state;
         this.requestItem = requestItem;

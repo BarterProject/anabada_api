@@ -22,39 +22,38 @@ public class DeliveryVO {
     private Long idx;
 
     @Column(name = "address", updatable = true, nullable = true, length = 200)
-    Long state;
+    private Long state;
 
     @Column(name = "phone", updatable = true, nullable = true, length = 50)
-    String phone;
+    private String phone;
 
     @Column(name = "receiver_name", updatable = true, nullable = true, length = 50)
-    String receiverName;
+    private String receiverName;
 
     @Column(name = "clause_agree", updatable = true, nullable = true)
-    boolean clauseAgree;
+    private boolean clauseAgree;
 
     @Column(name = "tracking_number", updatable = true, nullable = true, length = 50)
-    String trackingNumber;
+    private String trackingNumber;
 
     @CreationTimestamp
-    @Column(name = "created_at",updatable = false)
-    LocalDateTime createdAt;
+    @Column(name = "created_at",updatable = false,nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "due_at")
-    LocalDateTime dueAt;
+    private LocalDateTime dueAt;
 
     @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
     ItemVO item;
 
     @Builder
-    public DeliveryVO(Long state,String phone,String receiverName,boolean clauseAgree,String trackingNumber,LocalDateTime createdAt,LocalDateTime dueAt)
+    public DeliveryVO(Long state,String phone,String receiverName,boolean clauseAgree,String trackingNumber,LocalDateTime dueAt)
     {
     this.state=state;
     this.phone=phone;
     this.receiverName=receiverName;
     this.clauseAgree=clauseAgree;
     this.trackingNumber=trackingNumber;
-    this.createdAt=createdAt;
     this.dueAt=dueAt;
     }
 
