@@ -39,10 +39,9 @@ public class PaymentVO {
     PaymentOptionVO paymentOption;
 
     @Builder
-    public PaymentVO(Long amount, Long state, LocalDateTime createdAt, PaymentOptionVO paymentOption) {
+    public PaymentVO(Long amount, Long state, PaymentOptionVO paymentOption) {
         this.amount = amount;
         this.state = state;
-        this.createdAt = createdAt;
         this.paymentOption = paymentOption;
     }
 

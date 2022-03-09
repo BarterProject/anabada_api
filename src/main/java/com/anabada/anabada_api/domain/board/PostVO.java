@@ -1,4 +1,4 @@
-package com.anabada.anabada_api.domain;
+package com.anabada.anabada_api.domain.board;
 
 import com.anabada.anabada_api.domain.user.UserVO;
 import lombok.AccessLevel;

@@ -2,7 +2,7 @@ package com.anabada.anabada_api.domain.user;
 
 
 import com.anabada.anabada_api.domain.NoticeVO;
-import com.anabada.anabada_api.domain.PostVO;
+import com.anabada.anabada_api.domain.board.PostVO;
 import com.anabada.anabada_api.domain.ReportVO;
 import lombok.AccessLevel;
 import lombok.Builder;
