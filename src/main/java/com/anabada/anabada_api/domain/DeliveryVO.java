@@ -21,7 +21,7 @@ public class DeliveryVO {
     @Column(name = "idx", updatable = false, nullable = false)
     private Long idx;
 
-    @Column(name = "address", updatable = true, nullable = true, length = 200)
+    @Column(name = "state", updatable = true, nullable = true, length = 200)
     private Long state;
 
     @Column(name = "phone", updatable = true, nullable = true, length = 50)

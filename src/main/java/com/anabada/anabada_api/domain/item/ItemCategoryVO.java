@@ -18,16 +18,14 @@ public class ItemCategoryVO {
     @Column(name = "idx", updatable = false, nullable = false)
     private Long idx;
 
-    @Column(name = "upper_category_idx", updatable = true, nullable = true)
-    Long upperCategoryIdx;
-
     @Column(name = "name", updatable = false, nullable = true,length = 100)
     String name;
 
     @OneToOne(mappedBy = "itemCategory", cascade = CascadeType.ALL)
     ItemVO item;
 
-    @OneToMany(mappedBy = "itemCategory",cascade = CascadeType.ALL)
-    private List<ItemCategoryVO> itemCategories;
+    @ManyToOne
+    @JoinColumn(name = "upper_category_idx", updatable = true, nullable = true)
+    private ItemCategoryVO itemCategories;
 
 }

@@ -31,11 +31,11 @@ public class DealRequestVO {
     @Column(name = "traded_at", updatable = true, nullable = true)
     private LocalDateTime tradedAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     ItemVO requestItem;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     ItemVO responseItem;
 

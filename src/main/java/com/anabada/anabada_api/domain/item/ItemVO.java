@@ -60,33 +60,35 @@ public class ItemVO {
     ItemCategoryVO itemCategory;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    UserVO registerUser;
+    @JoinColumn(name = "registrant_idx_fk", nullable = false, updatable = false)
+    UserVO registrant;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    UserVO ownerUser;
+    @JoinColumn(name = "owner_idx_fk", nullable = false, updatable = true)
+    UserVO owner;
 
-    @OneToOne(mappedBy = "item",fetch = FetchType.LAZY)
-    DealRequestVO dealRequest;
+    @OneToMany(mappedBy = "requestItem", fetch = FetchType.LAZY)
+    List<DealRequestVO> dealRequestItemList;
 
-    @OneToMany(mappedBy = "item",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<ReportVO>reports=new ArrayList<>();
+    @OneToMany(mappedBy = "responseItem", fetch = FetchType.LAZY)
+    List<DealRequestVO> dealResponseItemList;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReportVO> reports = new ArrayList<>();
 
     public void setDelivery(DeliveryVO delivery) {
         this.delivery = delivery;
     }
 
     @Builder
-    public ItemVO(String name,String description,Long deposit,boolean clauseAgree,Long state,PaymentVO payment,UserVO registerUser,UserVO ownerUser)
-    {
-        this.name=name;
-        this.description=description;
-        this.deposit=deposit;
-        this.clauseAgree=clauseAgree;
-        this.state=state;
-        this.payment=payment;
-        this.registerUser=registerUser;
-        this.ownerUser=ownerUser;
+    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, UserVO registrant, UserVO owner) {
+        this.name = name;
+        this.description = description;
+        this.deposit = deposit;
+        this.clauseAgree = clauseAgree;
+        this.state = state;
+        this.payment = payment;
+        this.registrant = registrant;
+        this.owner = owner;
     }
 }

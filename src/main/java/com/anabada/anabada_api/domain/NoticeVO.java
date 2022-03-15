@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "NOTICE_TB")
 public class NoticeVO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,8 @@ public class NoticeVO {
     @Column(name = "state", updatable = true, nullable = true)
     private Long state;
 
-    @Column(name = "router", updatable = true, nullable = true)
-    private String router;
+    @Column(name = "route", updatable = true, nullable = true)
+    private String route;
 
     @Column(name = "kind", updatable = true, nullable = true, length = 45)
     private String kind;

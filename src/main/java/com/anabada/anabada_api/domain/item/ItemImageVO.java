@@ -27,21 +27,21 @@ public class ItemImageVO {
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "order",updatable = true,nullable = false)
+    @Column(name = "order", updatable = true, nullable = false)
     private Long order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_idx_fk")
+    @JoinColumn(name = "item_idx_fk", updatable = false, nullable = false)
     ItemVO item;
 
     @Embedded
     private FileInfo fileInfo;
 
     @Builder
-    public ItemImageVO(String name, FileInfo fileInfo,Long order) {
+    public ItemImageVO(String name, FileInfo fileInfo, Long order) {
         this.name = name;
         this.fileInfo = fileInfo;
-        this.order=order;
+        this.order = order;
     }
 
     public void setItem(ItemVO item) {

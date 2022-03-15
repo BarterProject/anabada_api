@@ -21,9 +21,6 @@ public class UserImageVO {
     @Column(name = "idx")
     private Long idx;
 
-    @Column(name = "name", length = 255, nullable = false)
-    private String name;
-
     @Embedded
     private FileInfo fileInfo;
 
@@ -35,9 +32,8 @@ public class UserImageVO {
     private UserVO user;
 
     @Builder
-    public UserImageVO(Long idx, String name, FileInfo fileInfo, LocalDateTime createdAt) {
+    public UserImageVO(Long idx, FileInfo fileInfo, LocalDateTime createdAt) {
         this.idx = idx;
-        this.name = name;
         this.fileInfo = fileInfo;
     }
 
