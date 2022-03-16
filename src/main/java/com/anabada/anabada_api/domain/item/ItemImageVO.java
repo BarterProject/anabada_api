@@ -1,10 +1,10 @@
 package com.anabada.anabada_api.domain.item;
 
+import com.anabada.anabada_api.domain.FileInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.FileInfo;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
