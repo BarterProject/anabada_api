@@ -5,6 +5,7 @@ import com.anabada.anabada_api.domain.DealRequestVO;
 import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.pay.PaymentVO;
 import com.anabada.anabada_api.domain.user.UserVO;
+import com.anabada.anabada_api.dto.item.ItemDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -90,5 +91,16 @@ public class ItemVO {
         this.payment = payment;
         this.registrant = registrant;
         this.owner = owner;
+    }
+
+    public ItemDTO dto() {
+        return ItemDTO.builder()
+                .name(name)
+                .description(description)
+                .deposit(deposit)
+                .clause_agree(clauseAgree)
+                .state(state)
+                .build();
+
     }
 }
