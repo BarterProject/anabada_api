@@ -8,6 +8,8 @@ import com.anabada.anabada_api.dto.payment.PaymentDTO;
 import com.anabada.anabada_api.repository.ItemRepository;
 import com.anabada.anabada_api.repository.PayRepository;
 import com.anabada.anabada_api.service.item.ItemFindService;
+import com.anabada.anabada_api.service.item.ItemUpdateService;
+import com.sun.jdi.request.DuplicateRequestException;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +26,20 @@ public class PaymentUpdateService {
     PayRepository payRepository;
 
     PaymentFindService paymentFindService;
-
     ItemFindService itemFindService;
-
     ItemRepository itemRepository;
     PaymentOptionService paymentOptionService;
     PaymentFindOptionService paymentFindOptionService;
+    ItemUpdateService itemUpdateService;
 
-    public PaymentUpdateService(PayRepository payRepository, PaymentFindService paymentFindService, ItemFindService itemFindService, ItemRepository itemRepository, PaymentOptionService paymentOptionService,PaymentFindOptionService paymentFindOptionService) {
+    public PaymentUpdateService(PayRepository payRepository, PaymentFindService paymentFindService, ItemFindService itemFindService, ItemRepository itemRepository, PaymentOptionService paymentOptionService, PaymentFindOptionService paymentFindOptionService, ItemUpdateService itemUpdateService) {
         this.payRepository = payRepository;
         this.paymentFindService = paymentFindService;
         this.itemFindService = itemFindService;
         this.itemRepository = itemRepository;
         this.paymentOptionService = paymentOptionService;
-        this.paymentFindOptionService=paymentFindOptionService;
+        this.paymentFindOptionService = paymentFindOptionService;
+        this.itemUpdateService = itemUpdateService;
     }
 
     @Transactional
@@ -46,23 +48,30 @@ public class PaymentUpdateService {
     }
 
     @Transactional
-   public PaymentDTO save(Long idx, PaymentDTO paymentDTO) throws NotFoundException {
+    public PaymentDTO save(Long idx, PaymentDTO paymentDTO) throws NotFoundException {
+
         ItemVO item = itemFindService.findByIdx(idx);
-        
+
+        if(item.getPayment() != null)
+            throw new DuplicateRequestException("payment already registered"); //TODO 수정
+
         // 결제 옵션에서 결제 옵션 idx를 가져온다.
-        PaymentOptionVO paymentOption=paymentFindOptionService.findByIdx(idx);
-        
+        PaymentOptionVO paymentOption = paymentFindOptionService.findByIdx(paymentDTO.getPaymentOption().getIdx());
+
         //결제 정보 저장시에는  결제옵션을 가져와 저장해야한다.
-        PaymentVO payment=paymentDTO.toEntity(paymentOption);
-        payment.setPaymentOption(paymentOption);
+        PaymentVO payment = PaymentVO.builder()
+                .amount(paymentDTO.getAmount())
+                .state(1L)
+                .paymentOption(paymentOption)
+                .build();
 
         //아이템에 결제정보를 저장 -> 이후 아이템을 save하면 바로 save되게
         //이후 아이템에서도 결제 정보를 저장해야돼
         item.setPayment(payment);
 
-        PaymentVO savedPayment = this.save(payment);
+        itemUpdateService.save(item);
 
-        return savedPayment.dto();
+        return item.getPayment().dto(true);
 
     }
 
@@ -76,7 +85,7 @@ public class PaymentUpdateService {
 
         payment.update(paymentDTO.getAmount(), paymentDTO.getState(), payment.getPaymentOption());
         this.save(payment);
-        return payment.dto();
+        return payment.dto(true);
     }
 
 

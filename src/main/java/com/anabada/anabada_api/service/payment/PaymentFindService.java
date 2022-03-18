@@ -50,13 +50,13 @@ public class PaymentFindService {
 
         PaymentVO payment = this.findByIdx(idx);
 
-        return payment.dto();
+        return payment.dto(true);
     }
 
     @Transactional(readOnly = true)
     public PagePaymentDTO findAll(Pageable pageable){
         Page<PaymentVO> page=payRepository.findAll(pageable);
-        List<PaymentDTO> payments=page.stream().map(i->i.dto()).collect(Collectors.toList());
+        List<PaymentDTO> payments=page.stream().map(i->i.dto(false)).collect(Collectors.toList());
 
         return PagePaymentDTO.builder()
                 .payments(payments)

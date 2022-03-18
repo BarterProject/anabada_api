@@ -47,11 +47,13 @@ public class PaymentVO {
         this.paymentOption = paymentOption;
     }
 
-    public PaymentDTO dto() {
+    public PaymentDTO dto(boolean paymentOption) {
         return PaymentDTO.builder()
                 .idx(idx)
                 .createdAt(createdAt)
                 .amount(amount)
+                .state(state)
+                .paymentOption(paymentOption ? this.paymentOption.dto() : null)
                 .build();
     }
 

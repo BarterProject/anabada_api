@@ -2,6 +2,7 @@ package com.anabada.anabada_api.controller;
 
 
 import com.anabada.anabada_api.dto.MessageDTO;
+import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.payment.PagePaymentDTO;
 import com.anabada.anabada_api.dto.payment.PaymentDTO;
 import com.anabada.anabada_api.dto.payment.PaymentOptionDTO;
@@ -19,10 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.message.AuthException;
 import java.io.IOException;
+import java.util.List;
 
 @Log
 @RestController
@@ -34,13 +37,13 @@ public class PaymentController {
     PaymentFindOptionService paymentFindOptionService;
 
 
-    public PaymentController(PaymentFindService paymentFindService, PaymentFindOptionService paymentFindOptionService,PaymentUpdateService paymentUpdateService) {
+    public PaymentController(PaymentFindService paymentFindService, PaymentFindOptionService paymentFindOptionService, PaymentUpdateService paymentUpdateService) {
         this.paymentFindService = paymentFindService;
         this.paymentUpdateService = paymentUpdateService;
-        this.paymentFindOptionService=paymentFindOptionService;
+        this.paymentFindOptionService = paymentFindOptionService;
     }
 
-    @GetMapping("/item/{payment-idx}")// 단일 결제 조회
+    @GetMapping("/items/payments/{payment-idx}")// 단일 결제 조회
     public ResponseEntity<PaymentDTO> getPaymentByIdx(@PathVariable(value = "payment-idx") Long idx) throws NotFoundException {
 
         PaymentDTO dto = paymentFindService.findByIdxDTO(idx);
@@ -48,12 +51,12 @@ public class PaymentController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/item/payment/{paymentoption-idx}")
-    public ResponseEntity<PaymentOptionDTO>getPaymentOptionByIdx(@PathVariable(value = "paymentoption-idx")Long idx)throws NotFoundException
-    {
-        PaymentOptionDTO dto=paymentFindOptionService.findByIdxDTO(idx);
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+    @GetMapping(path = "/items/payments/options")
+    public ResponseEntity<List<PaymentOptionDTO>> getPaymentOptionByIdx() throws NotFoundException {
+        List<PaymentOptionDTO> options = paymentFindOptionService.findAll();
+        return new ResponseEntity<>(options, HttpStatus.OK);
     }
+
     /* @GetMapping("/user/payments") //나의 결제 내역 조회
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PagePaymentDTO> getAllMyPayments(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) throws AuthException {
@@ -62,17 +65,18 @@ public class PaymentController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
     */
-    @PostMapping(path = "/item/{item-idx}/payment") // 결제 정보 저장
-   // @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping(path = "/items/{item-idx}/payments") // 결제 정보 저장
+    // @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PaymentDTO> savePayment(
-            @PathVariable(value = "item-idx") Long idx, PaymentDTO paymentDTO) throws IOException, NotFoundException, AuthException {
+            @PathVariable(value = "item-idx") Long idx,
+            @RequestBody @Validated(ValidationGroups.paymentGroup.class) PaymentDTO paymentDTO) throws NotFoundException {
 
         PaymentDTO savePayment = paymentUpdateService.save(idx, paymentDTO);
         return new ResponseEntity<>(savePayment, HttpStatus.CREATED);
     }
 
-    @PutMapping("/item/payment/{payment-idx}") //결제정보 수정
-  //  @PreAuthorize("hasRole('ROLE_USER')")
+    @PutMapping("/items/payments/{payment-idx}") //결제정보 수정
+    //  @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PaymentDTO> modifyPayment(
             @PathVariable(value = "payment-idx") Long idx, PaymentDTO paymentDTO
     ) throws NotFoundException, AuthException {
@@ -80,7 +84,7 @@ public class PaymentController {
         return new ResponseEntity<>(updatedPayment, HttpStatus.OK);
     }
 
-    @DeleteMapping("/item/payment/{payment-idx}") //결제 정보 삭제
+    @DeleteMapping("/items/payments/{payment-idx}") //결제 정보 삭제
     //@PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageDTO> deletePayment(
             @PathVariable(value = "payment-idx") Long idx) throws NotFoundException {

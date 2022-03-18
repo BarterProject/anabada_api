@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,14 +18,14 @@ public class PaymentDTO {
 
     private Long idx;
 
-    @NotBlank(groups = {ValidationGroups.paymentGroup.class}, message = "금액이 입력되지 않았습니다.")
+    @NotNull(groups = {ValidationGroups.paymentGroup.class}, message = "금액이 입력되지 않았습니다.")
     private Long amount;
 
     private Long state;
 
     private LocalDateTime createdAt;
 
-    @NotBlank(groups = {ValidationGroups.paymentGroup.class}, message = "결제 옵션이 선택되지 않았습니다.")
+    @NotNull(groups = {ValidationGroups.paymentGroup.class}, message = "결제 옵션이 선택되지 않았습니다.")
     private PaymentOptionDTO paymentOption;
 
 
@@ -41,7 +42,7 @@ public class PaymentDTO {
         return PaymentVO.builder()
                 .amount(this.amount)
                 .state(this.state)
-                //.paymentOption(paymentOption)
+                .paymentOption(paymentOption)
                 .build();
 
 
