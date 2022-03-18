@@ -16,21 +16,14 @@ public class PaymentOptionDTO {
 
     private String description;
 
-    private PaymentDTO payment;
+
 
     @Builder
-    public PaymentOptionDTO(Long idx,String name,String description,PaymentDTO payment){
+    public PaymentOptionDTO(Long idx,String name,String description){
         this.idx=idx;
         this.name=name;
         this.description=description;
-        this.payment=payment;
     }
 
-    public PaymentOptionVO toEntity(){
-        return PaymentOptionVO.builder()
-                .name(this.name)
-                .description(this.description)
-                .build();
-    }
 
 }

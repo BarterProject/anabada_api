@@ -55,11 +55,6 @@ public class PaymentVO {
                 .build();
     }
 
-    public void setItem(ItemVO item) {
-        this.item = item;
-    }
-
-
     public void update(Long amount, Long state, PaymentOptionVO paymentOption) {
         this.amount = amount;
         this.state = state;
@@ -67,4 +62,7 @@ public class PaymentVO {
     }
 
 
+    public void setPaymentOption(PaymentOptionVO paymentOption) {
+        this.paymentOption=paymentOption;
+    }
 }

@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.dto.item;
 
 import com.anabada.anabada_api.domain.item.ItemVO;
-import com.anabada.anabada_api.dto.item.ItemCategoryDTO;
+import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
 import com.anabada.anabada_api.dto.payment.PaymentDTO;
 import com.anabada.anabada_api.dto.user.UserDTO;
 import lombok.AccessLevel;
@@ -52,14 +52,15 @@ public class ItemDTO {
             this.user=user;
         }
 
-        public ItemVO toEntity(){
+        public ItemVO toEntity(PaymentOptionVO paymentOption){
             return ItemVO.builder()
                     .name(this.name)
                     .description(this.description)
                     .clauseAgree(this.clause_agree)
                     .deposit(this.deposit)
-                    .payment(payment.toEntity())
+                    .payment(payment.toEntity(paymentOption))
                     .state(this.state)
                     .build();
         }
 }
+

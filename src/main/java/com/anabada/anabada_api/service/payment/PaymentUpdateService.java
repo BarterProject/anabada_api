@@ -18,7 +18,7 @@ import javax.security.auth.message.AuthException;
 
 
 @Service
-@RequiredArgsConstructor
+
 public class PaymentUpdateService {
 
     PayRepository payRepository;
@@ -29,13 +29,15 @@ public class PaymentUpdateService {
 
     ItemRepository itemRepository;
     PaymentOptionService paymentOptionService;
+    PaymentFindOptionService paymentFindOptionService;
 
-    public PaymentUpdateService(PayRepository payRepository, PaymentFindService paymentFindService, ItemFindService itemFindService, ItemRepository itemRepository, PaymentOptionService paymentOptionService) {
+    public PaymentUpdateService(PayRepository payRepository, PaymentFindService paymentFindService, ItemFindService itemFindService, ItemRepository itemRepository, PaymentOptionService paymentOptionService,PaymentFindOptionService paymentFindOptionService) {
         this.payRepository = payRepository;
         this.paymentFindService = paymentFindService;
         this.itemFindService = itemFindService;
         this.itemRepository = itemRepository;
         this.paymentOptionService = paymentOptionService;
+        this.paymentFindOptionService=paymentFindOptionService;
     }
 
     @Transactional
@@ -44,18 +46,24 @@ public class PaymentUpdateService {
     }
 
     @Transactional
-    public PaymentDTO save(Long idx, PaymentDTO paymentDTO) throws NotFoundException {
-        // 엔티티 조회
+   public PaymentDTO save(Long idx, PaymentDTO paymentDTO) throws NotFoundException {
         ItemVO item = itemFindService.findByIdx(idx);
+        
+        // 결제 옵션에서 결제 옵션 idx를 가져온다.
+        PaymentOptionVO paymentOption=paymentFindOptionService.findByIdx(idx);
+        
+        //결제 정보 저장시에는  결제옵션을 가져와 저장해야한다.
+        PaymentVO payment=paymentDTO.toEntity(paymentOption);
+        payment.setPaymentOption(paymentOption);
 
-        //결제 정보 생성
-        PaymentVO payment = paymentDTO.toEntity();
-        payment.setItem(item);
+        //아이템에 결제정보를 저장 -> 이후 아이템을 save하면 바로 save되게
+        //이후 아이템에서도 결제 정보를 저장해야돼
+        item.setPayment(payment);
 
-        //결제 정보 저장
         PaymentVO savedPayment = this.save(payment);
 
         return savedPayment.dto();
+
     }
 
     @Transactional

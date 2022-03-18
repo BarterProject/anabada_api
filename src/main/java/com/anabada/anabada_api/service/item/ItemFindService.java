@@ -22,18 +22,12 @@ public class ItemFindService {
     @Transactional(readOnly = true)
     public ItemVO findByIdx(Long idx)throws NotFoundException{
         Optional<ItemVO>item=itemRepository.findById(idx);
-
         if(item.isEmpty())
             throw new NotFoundException("Invalid");
 
         return item.get();
     }
 
-    @Transactional(readOnly = true)
-    public ItemDTO findByIdxDTO(Long idx)throws NotFoundException{
-       ItemVO item=this.findByIdx(idx);
 
-        return item.dto();
-    }
 
 }

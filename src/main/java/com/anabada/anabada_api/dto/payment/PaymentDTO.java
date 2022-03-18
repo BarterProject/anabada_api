@@ -1,5 +1,6 @@
 package com.anabada.anabada_api.dto.payment;
 
+import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
 import com.anabada.anabada_api.domain.pay.PaymentVO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import lombok.AccessLevel;
@@ -19,10 +20,8 @@ public class PaymentDTO {
     @NotBlank(groups = {ValidationGroups.paymentGroup.class}, message = "금액이 입력되지 않았습니다.")
     private Long amount;
 
-    
     private Long state;
 
-    
     private LocalDateTime createdAt;
 
     @NotBlank(groups = {ValidationGroups.paymentGroup.class}, message = "결제 옵션이 선택되지 않았습니다.")
@@ -38,11 +37,15 @@ public class PaymentDTO {
          this.paymentOption=paymentOption;
      }
 
-    public PaymentVO toEntity(){
+   public PaymentVO toEntity(PaymentOptionVO paymentOption){
         return PaymentVO.builder()
                 .amount(this.amount)
                 .state(this.state)
-                .paymentOption(this.getPaymentOption().toEntity())
+                //.paymentOption(paymentOption)
                 .build();
-    }
+
+
+   }
+
+
 }

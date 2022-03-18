@@ -4,6 +4,8 @@ package com.anabada.anabada_api.controller;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.payment.PagePaymentDTO;
 import com.anabada.anabada_api.dto.payment.PaymentDTO;
+import com.anabada.anabada_api.dto.payment.PaymentOptionDTO;
+import com.anabada.anabada_api.service.payment.PaymentFindOptionService;
 import com.anabada.anabada_api.service.payment.PaymentFindService;
 import com.anabada.anabada_api.service.payment.PaymentUpdateService;
 import com.anabada.anabada_api.service.user.UserFindService;
@@ -29,11 +31,13 @@ public class PaymentController {
 
     PaymentFindService paymentFindService;
     PaymentUpdateService paymentUpdateService;
+    PaymentFindOptionService paymentFindOptionService;
 
 
-    public PaymentController(PaymentFindService paymentFindService, PaymentUpdateService paymentUpdateService) {
+    public PaymentController(PaymentFindService paymentFindService, PaymentFindOptionService paymentFindOptionService,PaymentUpdateService paymentUpdateService) {
         this.paymentFindService = paymentFindService;
         this.paymentUpdateService = paymentUpdateService;
+        this.paymentFindOptionService=paymentFindOptionService;
     }
 
     @GetMapping("/item/{payment-idx}")// 단일 결제 조회
@@ -44,6 +48,12 @@ public class PaymentController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @GetMapping("/item/payment/{paymentoption-idx}")
+    public ResponseEntity<PaymentOptionDTO>getPaymentOptionByIdx(@PathVariable(value = "paymentoption-idx")Long idx)throws NotFoundException
+    {
+        PaymentOptionDTO dto=paymentFindOptionService.findByIdxDTO(idx);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
     /* @GetMapping("/user/payments") //나의 결제 내역 조회
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PagePaymentDTO> getAllMyPayments(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) throws AuthException {
@@ -53,7 +63,7 @@ public class PaymentController {
     }
     */
     @PostMapping(path = "/item/{item-idx}/payment") // 결제 정보 저장
-    @PreAuthorize("hasRole('ROLE_USER')")
+   // @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PaymentDTO> savePayment(
             @PathVariable(value = "item-idx") Long idx, PaymentDTO paymentDTO) throws IOException, NotFoundException, AuthException {
 
@@ -62,7 +72,7 @@ public class PaymentController {
     }
 
     @PutMapping("/item/payment/{payment-idx}") //결제정보 수정
-    @PreAuthorize("hasRole('ROLE_USER')")
+  //  @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PaymentDTO> modifyPayment(
             @PathVariable(value = "payment-idx") Long idx, PaymentDTO paymentDTO
     ) throws NotFoundException, AuthException {
@@ -71,7 +81,7 @@ public class PaymentController {
     }
 
     @DeleteMapping("/item/payment/{payment-idx}") //결제 정보 삭제
-    @PreAuthorize("hasRole('ROLE_USER')")
+    //@PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageDTO> deletePayment(
             @PathVariable(value = "payment-idx") Long idx) throws NotFoundException {
         paymentUpdateService.delete(idx);
