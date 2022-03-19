@@ -1,4 +1,4 @@
-package com.anabada.anabada_api.controller;
+package com.anabada.anabada_api.controller.item;
 
 
 import com.anabada.anabada_api.dto.MessageDTO;
@@ -65,15 +65,15 @@ public class PaymentController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
     */
-    @PostMapping(path = "/items/{item-idx}/payments") // 결제 정보 저장
-    // @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<PaymentDTO> savePayment(
-            @PathVariable(value = "item-idx") Long idx,
-            @RequestBody @Validated(ValidationGroups.paymentGroup.class) PaymentDTO paymentDTO) throws NotFoundException {
-
-        PaymentDTO savePayment = paymentUpdateService.save(idx, paymentDTO);
-        return new ResponseEntity<>(savePayment, HttpStatus.CREATED);
-    }
+//    @PostMapping(path = "/items/{item-idx}/payments") // 결제 정보 저장
+//    // @PreAuthorize("hasRole('ROLE_USER')")
+//    public ResponseEntity<PaymentDTO> savePayment(
+//            @PathVariable(value = "item-idx") Long idx,
+//            @RequestBody @Validated(ValidationGroups.paymentGroup.class) PaymentDTO paymentDTO) throws NotFoundException {
+//
+//        PaymentDTO savePayment = paymentUpdateService.save(idx, paymentDTO);
+//        return new ResponseEntity<>(savePayment, HttpStatus.CREATED);
+//    }
 
     @PutMapping("/items/payments/{payment-idx}") //결제정보 수정
     //  @PreAuthorize("hasRole('ROLE_USER')")
@@ -89,7 +89,7 @@ public class PaymentController {
     public ResponseEntity<MessageDTO> deletePayment(
             @PathVariable(value = "payment-idx") Long idx) throws NotFoundException {
         paymentUpdateService.delete(idx);
-        return new ResponseEntity<>(new MessageDTO("payment deleted"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("payment deleted"), HttpStatus.NO_CONTENT);
     }
 
 

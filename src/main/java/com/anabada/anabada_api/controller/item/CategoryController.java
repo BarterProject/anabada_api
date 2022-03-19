@@ -1,4 +1,4 @@
-package com.anabada.anabada_api.controller;
+package com.anabada.anabada_api.controller.item;
 
 
 import com.anabada.anabada_api.domain.item.ItemCategoryVO;
@@ -49,7 +49,7 @@ public class CategoryController {
 
         ItemCategoryDTO savedDTO = categoryUpdateService.save(dto);
 
-        return new ResponseEntity<>(savedDTO, HttpStatus.OK);
+        return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
     }
 
 

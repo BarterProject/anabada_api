@@ -29,7 +29,7 @@ public class UserController {
 
         UserDTO user = userUpdateService.signUp(requestUserDTO);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
 

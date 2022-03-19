@@ -6,4 +6,5 @@ public class ValidationGroups {
     public interface userSignUpGroup {};
     public interface paymentGroup{};
     public interface categorySaveGroup{};
+    public interface itemSaveGroup{};
 }

@@ -13,41 +13,32 @@ import javax.persistence.*;
 @Table(name = "PAYMENT_OPTION_TB")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PaymentOptionVO {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx",nullable = false,updatable = false)
+    @Column(name = "idx", nullable = false, updatable = false)
     private Long idx;
 
-    @Column(name = "name",updatable = true,nullable = true,length = 45)
+    @Column(name = "name", updatable = true, nullable = true, length = 45)
     private String name;
 
-    @Column(name = "description",updatable = true,nullable = true,length = 200)
+    @Column(name = "description", updatable = true, nullable = true, length = 200)
     private String description;
 
-    @OneToOne(mappedBy = "paymentOption")
-    PaymentVO payment;
 
     @Builder
-    public PaymentOptionVO(String name,String description){
-        this.name=name;
-        this.description=description;
+    public PaymentOptionVO(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
-    public PaymentOptionDTO dto(){
+    public PaymentOptionDTO dto() {
         return PaymentOptionDTO.builder()
                 .idx(idx)
                 .name(name)
                 .description(description)
                 .build();
     }
-    public void setPayment(PaymentVO payment) {
-        this.payment=payment;
-    }
-
-
-
-
-
 
 
 }

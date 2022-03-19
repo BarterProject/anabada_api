@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -76,7 +77,10 @@ public class ItemVO {
     List<DealRequestVO> dealResponseItemList;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReportVO> reports = new ArrayList<>();
+    List<ReportVO> reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    List<ItemImageVO> images = new ArrayList<>();
 
     public void setDelivery(DeliveryVO delivery) {
         this.delivery = delivery;
@@ -87,27 +91,40 @@ public class ItemVO {
         this.payment= payment;
     }
 
+    public void addImage(ItemImageVO image) {
+        this.images.add(image);
+        image.setItem(this);
+    }
 
 
     @Builder
-    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, UserVO registrant, UserVO owner) {
+    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, ItemCategoryVO itemCategory, UserVO registrant, UserVO owner) {
         this.name = name;
         this.description = description;
         this.deposit = deposit;
         this.clauseAgree = clauseAgree;
         this.state = state;
         this.payment = payment;
+        this.itemCategory = itemCategory;
         this.registrant = registrant;
         this.owner = owner;
     }
 
-    public ItemDTO dto() {
+    public ItemDTO dto(Boolean registrant, Boolean owner, Boolean payment, Boolean category, Boolean images) {
         return ItemDTO.builder()
+                .idx(idx)
                 .name(name)
                 .description(description)
                 .deposit(deposit)
                 .clause_agree(clauseAgree)
                 .state(state)
+                .payment(payment ? this.payment.dto(true) : null)
+                .itemCategory(category ? (this.itemCategory != null ? this.itemCategory.dto() : null) : null)
+                .registrant(registrant ? this.registrant.dto() : null)
+                .images(images ? this.getImages().stream().map(ItemImageVO::dto).collect(Collectors.toList()) : null)
+                .owner(owner ? this.owner.dto() : null)
+                .createdAt(this.createdAt)
+                .endAt(endAt)
                 .build();
 
     }
