@@ -4,6 +4,7 @@ package com.anabada.anabada_api.domain.user;
 import com.anabada.anabada_api.domain.NoticeVO;
 import com.anabada.anabada_api.domain.board.PostVO;
 import com.anabada.anabada_api.domain.ReportVO;
+import com.anabada.anabada_api.dto.user.UserDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -72,16 +73,33 @@ public class UserVO {
     private List<ReportVO> reports = new ArrayList<>();
 
     @Builder
-    public UserVO(String email, String password, String phone, String address, String bankAccount, String bankKind, AuthVO auth, String oauth, boolean activated) {
+    public UserVO(Long idx, String email, String password, String phone, String address, String bankAccount, String bankKind, LocalDateTime createdAt, String oauth, boolean activated, AuthVO auth) {
+        this.idx = idx;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.address = address;
         this.bankAccount = bankAccount;
         this.bankKind = bankKind;
-        this.auth = auth;
+        this.createdAt = createdAt;
         this.oauth = oauth;
         this.activated = activated;
+        this.auth = auth;
+    }
+
+    public UserDTO dto(){
+        return UserDTO.builder()
+                .email(email)
+                .password("*")
+                .phone(phone)
+                .address(address)
+                .bankAccount(bankAccount)
+                .bankKind(bankKind)
+                .activated(activated)
+                .oauth(oauth)
+                .auth(auth.getName())
+                .createdAt(createdAt)
+                .build();
     }
 
     public void setUserImage(UserImageVO userImage) {
