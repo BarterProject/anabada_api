@@ -1,5 +1,6 @@
 package com.anabada.anabada_api.domain.pay;
 
+import com.anabada.anabada_api.dto.payment.PaymentOptionDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,12 +28,21 @@ public class PaymentOptionVO {
     PaymentVO payment;
 
     @Builder
-    public PaymentOptionVO(String name,String description,PaymentVO payment){
+    public PaymentOptionVO(String name,String description){
         this.name=name;
         this.description=description;
-        this.payment=payment;
     }
 
+    public PaymentOptionDTO dto(){
+        return PaymentOptionDTO.builder()
+                .idx(idx)
+                .name(name)
+                .description(description)
+                .build();
+    }
+    public void setPayment(PaymentVO payment) {
+        this.payment=payment;
+    }
 
 
 

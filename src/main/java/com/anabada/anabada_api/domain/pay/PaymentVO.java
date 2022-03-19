@@ -2,6 +2,7 @@ package com.anabada.anabada_api.domain.pay;
 
 
 import com.anabada.anabada_api.domain.item.ItemVO;
+import com.anabada.anabada_api.dto.payment.PaymentDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class PaymentVO {
     @JoinColumn(name = "option_idx_fk", nullable = false, updatable = true)
     PaymentOptionVO paymentOption;
 
+
     @Builder
     public PaymentVO(Long amount, Long state, PaymentOptionVO paymentOption) {
         this.amount = amount;
@@ -45,7 +47,24 @@ public class PaymentVO {
         this.paymentOption = paymentOption;
     }
 
-    public void setPaymentOption(PaymentOptionVO paymentOption) {
+    public PaymentDTO dto(boolean paymentOption) {
+        return PaymentDTO.builder()
+                .idx(idx)
+                .createdAt(createdAt)
+                .amount(amount)
+                .state(state)
+                .paymentOption(paymentOption ? this.paymentOption.dto() : null)
+                .build();
+    }
+
+    public void update(Long amount, Long state, PaymentOptionVO paymentOption) {
+        this.amount = amount;
+        this.state = state;
         this.paymentOption = paymentOption;
+    }
+
+
+    public void setPaymentOption(PaymentOptionVO paymentOption) {
+        this.paymentOption=paymentOption;
     }
 }

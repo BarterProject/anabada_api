@@ -5,6 +5,7 @@ import com.anabada.anabada_api.domain.DealRequestVO;
 import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.pay.PaymentVO;
 import com.anabada.anabada_api.domain.user.UserVO;
+import com.anabada.anabada_api.dto.item.ItemDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,12 +43,13 @@ public class ItemVO {
     private Long state;
 
     @CreationTimestamp
+    @Column(name = "created_at",updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "end_at", updatable = true, nullable = true)
     private LocalDateTime endAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_idx_fk", nullable = false, updatable = true)
     PaymentVO payment;
 
@@ -80,6 +82,13 @@ public class ItemVO {
         this.delivery = delivery;
     }
 
+
+    public void setPayment(PaymentVO payment) {
+        this.payment= payment;
+    }
+
+
+
     @Builder
     public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, UserVO registrant, UserVO owner) {
         this.name = name;
@@ -90,5 +99,16 @@ public class ItemVO {
         this.payment = payment;
         this.registrant = registrant;
         this.owner = owner;
+    }
+
+    public ItemDTO dto() {
+        return ItemDTO.builder()
+                .name(name)
+                .description(description)
+                .deposit(deposit)
+                .clause_agree(clauseAgree)
+                .state(state)
+                .build();
+
     }
 }

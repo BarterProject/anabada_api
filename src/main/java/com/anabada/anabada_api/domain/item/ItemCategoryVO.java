@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.item;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,5 +28,12 @@ public class ItemCategoryVO {
     @ManyToOne
     @JoinColumn(name = "upper_category_idx", updatable = true, nullable = true)
     private ItemCategoryVO itemCategories;
+
+    @Builder
+    public ItemCategoryVO(String name,ItemVO item,ItemCategoryVO itemCategories){
+        this.name=name;
+        this.item=item;
+        this.itemCategories=itemCategories;
+    }
 
 }

@@ -4,4 +4,5 @@ public class ValidationGroups {
 
     public interface userAuthenticationGroup {};
     public interface userSignUpGroup {};
+    public interface paymentGroup{};
 }
