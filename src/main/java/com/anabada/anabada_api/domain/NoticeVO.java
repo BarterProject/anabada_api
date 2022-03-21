@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain;
 
 import com.anabada.anabada_api.domain.user.UserVO;
+import com.anabada.anabada_api.dto.ReportDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,10 @@ public class NoticeVO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idx", updatable = false, nullable = false)
     private Long idx;
+
+    @Lob
+    @Column(name = "title",updatable = true,nullable = false)
+    private String title;
 
     @Lob
     @Column(name = "content", updatable = true, nullable = false)
@@ -42,7 +47,8 @@ public class NoticeVO {
     UserVO user;
 
     @Builder
-    public NoticeVO(String content, Long state, String kind, UserVO user) {
+    public NoticeVO(String title,String content, Long state, String kind, UserVO user) {
+        this.title=title;
         this.content = content;
         this.state = state;
         this.kind = kind;
@@ -52,4 +58,7 @@ public class NoticeVO {
     public void setUser(UserVO user) {
         this.user = user;
     }
+
+
+
 }
