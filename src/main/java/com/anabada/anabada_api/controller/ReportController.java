@@ -28,19 +28,16 @@ import java.util.List;
 @Controller
 @RequestMapping("/api")
 public class ReportController {
-    public ReportController(ReportFindService reportFindService, ReportUpdateService reportUpdateService,
-                            UserFindService userFindService, ReportRepository reportRepository, ItemFindService itemFindService) {
+
+
+    public ReportController(ReportFindService reportFindService, ReportUpdateService reportUpdateService, ItemFindService itemFindService) {
         this.reportFindService = reportFindService;
         this.reportUpdateService = reportUpdateService;
-        this.userFindService = userFindService;
-        this.reportRepository = reportRepository;
         this.itemFindService = itemFindService;
     }
 
     ReportFindService reportFindService;
     ReportUpdateService reportUpdateService;
-    UserFindService userFindService;
-    ReportRepository reportRepository;
     ItemFindService itemFindService;
 
 
@@ -63,7 +60,7 @@ public class ReportController {
     //state 상태에 따른 조회
 
     //item-idx에 따른 조회
-    @GetMapping("item/{item-idx}/reports")
+    @GetMapping("items/{item-idx}/reports")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PageReportDTO> getReportByItem(
             @PathVariable(value = "item-idx") Long idx,
@@ -86,20 +83,23 @@ public class ReportController {
 
 
     // 신고 저장 api (유저)
-    @PostMapping("/item/reports")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PostMapping("/items/{item-idx}/reports")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<ReportDTO> saveReport(
-            @RequestParam(value = "report", required = true) @Validated(ValidationGroups.reportSaveGroup.class) ReportDTO reportDTO
+            @PathVariable(value = "item-idx") Long itemIdx,
+            @RequestBody(required = true) @Validated(ValidationGroups.reportSaveGroup.class) ReportDTO reportDTO
     ) throws AuthException, NotFoundException {
-        ReportDTO saveReport = reportUpdateService.save(reportDTO);
+
+        ReportDTO saveReport = reportUpdateService.save(itemIdx, reportDTO);
 
         return new ResponseEntity<>(saveReport, HttpStatus.CREATED);
     }
 
     @PutMapping("/items/reports/{report-idx}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ReportDTO> modifyReport(
-            @PathVariable(value = "report-idx") Long idx, ReportDTO reportDTO) throws AuthException, NotFoundException {
+            @PathVariable(value = "report-idx") Long idx,
+            @RequestParam(value = "state") Long _state) throws AuthException, NotFoundException {
         ReportDTO updatedReport = reportUpdateService.update(idx, reportDTO);
         return new ResponseEntity<>(updatedReport, HttpStatus.OK);
     }

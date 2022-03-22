@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -17,15 +18,16 @@ public class
 ReportDTO {
     private Long idx;
 
-    @NotNull(groups = {ValidationGroups.reportSaveGroup.class}, message = "신고 제목이 입력되지 않았습니다.")
+    @NotBlank(groups = {ValidationGroups.reportSaveGroup.class}, message = "신고 제목이 입력되지 않았습니다.")
     private String title;
 
-    @NotNull(groups = {ValidationGroups.reportSaveGroup.class}, message = "신고 내용이 입력되지 않았습니다.")
+    @NotBlank(groups = {ValidationGroups.reportSaveGroup.class}, message = "신고 내용이 입력되지 않았습니다.")
     private String content;
 
     private Long state;
 
     private UserDTO user;
+
 
     private ItemDTO item;
 

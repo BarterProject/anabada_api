@@ -20,7 +20,7 @@ public class ReportVO {
     @Column(name = "idx", nullable = false, updatable = false)
     private Long idx;
 
-    @Column(name = "title",nullable = false,updatable = true,length = 45)
+    @Column(name = "title", nullable = false, updatable = true, length = 45)
     private String title;
 
     @Lob
@@ -43,8 +43,8 @@ public class ReportVO {
     ItemVO item;
 
     @Builder
-    public ReportVO(String title,String content, String reply, Long state, UserVO user, ItemVO item) {
-        this.title=title;
+    public ReportVO(String title, String content, String reply, Long state, UserVO user, ItemVO item) {
+        this.title = title;
         this.content = content;
         this.state = state;
         this.reply = reply;
@@ -59,19 +59,19 @@ public class ReportVO {
                 .content(content)
                 .reply(reply)
                 .state(state)
-                .item(item ? this.item.dto(true,true,true,true,true):null)
-                .user(user?this.user.dto():null)
+                .item(item ? this.item.dto(true, true, true, true, true) : null)
+                .user(user ? this.user.dto() : null)
                 .build();
     }
 
-    public void updateByUser(String title,String content){
-        this.title=title;
-        this.content=content;
+    public void updateByUser(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
-    public void updateByAdmin(Long state,String reply){
-        this.state=state;
-        this.reply=reply;
+    public void updateByAdmin(Long state, String reply) {
+        this.state = state;
+        this.reply = reply;
     }
 
     public void setItem(ItemVO item) {

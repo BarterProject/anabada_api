@@ -37,11 +37,12 @@ public class ReportUpdateService {
     }
 
     @Transactional
-    public ReportDTO save(ReportDTO reportDTO) throws AuthException, NotFoundException {
+    public ReportDTO save(Long itemIdx, ReportDTO reportDTO) throws AuthException, NotFoundException {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
+
         //아이템에서 신고할 아이템 idx를 가져온다.
-        ItemVO item = itemFindService.findByIdx(reportDTO.getItem().getIdx());
+        ItemVO item = itemFindService.findByIdx(itemIdx);
 
         ReportVO report = ReportVO.builder()
                 .title(reportDTO.getTitle())

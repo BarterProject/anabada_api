@@ -53,7 +53,8 @@ public class ReportFindService {
     @Transactional(readOnly = true)
     public PageReportDTO findAll(Pageable pageable){
         Page<ReportVO> page=reportRepository.findAll(pageable);
-        List<ReportDTO>reports=page.stream().map(i->i.dto(false,false)).collect(Collectors.toList());
+        List<ReportDTO>reports=page.stream().map(i->i.dto(false,true)).collect(Collectors.toList());
+
         return PageReportDTO.builder()
                 .reports(reports)
                 .currentPage(pageable.getPageNumber())
