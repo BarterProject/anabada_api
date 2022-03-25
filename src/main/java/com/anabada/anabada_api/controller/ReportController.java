@@ -1,5 +1,6 @@
 package com.anabada.anabada_api.controller;
 
+import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.PageReportDTO;
@@ -98,9 +99,11 @@ public class ReportController {
     @PutMapping("/items/reports/{report-idx}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ReportDTO> modifyReport(
+
             @PathVariable(value = "report-idx") Long idx,
-            @RequestParam(value = "state") Long _state) throws AuthException, NotFoundException {
-        ReportDTO updatedReport = reportUpdateService.update(idx, reportDTO);
+            @RequestBody  ReportDTO reportDTO
+            ) throws AuthException, NotFoundException {
+     ReportDTO updatedReport = reportUpdateService.changeState(idx,reportDTO);
         return new ResponseEntity<>(updatedReport, HttpStatus.OK);
     }
 

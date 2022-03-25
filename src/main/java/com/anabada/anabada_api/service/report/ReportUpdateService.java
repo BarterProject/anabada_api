@@ -57,15 +57,14 @@ public class ReportUpdateService {
         return savedReport.dto(true, true);
 
     }
-    @Transactional //유저 업데이트 /TODO:관리자 업데이트 추가
-    public ReportDTO update(Long idx, ReportDTO reportDTO)throws NotFoundException{
+
+
+    @Transactional
+    public ReportDTO changeState(Long idx,ReportDTO reportDTO)throws NotFoundException{
         ItemVO item=itemFindService.findByIdx(idx);
         ReportVO report=reportFindService.findByIdx(idx);
 
-        if(report.getItem()!=item)
-            throw new NotFoundException("not your report");
-
-        report.updateByUser(reportDTO.getTitle(), reportDTO.getContent());
+        report.updateState(reportDTO.getState());
         this.save(report);
         return report.dto(true,true);
     }

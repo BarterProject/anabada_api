@@ -64,15 +64,10 @@ public class ReportVO {
                 .build();
     }
 
-    public void updateByUser(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void updateState(Long state) {
+        this.state=state;
     }
 
-    public void updateByAdmin(Long state, String reply) {
-        this.state = state;
-        this.reply = reply;
-    }
 
     public void setItem(ItemVO item) {
         this.item = item;
