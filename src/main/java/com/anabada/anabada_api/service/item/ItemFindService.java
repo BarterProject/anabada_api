@@ -30,6 +30,7 @@ public class ItemFindService {
     @Transactional(readOnly = true)
     public ItemVO findByIdx(Long idx) throws NotFoundException {
         Optional<ItemVO> item = itemRepository.findById(idx);
+
         if (item.isEmpty())
             throw new NotFoundException("Invalid");
 

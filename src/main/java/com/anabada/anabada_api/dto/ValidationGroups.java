@@ -7,5 +7,7 @@ public class ValidationGroups {
     public interface paymentGroup{};
     public interface categorySaveGroup{};
     public interface itemSaveGroup{};
+    public interface reportSaveGroup{};
     public interface dealRequestGroup{};
+  
 }

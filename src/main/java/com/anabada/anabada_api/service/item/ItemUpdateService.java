@@ -54,6 +54,7 @@ public class ItemUpdateService {
         PaymentVO payment = paymentUpdateService.save(itemDTO.getPayment());
         ItemCategoryVO category = categoryFindService.getByIdx(itemDTO.getItemCategory().getIdx());
 
+
         ItemVO item = ItemVO.builder()
                 .name(itemDTO.getName())
                 .description(itemDTO.getDescription())
