@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.message.AuthException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,16 @@ public class ItemFindService {
         UserVO user = userFindService.getMyUserWithAuthorities();
         return itemRepository.findByOwner(user).stream().map(i -> i.dto(true, true, true, true, true)).collect(Collectors.toList());
     }
+
+//    @Transactional(readOnly = true)
+//    public List<ItemDTO> findByRandom() throws AuthException {
+//
+//        long totalSize = itemRepository.count();
+//        Math.random();
+//        List<Long> randomList = new ArrayList<>();
+//        randomList.add()
+//
+//    }
 
 
 }
