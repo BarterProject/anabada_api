@@ -1,7 +1,9 @@
 package com.anabada.anabada_api.dto.item;
 
+import com.anabada.anabada_api.domain.DeliveryVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
+import com.anabada.anabada_api.dto.DeliveryDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.payment.PaymentDTO;
 import com.anabada.anabada_api.dto.user.UserDTO;
@@ -51,9 +53,10 @@ public class ItemDTO {
 
     private Long state;
 
+    private DeliveryDTO delivery;
 
     @Builder
-    public ItemDTO(Long idx, String name, String description, LocalDateTime createdAt, LocalDateTime endAt, Long deposit, boolean clause_agree, PaymentDTO payment, ItemCategoryDTO itemCategory, UserDTO registrant,  UserDTO owner, Long state, List<ItemImageDTO> images) {
+    public ItemDTO(Long idx, String name, String description, LocalDateTime createdAt, LocalDateTime endAt, Long deposit, boolean clause_agree, PaymentDTO payment, ItemCategoryDTO itemCategory, UserDTO registrant, UserDTO owner, Long state, List<ItemImageDTO> images,DeliveryDTO delivery) {
         this.idx = idx;
         this.name = name;
         this.description = description;
@@ -67,9 +70,10 @@ public class ItemDTO {
         this.itemCategory = itemCategory;
         this.owner = owner;
         this.images = images;
+        this.delivery=delivery;
     }
 
-    public ItemVO toEntity(PaymentOptionVO paymentOption) {
+    public ItemVO toEntity(PaymentOptionVO paymentOption, DeliveryVO delivery) {
         return ItemVO.builder()
                 .name(this.name)
                 .description(this.description)
@@ -77,7 +81,10 @@ public class ItemDTO {
                 .deposit(this.deposit)
                 .payment(payment.toEntity(paymentOption))
                 .state(this.state)
+                .delivery(delivery)
                 .build();
     }
+
+
 }
 
