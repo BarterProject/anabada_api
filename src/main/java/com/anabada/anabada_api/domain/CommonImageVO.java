@@ -29,7 +29,6 @@ public class CommonImageVO {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-
     @Builder
     public CommonImageVO(Long idx, String name, FileInfo fileInfo) {
         this.idx = idx;
