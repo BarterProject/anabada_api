@@ -18,10 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -90,8 +88,17 @@ public class ItemController {
     ) throws NotFoundException, AuthException {
         DealRequestVO vo = dealRequestService.save(dto);
         return new ResponseEntity<>(vo.dto(true, true), HttpStatus.OK);
-
     }
+
+
+    @GetMapping("/items")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<ItemDTO>> getRandomItems(
+            @RequestParam(value = "size", defaultValue = "10") int size) throws AuthException {
+        List<ItemDTO> items = itemFindService.findByRandom(size);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
 
 }
 

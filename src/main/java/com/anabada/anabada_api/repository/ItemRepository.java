@@ -16,6 +16,10 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
 
     public List<ItemVO> findByOwner(UserVO Owner);
 
-    public List<ItemVO> findByIdxIn(List<Long> idxList);
+    @Query(value = "select e.idx from ItemVO e where e.state = :state")
+    public List<Long> findIdxByState(Long state);
+
+    @Query(value = "select e from ItemVO e where e.idx IN (:idxList)")
+    public List<ItemVO> findByIdxList(List<Long> idxList);
 
 }
