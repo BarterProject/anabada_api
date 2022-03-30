@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.message.AuthException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,27 @@ public class ItemFindService {
     public List<ItemDTO> findByOwner() throws AuthException {
         UserVO user = userFindService.getMyUserWithAuthorities();
         return itemRepository.findByOwner(user).stream().map(i -> i.dto(true, true, true, true, true)).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItemDTO> findByRandom(int size) throws AuthException {
+
+        List<Long> idxList = itemRepository.findIdxByState(1L);
+        List<Long> randomList = new ArrayList<>();
+
+        for(int i = 0; i < size; i++){
+            Long randNum = idxList.get((int) (Math.random() * idxList.size()));
+            randomList.add(randNum);
+        }
+        List<ItemVO> items = itemRepository.findByIdxList(randomList);
+
+        //random idx가 중복되어 items 수가 size 개수보다 작을 수 있음
+        //부족한 수만큼 중복되어 전달될 수 있도록 앞부분에서 복사하여 뒷부분에 추가
+
+        for(int i = 0; size != items.size(); i++)
+            items.add(items.get(i % items.size())); // 부족한 item 수가 전체 items 수보다 많을 수 있기 때문에 items.size()로 %연산
+
+        return items.stream().map(i -> i.dto(true, true, false, true, true)).collect(Collectors.toList());
     }
 
 
