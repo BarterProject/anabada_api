@@ -66,4 +66,8 @@ public class DealRequestVO {
     public void setResponseItem(ItemVO responseItem) {
         this.responseItem = responseItem;
     }
+
+    public void close(){
+        this.state = 2L;
+    }
 }
