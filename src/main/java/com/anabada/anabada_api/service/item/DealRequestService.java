@@ -6,6 +6,7 @@ import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.DealRequestDTO;
 import com.anabada.anabada_api.repository.DealRequestRepository;
 import com.anabada.anabada_api.service.user.UserFindService;
+import com.sun.jdi.request.DuplicateRequestException;
 import javassist.NotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -35,21 +36,25 @@ public class DealRequestService {
     }
 
     @Transactional
-    public DealRequestVO save(DealRequestDTO dto) throws NotFoundException, AuthException {
+    public DealRequestDTO save(DealRequestDTO dto) throws NotFoundException, AuthException {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
 
         ItemVO request = itemFindService.findByIdx(dto.getRequestItem().getIdx());
         ItemVO response = itemFindService.findByIdx(dto.getResponseItem().getIdx());
 
+
         if (request.getOwner() != user)
             throw new BadCredentialsException("not your own item (request)");
+
         if (response.getOwner() == user)
             throw new BadCredentialsException("you can't request deal to your own item");
+
         if (response.getState() != 1)
             throw new BadCredentialsException("response item is not shared");
 
-        //TODO 중복검사 필요
+        if(this.dealRequestDuplicateCheck(request, response))
+            throw new BadCredentialsException("same request already exists.");
 
 
         DealRequestVO dealVO = DealRequestVO.builder()
@@ -58,7 +63,13 @@ public class DealRequestService {
                 .state(1L)
                 .build();
 
-        return this.save(dealVO);
+        return this.save(dealVO).dto(true, true);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean dealRequestDuplicateCheck(ItemVO request, ItemVO response) {
+        List<DealRequestVO> requests = dealRequestRepository.findByRequestItemAndResponseItem(request, response);
+        return requests.size() > 0;
     }
 
     @Transactional(readOnly = true)

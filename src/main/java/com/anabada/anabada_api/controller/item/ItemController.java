@@ -86,8 +86,8 @@ public class ItemController {
     public ResponseEntity<DealRequestDTO> saveRequest(
             @RequestBody @Validated(ValidationGroups.dealRequestGroup.class) DealRequestDTO dto
     ) throws NotFoundException, AuthException {
-        DealRequestVO vo = dealRequestService.save(dto);
-        return new ResponseEntity<>(vo.dto(true, true), HttpStatus.OK);
+        DealRequestDTO dealRequestDTO = dealRequestService.save(dto);
+        return new ResponseEntity<>(dealRequestDTO, HttpStatus.OK);
     }
 
 
