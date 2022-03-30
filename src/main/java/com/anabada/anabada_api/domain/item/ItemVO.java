@@ -73,7 +73,7 @@ public class ItemVO {
     @OneToMany(mappedBy = "requestItem", fetch = FetchType.LAZY)
     List<DealRequestVO> dealRequestItemList;
 
-    @OneToMany(mappedBy = "responseItem", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "responseItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<DealRequestVO> dealResponseItemList;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -94,6 +94,10 @@ public class ItemVO {
     public void addImage(ItemImageVO image) {
         this.images.add(image);
         image.setItem(this);
+    }
+
+    public void changeOwner(UserVO _owner){
+        this.owner = _owner;
     }
 
 

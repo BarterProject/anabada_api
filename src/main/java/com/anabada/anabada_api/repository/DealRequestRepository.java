@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface DealRequestRepository extends JpaRepository<DealRequestVO, Long> {
 
-    public List<DealRequestVO> findByRequestItemAndResponseItem(ItemVO requestItem, ItemVO responseItem);
+    public List<DealRequestVO> findByRequestItemAndResponseItemAndState(ItemVO requestItem, ItemVO responseItem, Long state);
 
 }

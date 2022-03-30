@@ -3,6 +3,7 @@ package com.anabada.anabada_api.controller.item;
 
 import com.anabada.anabada_api.domain.DealRequestVO;
 import com.anabada.anabada_api.dto.DealRequestDTO;
+import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import com.anabada.anabada_api.service.item.DealRequestService;
@@ -97,6 +98,22 @@ public class ItemController {
             @RequestParam(value = "size", defaultValue = "10") int size) throws AuthException {
         List<ItemDTO> items = itemFindService.findByRandom(size);
         return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @PutMapping("/user/items/requests/{request-idx}/accept")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> acceptRequest(
+            @PathVariable(value = "request-idx") Long requestIdx) throws NotFoundException, AuthException {
+        dealRequestService.handleRequest(requestIdx, true);
+        return new ResponseEntity<>(new MessageDTO("deal accepted"), HttpStatus.OK);
+    }
+
+        @PutMapping("/user/items/requests/{request-idx}/decline")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> declineRequest(
+            @PathVariable(value = "request-idx") Long requestIdx) throws NotFoundException, AuthException {
+        dealRequestService.handleRequest(requestIdx, false);
+        return new ResponseEntity<>(new MessageDTO("deal rejected"), HttpStatus.OK);
     }
 
 
