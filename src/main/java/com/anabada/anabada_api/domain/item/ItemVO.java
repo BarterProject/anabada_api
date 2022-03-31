@@ -54,7 +54,7 @@ public class ItemVO {
     @JoinColumn(name = "payment_idx_fk", nullable = false, updatable = true)
     PaymentVO payment;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_idx_fk", nullable = true, updatable = true,unique = true)
     DeliveryVO delivery;
 
@@ -84,6 +84,7 @@ public class ItemVO {
 
     public void setDelivery(DeliveryVO delivery) {
         this.delivery = delivery;
+        delivery.setItem(this);
     }
 
 

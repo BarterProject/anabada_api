@@ -46,7 +46,7 @@ public class DeliveryVO {
     @Column(name = "due_at")
     private LocalDateTime dueAt;
 
-    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
     ItemVO item;
 
     @Column(name = "address", updatable = true, nullable = false)

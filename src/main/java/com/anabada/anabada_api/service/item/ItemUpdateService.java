@@ -34,15 +34,13 @@ public class ItemUpdateService {
     CategoryFindService categoryFindService;
     ItemImageService itemImageService;
 
-    DeliveryRequestService deliveryRequestService;
 
-    public ItemUpdateService(ItemRepository itemRepository, UserFindService userFindService, PaymentUpdateService paymentUpdateService, CategoryFindService categoryFindService, ItemImageService itemImageService, DeliveryRequestService deliveryRequestService) {
+    public ItemUpdateService(ItemRepository itemRepository, UserFindService userFindService, PaymentUpdateService paymentUpdateService, CategoryFindService categoryFindService, ItemImageService itemImageService) {
         this.itemRepository = itemRepository;
         this.userFindService = userFindService;
         this.paymentUpdateService = paymentUpdateService;
         this.categoryFindService = categoryFindService;
         this.itemImageService = itemImageService;
-        this.deliveryRequestService = deliveryRequestService;
     }
 
 
@@ -57,7 +55,6 @@ public class ItemUpdateService {
         UserVO user = userFindService.getMyUserWithAuthorities();
         PaymentVO payment = paymentUpdateService.save(itemDTO.getPayment());
         ItemCategoryVO category = categoryFindService.getByIdx(itemDTO.getItemCategory().getIdx());
-        DeliveryDTO delivery = deliveryRequestService.save(itemDTO.getIdx(), itemDTO.getDelivery());
 
 
         ItemVO item = ItemVO.builder()
@@ -70,7 +67,6 @@ public class ItemUpdateService {
                 .owner(user)
                 .registrant(user)
                 .state(1L)
-                .delivery(delivery.toEntity())
                 .build();
 
         ItemVO savedItem = itemRepository.save(item);

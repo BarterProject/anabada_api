@@ -8,6 +8,7 @@ import com.anabada.anabada_api.dto.DeliveryDTO;
 import com.anabada.anabada_api.repository.DeliveryRepository;
 import com.anabada.anabada_api.repository.RoomRepository;
 import com.anabada.anabada_api.service.item.ItemFindService;
+import com.anabada.anabada_api.service.item.ItemUpdateService;
 import com.anabada.anabada_api.service.user.UserFindService;
 import com.sun.jdi.request.DuplicateRequestException;
 import javassist.NotFoundException;
@@ -28,12 +29,14 @@ public class DeliveryRequestService {
     UserFindService userFindService;
 
     RoomRepository roomRepository;
+    ItemUpdateService itemUpdateService;
 
-    public DeliveryRequestService(DeliveryRepository deliveryRepository, ItemFindService itemFindService, UserFindService userFindService, RoomRepository roomRepository) {
+    public DeliveryRequestService(DeliveryRepository deliveryRepository, ItemFindService itemFindService, UserFindService userFindService, RoomRepository roomRepository, ItemUpdateService itemUpdateService) {
         this.deliveryRepository = deliveryRepository;
         this.itemFindService = itemFindService;
         this.userFindService = userFindService;
         this.roomRepository = roomRepository;
+        this.itemUpdateService = itemUpdateService;
     }
 
 
@@ -51,10 +54,14 @@ public class DeliveryRequestService {
     @Transactional
     public DeliveryDTO save(Long idx, DeliveryDTO dto) throws AuthException, NotFoundException {
         {
-                ItemVO item = itemFindService.findByIdx(idx);
+            ItemVO item = itemFindService.findByIdx(idx);
+            UserVO user = userFindService.getMyUserWithAuthorities();
+            UUID saveName = UUID.randomUUID();
+            String receiver = dto.getReceiverName();
 
-            if (deliveryRepository.existsByState(dto.getState())) {
-                throw new DuplicateRequestException("이미 배송요청한 아이템입니다");
+
+            if (item.getDelivery() != null) {
+                throw new DuplicateRequestException("이미 존재하는 배송요청입니다.");
             }
 
             DeliveryVO deliveryVO = DeliveryVO.builder()
@@ -67,33 +74,26 @@ public class DeliveryRequestService {
                     .item(item)
                     .build();
 
+           // if(item.getDelivery()!=null) {
+            //    throw new DuplicateRequestException("이미 존재하는 채팅방입니다.");
+           // }
 
-             DeliveryVO savedDelivery=deliveryRepository.save(deliveryVO);
-            createRoom(deliveryVO);
-            return savedDelivery.dto(true);
+            RoomVO roomVO = RoomVO.builder()
+                    .name(saveName.toString())
+                    .sender(user.getAuth().getName())
+                    .receiver(receiver)
+                    .state(1)
+                    .build();
+
+
+            RoomVO savedRoom = roomRepository.save(roomVO);
+
+            item.setDelivery(deliveryVO);
+            deliveryVO = itemUpdateService.save(item).getDelivery();
+
+            return deliveryVO.dto(true);
         }
 
-
-    }
-
-    public RoomVO createRoom(DeliveryVO dto) throws AuthException{
-        UserVO user = userFindService.getMyUserWithAuthorities();
-        UUID saveName = UUID.randomUUID();
-        String receiver = dto.getReceiverName();
-
-       if (roomRepository.existsByReceiver(dto.getReceiverName())) {
-          throw new DuplicateRequestException("이미 존재하는 채팅방입니다.");
-      }
-
-        RoomVO roomVO = RoomVO.builder()
-                .name(saveName.toString())
-                .sender(user.getAuth().getName())
-                .receiver(receiver)
-                .state(1)
-                .build();
-
-        RoomVO savedRoom = roomRepository.save(roomVO);
-        return this.save(savedRoom);
 
     }
 
