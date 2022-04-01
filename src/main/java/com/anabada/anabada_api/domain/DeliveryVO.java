@@ -1,7 +1,10 @@
 package com.anabada.anabada_api.domain;
 
 import com.anabada.anabada_api.domain.item.ItemVO;
+import com.anabada.anabada_api.domain.message.RoomVO;
 import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
+import com.anabada.anabada_api.dto.DeliveryDTO;
+import com.anabada.anabada_api.dto.item.ItemDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,27 +40,55 @@ public class DeliveryVO {
     private String trackingNumber;
 
     @CreationTimestamp
-    @Column(name = "created_at",updatable = false,nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "due_at")
     private LocalDateTime dueAt;
 
-    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     ItemVO item;
 
+    @Column(name = "address", updatable = true, nullable = false)
+    private String address;
+
+    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
+    private RoomVO room;
+
+
+
     @Builder
-    public DeliveryVO(Long state,String phone,String receiverName,boolean clauseAgree,String trackingNumber,LocalDateTime dueAt)
-    {
-    this.state=state;
-    this.phone=phone;
-    this.receiverName=receiverName;
-    this.clauseAgree=clauseAgree;
-    this.trackingNumber=trackingNumber;
-    this.dueAt=dueAt;
+    public DeliveryVO(Long state,
+                      String address, String phone, String receiverName, boolean clauseAgree, String trackingNumber, LocalDateTime dueAt, ItemVO item) {
+        this.state = state;
+        this.phone = phone;
+        this.receiverName = receiverName;
+        this.clauseAgree = clauseAgree;
+        this.trackingNumber = trackingNumber;
+        this.dueAt = dueAt;
+        this.item = item;
+        this.address = address;
+
+    }
+
+    public DeliveryDTO dto(boolean item) {
+        return DeliveryDTO.builder()
+                .idx(idx)
+                .createdAt(createdAt)
+                .state(state)
+                .dueAt(dueAt)
+                .phone(phone)
+                .clauseAgree(clauseAgree)
+                .receiverName(receiverName)
+                .address(address)
+                .item(item ? this.item.dto(true, true, true, true, true, false) : null)
+                .build();
     }
 
 
+    public void setItem(ItemVO itemVO) {
+        this.item = item;
+    }
 
 
 }

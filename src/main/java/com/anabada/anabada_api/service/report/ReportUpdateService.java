@@ -2,6 +2,7 @@ package com.anabada.anabada_api.service.report;
 
 import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
+import com.anabada.anabada_api.domain.message.RoomVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.ReportDTO;
 import com.anabada.anabada_api.repository.ReportRepository;

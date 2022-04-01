@@ -54,8 +54,8 @@ public class ItemVO {
     @JoinColumn(name = "payment_idx_fk", nullable = false, updatable = true)
     PaymentVO payment;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_idx_fk", nullable = true, updatable = true)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_idx_fk", nullable = true, updatable = true,unique = true)
     DeliveryVO delivery;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -84,6 +84,7 @@ public class ItemVO {
 
     public void setDelivery(DeliveryVO delivery) {
         this.delivery = delivery;
+        delivery.setItem(this);
     }
 
 
@@ -102,7 +103,7 @@ public class ItemVO {
 
 
     @Builder
-    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, ItemCategoryVO itemCategory, UserVO registrant, UserVO owner) {
+    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, ItemCategoryVO itemCategory, UserVO registrant, UserVO owner,DeliveryVO delivery) {
         this.name = name;
         this.description = description;
         this.deposit = deposit;
@@ -112,9 +113,10 @@ public class ItemVO {
         this.itemCategory = itemCategory;
         this.registrant = registrant;
         this.owner = owner;
+        this.delivery=delivery;
     }
 
-    public ItemDTO dto(Boolean registrant, Boolean owner, Boolean payment, Boolean category, Boolean images) {
+    public ItemDTO dto(Boolean registrant, Boolean owner, Boolean payment, Boolean category, Boolean images,Boolean delivery) {
         return ItemDTO.builder()
                 .idx(idx)
                 .name(name)
@@ -129,6 +131,7 @@ public class ItemVO {
                 .owner(owner ? this.owner.dto() : null)
                 .createdAt(this.createdAt)
                 .endAt(endAt)
+                .delivery(delivery?this.delivery.dto(true):null)
                 .build();
 
     }
