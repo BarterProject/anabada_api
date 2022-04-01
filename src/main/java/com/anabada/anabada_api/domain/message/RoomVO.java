@@ -2,6 +2,7 @@ package com.anabada.anabada_api.domain.message;
 
 
 
+import com.anabada.anabada_api.domain.DeliveryVO;
 import com.anabada.anabada_api.dto.DeliveryDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,12 +40,17 @@ public class RoomVO {
     @Column(name = "receiver", updatable = false, nullable = false)
     private String receiver;
 
+    @OneToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_idx_fk", nullable = false, updatable = true)
+    private DeliveryVO delivery;
+
     @Builder
-    public RoomVO(String name,String sender,String receiver,int state){
-        this.name=name;
-        this.sender=sender;
-        this.receiver=receiver;
-        this.state=state;
+    public RoomVO(String name, String sender, String receiver, int state,DeliveryVO delivery) {
+        this.name = name;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.state = state;
+        this.delivery=delivery;
     }
 
 }

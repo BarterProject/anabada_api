@@ -60,9 +60,9 @@ public class DeliveryRequestService {
             String receiver = dto.getReceiverName();
 
 
-            if (item.getDelivery() != null) {
-                throw new DuplicateRequestException("이미 존재하는 배송요청입니다.");
-            }
+         if (item.getDelivery() != null) {
+              throw new DuplicateRequestException("이미 존재하는 배송요청입니다.");
+           }
 
             DeliveryVO deliveryVO = DeliveryVO.builder()
                     .receiverName(dto.getReceiverName())
@@ -74,15 +74,16 @@ public class DeliveryRequestService {
                     .item(item)
                     .build();
 
-           // if(item.getDelivery()!=null) {
-            //    throw new DuplicateRequestException("이미 존재하는 채팅방입니다.");
-           // }
+           if(item.getDelivery().getRoom()!=null) {
+              throw new DuplicateRequestException("이미 존재하는 채팅방입니다.");
+          }
 
             RoomVO roomVO = RoomVO.builder()
                     .name(saveName.toString())
                     .sender(user.getAuth().getName())
                     .receiver(receiver)
                     .state(1)
+                    .delivery(deliveryVO)
                     .build();
 
 

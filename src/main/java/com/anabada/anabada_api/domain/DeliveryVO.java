@@ -46,11 +46,16 @@ public class DeliveryVO {
     @Column(name = "due_at")
     private LocalDateTime dueAt;
 
-    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     ItemVO item;
 
     @Column(name = "address", updatable = true, nullable = false)
     private String address;
+
+    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
+    private RoomVO room;
+
+
 
     @Builder
     public DeliveryVO(Long state,
@@ -76,7 +81,7 @@ public class DeliveryVO {
                 .clauseAgree(clauseAgree)
                 .receiverName(receiverName)
                 .address(address)
-                .item(item?this.item.dto(true,true,true,true,true,false) :null )
+                .item(item ? this.item.dto(true, true, true, true, true, false) : null)
                 .build();
     }
 
