@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.domain;
 
 import com.anabada.anabada_api.domain.item.ItemVO;
-import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
+import com.anabada.anabada_api.dto.DealRequestDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class DealRequestVO {
     private Long idx;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false,nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "state", updatable = true, nullable = true)
@@ -32,11 +32,11 @@ public class DealRequestVO {
     private LocalDateTime tradedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "request_item_idx_fk")
     ItemVO requestItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "response_item_idx_fk")
     ItemVO responseItem;
 
     @Builder
@@ -48,11 +48,26 @@ public class DealRequestVO {
         this.responseItem = responseItem;
     }
 
+    public DealRequestDTO dto(boolean _requestItem, boolean _responseItem) {
+        return DealRequestDTO.builder()
+                .idx(idx)
+                .createdAt(createdAt)
+                .state(state)
+                .tradedAt(tradedAt)
+                .requestItem(_requestItem ? requestItem.dto(false, false, false, false, false) : null)
+                .responseItem(_responseItem ? responseItem.dto(false, false, false, false, false): null)
+                .build();
+    }
+
     public void setRequestItem(ItemVO requestItem) {
         this.requestItem = requestItem;
     }
 
     public void setResponseItem(ItemVO responseItem) {
         this.responseItem = responseItem;
+    }
+
+    public void close(){
+        this.state = 2L;
     }
 }

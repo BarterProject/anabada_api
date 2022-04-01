@@ -10,4 +10,7 @@ public class ValidationGroups {
     public interface reportSaveGroup{};
     public interface deliveryRequestGroup{};
     public interface dealRequestGroup{};
+
+   
+ 
 }

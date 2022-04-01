@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReportFindService {
-    @Autowired
+
     ReportRepository reportRepository;
-    @Autowired
+
     ItemFindService itemFindService;
     UserFindService userFindService;
 
@@ -63,6 +63,7 @@ public class ReportFindService {
     }
 
 
+    @Transactional(readOnly = true)
     public PageReportDTO findByItem(ItemVO item,Pageable pageable) {
         Page<ReportVO>page=reportRepository.findByItem(item,pageable);
 
@@ -70,12 +71,13 @@ public class ReportFindService {
 
         return PageReportDTO.builder()
                 .reports(reports)
-                .currentPage(page.getTotalPages())
+                .currentPage(page.getNumber())
                 .totalPage(page.getTotalPages()-1)
                 .build();
 
     }
 
+    @Transactional(readOnly = true)
     public PageReportDTO findAllWithAuth(Pageable pageable)throws AuthException{
         UserVO user=userFindService.getMyUserWithAuthorities();
 
