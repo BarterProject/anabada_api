@@ -29,7 +29,13 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
-
+    /**
+     * JWT 토큰 발급 (only access token)
+     *
+     * @param userDTO email: String
+     *                password: String
+     * @return TokenDTO: jwt: ~
+     */
     @PostMapping("/user/authentication")
     public ResponseEntity<TokenDTO> authorize(@RequestBody @Validated({ValidationGroups.userAuthenticationGroup.class}) UserDTO userDTO) {
 

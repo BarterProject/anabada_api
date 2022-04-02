@@ -31,6 +31,11 @@ public class CategoryController {
     }
 
 
+    /**
+     * 카테고리 리스트 반환
+     *
+     * @return List>ItemCategoryDTO: 카테고리 리스트
+     */
     @GetMapping("/items/categories")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemCategoryDTO>> getAll() {
@@ -41,6 +46,14 @@ public class CategoryController {
         return new ResponseEntity<>(categoriesDTO, HttpStatus.OK);
     }
 
+    /**
+     * 카테고리 등록기능 (관리자만 허용)
+     *
+     * @param dto name: 카테고리명
+     *            upperCategory: 상위 카테고리
+     * @return ItemCategoryDTO: 생성된 카테고리
+     * @throws NotFoundException 존재하지 않는 upper category idx
+     */
     @PostMapping("/items/categories")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<ItemCategoryDTO> saveCategory(

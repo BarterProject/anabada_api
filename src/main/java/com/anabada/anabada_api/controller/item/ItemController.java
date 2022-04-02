@@ -1,7 +1,6 @@
 package com.anabada.anabada_api.controller.item;
 
 
-import com.anabada.anabada_api.domain.DealRequestVO;
 import com.anabada.anabada_api.dto.DealRequestDTO;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
@@ -36,6 +35,23 @@ public class ItemController {
         this.dealRequestService = dealRequestService;
     }
 
+    /**
+     * 아이템 등록
+     *
+     * @param itemDTO 아이템 정보
+     *                name: 아이템명
+     *                description: 아이템 설명
+     *                clause_agree: 약관 동의여부
+     *                payment: 지불정보
+     *                itemCategory: 카테고리 번호
+     * @param mfList  img(multipartfile) list
+     * @return ItemDTO: 등록된 물건
+     * @throws AuthException         유효하지 않은 토큰
+     * @throws NotFoundException     유효하지 않은 category idx
+     *                               유효하지 않은 payment option idx
+     * @throws IOException           파일저장 오류
+     * @throws NotSupportedException 지원하지 않는 이미지 파일유형(jpg,jpeg,png,bmp만 지원)
+     */
     @PostMapping("/user/items")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<ItemDTO> saveItem(
@@ -48,6 +64,15 @@ public class ItemController {
         return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
 
+    /**
+     * 아이템 리스트 반환
+     *
+     * @param option option -> registrant: 내가 등록한 물건 리스트 반환
+     *               option -> owner: 내가 소유한 물건 리스트 반환
+     * @return ItemDTO List
+     * @throws AuthException     유효하지 않은 토큰
+     * @throws NotFoundException option 파라미터 오류 (에러유형 수정해야함)
+     */
     @GetMapping("/user/items")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemDTO>> getMyItems(
@@ -63,7 +88,15 @@ public class ItemController {
 
     }
 
-
+    /**
+     * 특정 아이템이 받은 거래 요청 리스트 반환
+     *
+     * @param itemIdx item의 idx
+     * @return 거래요청 리스트
+     * @throws AuthException     유효하지 않은 토큰
+     *                           소유하지 않은 아이템
+     * @throws NotFoundException 유효하지 않은 item idx
+     */
     @GetMapping("/user/items/{item-idx}/requests")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<DealRequestDTO>> getRequestsByItem(
@@ -73,6 +106,15 @@ public class ItemController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
+    /**
+     * 특정 아이템이 보낸 거래 요청 리스트 반환
+     *
+     * @param itemIdx item의 idx
+     * @return 거래요청 리스트
+     * @throws AuthException     유효하지 않은 토큰
+     *                           소유하지 않은 아이템
+     * @throws NotFoundException 유효하지 않은 item idx
+     */
     @GetMapping("/user/items/{item-idx}/responses")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<DealRequestDTO>> getResponsesByItem(
@@ -82,6 +124,16 @@ public class ItemController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
+    /**
+     * 거래요청
+     *
+     * @param dto requestItem: 요청하는 아이템 8dx
+     *            responseItem: 요청받는 아이템 idx
+     * @return 거래요청 정보
+     * @throws NotFoundException 유효하지 않은 request item idx
+     *                           유효하지 않은 response item idx
+     * @throws AuthException     유효하지 않은 토큰
+     */
     @PostMapping("/user/items/requests")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<DealRequestDTO> saveRequest(
@@ -91,15 +143,29 @@ public class ItemController {
         return new ResponseEntity<>(dealRequestDTO, HttpStatus.OK);
     }
 
-
+    /**
+     * 랜덤 아이템 리스트 반환
+     *
+     * @param size 반환 아이템 개수 (default 10)
+     * @return ItemDTO 리스트
+     */
     @GetMapping("/items")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemDTO>> getRandomItems(
-            @RequestParam(value = "size", defaultValue = "10") int size) throws AuthException {
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         List<ItemDTO> items = itemFindService.findByRandom(size);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
+    /**
+     * 거래요청 수락
+     *
+     * @param requestIdx 거래요청의 idx
+     * @return 성공 message
+     * @throws NotFoundException 유효하지 않은 request idx
+     * @throws AuthException     유효하지 않은 토큰
+     *                           요청 클라이언트 != 아이템 소유자
+     */
     @PutMapping("/user/items/requests/{request-idx}/accept")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> acceptRequest(
@@ -108,7 +174,17 @@ public class ItemController {
         return new ResponseEntity<>(new MessageDTO("deal accepted"), HttpStatus.OK);
     }
 
-        @PutMapping("/user/items/requests/{request-idx}/decline")
+    /**
+     * 거래요청 거절
+     *
+     * @param requestIdx
+     * 거래요청의 idx
+     * @return 실패 message
+     * @throws NotFoundException 유효하지 않은 request idx
+     * @throws AuthException     유효하지 않은 토큰
+     *                           요청 클라이언트 != 아이템 소유자
+     */
+    @PutMapping("/user/items/requests/{request-idx}/decline")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> declineRequest(
             @PathVariable(value = "request-idx") Long requestIdx) throws NotFoundException, AuthException {
