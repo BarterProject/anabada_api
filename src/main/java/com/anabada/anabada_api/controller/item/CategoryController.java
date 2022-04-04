@@ -37,7 +37,7 @@ public class CategoryController {
      * @throws NotFoundException : 존재하지 않는 카테고리 이름
      */
     @GetMapping("/items/categories")
-   // @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemCategoryDTO>> getAll(
             @RequestParam(value = "name", defaultValue = "") String name
     ) throws NotFoundException {
@@ -54,7 +54,7 @@ public class CategoryController {
      * @throws NotFoundException 존재하지 않는 upper category idx
      */
     @PostMapping("/items/categories")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ItemCategoryDTO> saveCategory(
             @RequestBody @Validated(ValidationGroups.categorySaveGroup.class) ItemCategoryDTO dto
     ) throws NotFoundException {
