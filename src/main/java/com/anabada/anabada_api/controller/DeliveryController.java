@@ -28,6 +28,20 @@ public class DeliveryController {
 
     DeliveryRequestService deliveryRequestService;
 
+    /**
+     *
+     * @param idx
+     * @param deliveryDTO address : 집주소
+     *                    phone : 전화번호
+     *                    state : 배송 상태
+     *                    receiverName : 수령자 이름
+     *                    clauseAgree :  계약 명세서 약관 동의 여부
+     *                    trackingNumber : 운송장 번호
+     *
+     * @return DeliveryDTO :
+     * @throws NotFoundException
+     * @throws AuthException
+     */
     @PostMapping("/user/items/{item-idx}/deliveries")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<DeliveryDTO>saveDelivery(

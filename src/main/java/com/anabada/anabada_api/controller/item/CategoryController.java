@@ -29,8 +29,6 @@ public class CategoryController {
         this.categoryUpdateService = categoryUpdateService;
         this.categoryFindService = categoryFindService;
     }
-
-
     /**
      * 카테고리 리스트 반환
      *
@@ -45,7 +43,6 @@ public class CategoryController {
 
         return new ResponseEntity<>(categoriesDTO, HttpStatus.OK);
     }
-
     /**
      * 카테고리 등록기능 (관리자만 허용)
      *
@@ -65,5 +62,13 @@ public class CategoryController {
         return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
     }
 
+    @GetMapping("/items/categories/search")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<List<ItemCategoryDTO>>searchCategory(
+            @RequestParam(value = "name")String name
+    ) throws NotFoundException {
+        List<ItemCategoryDTO> itemCategory=categoryFindService.searchCategory(name);
+        return new ResponseEntity<>(itemCategory,HttpStatus.OK);
+    }
 
 }
