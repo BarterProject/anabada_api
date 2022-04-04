@@ -41,7 +41,6 @@ public class CategoryController {
     public ResponseEntity<List<ItemCategoryDTO>> getAll(
             @RequestParam(value = "name", defaultValue = "") String name
     ) throws NotFoundException {
-
         List<ItemCategoryDTO> itemCategory = categoryFindService.searchCategory(name);
        return new ResponseEntity<>(itemCategory, HttpStatus.OK);
 
