@@ -43,6 +43,11 @@ public class PaymentController {
         this.paymentFindOptionService = paymentFindOptionService;
     }
 
+    /**
+     * @param idx : 결제 idx
+     * @return PaymentDTO : 결제 정보
+     * @throws NotFoundException : 존재하지 않은 payment idx
+     */
     @GetMapping("/items/payments/{payment-idx}")// 단일 결제 조회
     public ResponseEntity<PaymentDTO> getPaymentByIdx(@PathVariable(value = "payment-idx") Long idx) throws NotFoundException {
 
@@ -51,32 +56,29 @@ public class PaymentController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    /**
+     * @return List> PaymentOptionDTO : 결제 옵션 리스트
+     * @throws NotFoundException 옵션 리스트가 존재하지 않는 경우
+     */
     @GetMapping(path = "/items/payments/options")
     public ResponseEntity<List<PaymentOptionDTO>> getPaymentOptionByIdx() throws NotFoundException {
         List<PaymentOptionDTO> options = paymentFindOptionService.findAll();
         return new ResponseEntity<>(options, HttpStatus.OK);
     }
 
-    /* @GetMapping("/user/payments") //나의 결제 내역 조회
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<PagePaymentDTO> getAllMyPayments(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) throws AuthException {
-        PagePaymentDTO page = paymentFindService.findAllWithAuth(pageable);
-
-        return new ResponseEntity<>(page, HttpStatus.OK);
-    }
-    */
-//    @PostMapping(path = "/items/{item-idx}/payments") // 결제 정보 저장
-//    // @PreAuthorize("hasRole('ROLE_USER')")
-//    public ResponseEntity<PaymentDTO> savePayment(
-//            @PathVariable(value = "item-idx") Long idx,
-//            @RequestBody @Validated(ValidationGroups.paymentGroup.class) PaymentDTO paymentDTO) throws NotFoundException {
-//
-//        PaymentDTO savePayment = paymentUpdateService.save(idx, paymentDTO);
-//        return new ResponseEntity<>(savePayment, HttpStatus.CREATED);
-//    }
-
+    /**
+     * @param idx        수정할 결제 idx
+     * @param paymentDTO 결제 정보
+     * @return PaymentDTO  수정된 결제 정보
+     * amount : 금액
+     * state : 결제 상태
+     * paymentOption:  결제 옵션
+     * @throws NotFoundException 존재하지 않는 결제 idx
+     * @throws AuthException     올바르지 않는 권한 오류
+     *                           유효하지 않은 토큰
+     */
     @PutMapping("/items/payments/{payment-idx}") //결제정보 수정
-    //  @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PaymentDTO> modifyPayment(
             @PathVariable(value = "payment-idx") Long idx, PaymentDTO paymentDTO
     ) throws NotFoundException, AuthException {
@@ -84,8 +86,13 @@ public class PaymentController {
         return new ResponseEntity<>(updatedPayment, HttpStatus.OK);
     }
 
+    /**
+     * @param idx 삭제할 결제 idx
+     * @return  message
+     * @throws NotFoundException 존재하지않은 결제 idx
+     */
     @DeleteMapping("/items/payments/{payment-idx}") //결제 정보 삭제
-    //@PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageDTO> deletePayment(
             @PathVariable(value = "payment-idx") Long idx) throws NotFoundException {
         paymentUpdateService.delete(idx);

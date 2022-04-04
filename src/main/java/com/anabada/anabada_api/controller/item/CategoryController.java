@@ -37,20 +37,13 @@ public class CategoryController {
      * @throws NotFoundException : 존재하지 않는 카테고리 이름
      */
     @GetMapping("/items/categories")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+   // @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemCategoryDTO>> getAll(
             @RequestParam(value = "name", defaultValue = "") String name
     ) throws NotFoundException {
 
-        List<ItemCategoryVO> categories = categoryFindService.getAll();
-        List<ItemCategoryDTO> categoriesDTO = categories.stream().map(ItemCategoryVO::dto).collect(Collectors.toList());
-
         List<ItemCategoryDTO> itemCategory = categoryFindService.searchCategory(name);
-
-        if (name.contains("")) {
-            return new ResponseEntity<>(itemCategory, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(categoriesDTO, HttpStatus.OK);
+       return new ResponseEntity<>(itemCategory, HttpStatus.OK);
 
     }
     /**
