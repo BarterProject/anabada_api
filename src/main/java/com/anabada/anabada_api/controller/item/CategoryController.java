@@ -29,19 +29,29 @@ public class CategoryController {
         this.categoryUpdateService = categoryUpdateService;
         this.categoryFindService = categoryFindService;
     }
+
     /**
      * 카테고리 리스트 반환
-     *
-     * @return List>ItemCategoryDTO: 카테고리 리스트
+     * @param name name : 카테고리 이름 리스트 반환
+     * @return ItemCategoryDTO List
+     * @throws NotFoundException : 존재하지 않는 카테고리 이름
      */
     @GetMapping("/items/categories")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<ItemCategoryDTO>> getAll() {
+    public ResponseEntity<List<ItemCategoryDTO>> getAll(
+            @RequestParam(value = "name", defaultValue = "") String name
+    ) throws NotFoundException {
 
         List<ItemCategoryVO> categories = categoryFindService.getAll();
         List<ItemCategoryDTO> categoriesDTO = categories.stream().map(ItemCategoryVO::dto).collect(Collectors.toList());
 
+        List<ItemCategoryDTO> itemCategory = categoryFindService.searchCategory(name);
+
+        if (name.contains("")) {
+            return new ResponseEntity<>(itemCategory, HttpStatus.OK);
+        }
         return new ResponseEntity<>(categoriesDTO, HttpStatus.OK);
+
     }
     /**
      * 카테고리 등록기능 (관리자만 허용)
@@ -62,13 +72,5 @@ public class CategoryController {
         return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/items/categories/search")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<List<ItemCategoryDTO>>searchCategory(
-            @RequestParam(value = "name")String name
-    ) throws NotFoundException {
-        List<ItemCategoryDTO> itemCategory=categoryFindService.searchCategory(name);
-        return new ResponseEntity<>(itemCategory,HttpStatus.OK);
-    }
 
 }
