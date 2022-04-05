@@ -40,7 +40,7 @@ public class RoomVO {
     @Column(name = "receiver", updatable = false, nullable = false)
     private String receiver;
 
-    @OneToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "delivery_idx_fk", nullable = false, updatable = true)
     private DeliveryVO delivery;
 
@@ -53,4 +53,7 @@ public class RoomVO {
         this.delivery=delivery;
     }
 
+    public void setDelivery(DeliveryVO delivery) {
+        this.delivery=delivery;
+    }
 }

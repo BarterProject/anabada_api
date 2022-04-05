@@ -64,6 +64,13 @@ public class DeliveryRequestService {
               throw new DuplicateRequestException("이미 존재하는 배송요청입니다.");
            }
 
+            RoomVO roomVO = RoomVO.builder()
+                    .name(saveName.toString())
+                    .sender(user.getAuth().getName())
+                    .receiver(receiver)
+                    .state(1)
+                    .build();
+
             DeliveryVO deliveryVO = DeliveryVO.builder()
                     .receiverName(dto.getReceiverName())
                     .state(1L)
@@ -74,22 +81,8 @@ public class DeliveryRequestService {
                     .item(item)
                     .build();
 
-           if(item.getDelivery().getRoom()!=null) {
-              throw new DuplicateRequestException("이미 존재하는 채팅방입니다.");
-          }
-
-            RoomVO roomVO = RoomVO.builder()
-                    .name(saveName.toString())
-                    .sender(user.getAuth().getName())
-                    .receiver(receiver)
-                    .state(1)
-                    .delivery(deliveryVO)
-                    .build();
-
-
-            RoomVO savedRoom = roomRepository.save(roomVO);
-
             item.setDelivery(deliveryVO);
+            deliveryVO.setRoom(roomVO);
             deliveryVO = itemUpdateService.save(item).getDelivery();
 
             return deliveryVO.dto(true);

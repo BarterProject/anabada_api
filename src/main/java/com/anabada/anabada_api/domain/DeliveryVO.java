@@ -52,7 +52,7 @@ public class DeliveryVO {
     @Column(name = "address", updatable = true, nullable = false)
     private String address;
 
-    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private RoomVO room;
 
 
@@ -88,6 +88,11 @@ public class DeliveryVO {
 
     public void setItem(ItemVO itemVO) {
         this.item = item;
+    }
+
+    public void setRoom(RoomVO room) {
+        this.room = room;
+        room.setDelivery(this);
     }
 
 
