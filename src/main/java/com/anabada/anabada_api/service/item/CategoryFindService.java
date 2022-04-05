@@ -2,6 +2,7 @@ package com.anabada.anabada_api.service.item;
 
 
 import com.anabada.anabada_api.domain.item.ItemCategoryVO;
+import com.anabada.anabada_api.dto.item.ItemCategoryDTO;
 import com.anabada.anabada_api.repository.CategoryRepository;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryFindService {
@@ -30,10 +32,20 @@ public class CategoryFindService {
 
         Optional<ItemCategoryVO> category = categoryRepository.findById(idx);
 
-        if(category.isEmpty())
+        if (category.isEmpty())
             throw new NotFoundException("invalid category idx");
 
         return category.get();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItemCategoryDTO> searchCategory(String name) throws NotFoundException {
+        List<ItemCategoryVO> categoryVO = categoryRepository.findAllByNameContaining(name);
+
+        if (categoryVO.isEmpty())
+            throw new NotFoundException("invalid category");
+
+        return categoryVO.stream().map(i -> i.dto()).collect(Collectors.toList());
     }
 
 }

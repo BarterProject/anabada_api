@@ -17,9 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DeliveryDTO {
-
-    private  String address;
-    private Long idx;
+     private Long idx;
 
     private Long state;
 
@@ -28,6 +26,9 @@ public class DeliveryDTO {
 
     @NotBlank(groups ={ValidationGroups.deliveryRequestGroup.class},message = "수령자 이름이 입력되지않았습니다.")
     private String receiverName;
+
+    @NotBlank(groups ={ValidationGroups.deliveryRequestGroup.class},message = "주소가 입력되지않았습니다.")
+    private  String address;
 
     private boolean clauseAgree;
 

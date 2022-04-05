@@ -30,19 +30,31 @@ public class CategoryController {
         this.categoryFindService = categoryFindService;
     }
 
-
+    /**
+     * 카테고리 리스트 반환
+     * @param name name : 카테고리 이름 리스트 반환
+     * @return ItemCategoryDTO List
+     * @throws NotFoundException : 존재하지 않는 카테고리 이름
+     */
     @GetMapping("/items/categories")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<ItemCategoryDTO>> getAll() {
+    public ResponseEntity<List<ItemCategoryDTO>> getAll(
+            @RequestParam(value = "name", defaultValue = "") String name
+    ) throws NotFoundException {
+        List<ItemCategoryDTO> itemCategory = categoryFindService.searchCategory(name);
+       return new ResponseEntity<>(itemCategory, HttpStatus.OK);
 
-        List<ItemCategoryVO> categories = categoryFindService.getAll();
-        List<ItemCategoryDTO> categoriesDTO = categories.stream().map(ItemCategoryVO::dto).collect(Collectors.toList());
-
-        return new ResponseEntity<>(categoriesDTO, HttpStatus.OK);
     }
-
+    /**
+     * 카테고리 등록기능 (관리자만 허용)
+     *
+     * @param dto name: 카테고리명
+     *            upperCategory: 상위 카테고리
+     * @return ItemCategoryDTO: 생성된 카테고리
+     * @throws NotFoundException 존재하지 않는 upper category idx
+     */
     @PostMapping("/items/categories")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ItemCategoryDTO> saveCategory(
             @RequestBody @Validated(ValidationGroups.categorySaveGroup.class) ItemCategoryDTO dto
     ) throws NotFoundException {

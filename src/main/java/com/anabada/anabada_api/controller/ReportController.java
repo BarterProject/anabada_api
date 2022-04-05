@@ -42,15 +42,28 @@ public class ReportController {
     ItemFindService itemFindService;
 
 
-    // 신고 조회 api
-    //신고 단일 조회
+
+    /**
+     * 신고 단건 조회
+     * 신고 단건 반환
+     * @param idx report의 idx
+     * @return 신고된 신고 정보
+     * @throws NotFoundException 유효하지 않은 report idx
+     */
     @GetMapping("/item/reports/{report-idx}")
     public ResponseEntity<ReportDTO> getReportByIdx(@PathVariable(value = "report-idx") Long idx) throws NotFoundException {
         ReportDTO dto = reportFindService.findByIdxDTO(idx);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    //신고 전체 조회 - 관리자 
+
+
+    /**
+     * 신고 전체조회
+     * 신고 페이지로 반환
+     * @param pageable 
+     * @return PageReportDTO : 신고 리스트
+     */
     @GetMapping("/item/reports")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PageReportDTO> getAllReports(@PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -58,9 +71,17 @@ public class ReportController {
 
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
-    //state 상태에 따른 조회
+   
 
-    //item-idx에 따른 조회
+
+
+    /**
+     * 특정 아이템의 신고 조회
+     * @param idx : 신고한 아이템 idx
+     * @param pageable
+     * @return PageReportDTO : 신고 리스트 페이지
+     * @throws NotFoundException : 유효하지 않은 item idx
+     */
     @GetMapping("items/{item-idx}/reports")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<PageReportDTO> getReportByItem(
@@ -72,7 +93,14 @@ public class ReportController {
         return new ResponseEntity<>(page, HttpStatus.OK);
 
     }
-    //내 신고 조회(유저)
+
+
+    /**
+     * 내가 신고한 내역 조회
+     * @param pageable
+     * @return PageReportDTO : 내가 신고한 내역 페이지
+     * @throws AuthException 유효하지 않은 토큰
+     */
     @GetMapping("/user/reports")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<PageReportDTO> getMyReports(
@@ -83,7 +111,17 @@ public class ReportController {
     }
 
 
-    // 신고 저장 api (유저)
+
+
+    /**
+     * 신고 저장 
+     * @param itemIdx : 신고할 아이템 idx
+     * @param reportDTO : 신고 정보
+     *
+     * @return reportDTO : 저장된 신고 정보
+     * @throws AuthException : 유효하지 않은 토큰
+     * @throws NotFoundException : 유효하지 않은 item idx
+     */
     @PostMapping("/items/{item-idx}/reports")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<ReportDTO> saveReport(
@@ -96,6 +134,15 @@ public class ReportController {
         return new ResponseEntity<>(saveReport, HttpStatus.CREATED);
     }
 
+    /**
+     * 신고 수정  ( 관리자만 허용 ) 
+     * @param idx : 수정할 신고 idx
+     * @param reportDTO : 수정할 신고 정보
+     * @return reportDTO : 수정한 신고 정보
+     * @throws AuthException : 유효하지 않은 토큰
+     *                         접근 권한 오류
+     * @throws NotFoundException : 존재하지 않는 신고 idx
+     */
     @PutMapping("/items/reports/{report-idx}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ReportDTO> modifyReport(
@@ -107,7 +154,12 @@ public class ReportController {
         return new ResponseEntity<>(updatedReport, HttpStatus.OK);
     }
 
-
+    /**
+     * 신고 삭제  ( 관리자만 허용 )
+     * @param idx : 삭제할 신고 idx
+     * @return message
+     * @throws NotFoundException : 존재하지 않는 신고 idx
+     */
     @DeleteMapping("items/reports/{report-idx}")
     public ResponseEntity<MessageDTO> deleteReport(
             @PathVariable(value = "report-idx") Long idx) throws NotFoundException {
