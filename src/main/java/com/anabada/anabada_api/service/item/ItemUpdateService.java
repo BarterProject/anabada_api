@@ -1,20 +1,15 @@
 package com.anabada.anabada_api.service.item;
 
-import com.anabada.anabada_api.domain.DeliveryVO;
 import com.anabada.anabada_api.domain.item.ItemCategoryVO;
 import com.anabada.anabada_api.domain.item.ItemImageVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.pay.PaymentVO;
 import com.anabada.anabada_api.domain.user.UserVO;
-import com.anabada.anabada_api.dto.DeliveryDTO;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import com.anabada.anabada_api.repository.ItemRepository;
-import com.anabada.anabada_api.service.delivery.DeliveryRequestService;
 import com.anabada.anabada_api.service.payment.PaymentUpdateService;
 import com.anabada.anabada_api.service.user.UserFindService;
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;

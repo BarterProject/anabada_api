@@ -3,7 +3,7 @@ package com.anabada.anabada_api.dto.item;
 import com.anabada.anabada_api.domain.DeliveryVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
-import com.anabada.anabada_api.dto.DeliveryDTO;
+import com.anabada.anabada_api.dto.delivery.DeliveryDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.payment.PaymentDTO;
 import com.anabada.anabada_api.dto.user.UserDTO;
