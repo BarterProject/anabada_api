@@ -2,9 +2,7 @@ package com.anabada.anabada_api.domain;
 
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.message.RoomVO;
-import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
-import com.anabada.anabada_api.dto.DeliveryDTO;
-import com.anabada.anabada_api.dto.item.ItemDTO;
+import com.anabada.anabada_api.dto.delivery.DeliveryDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,7 +50,7 @@ public class DeliveryVO {
     @Column(name = "address", updatable = true, nullable = false)
     private String address;
 
-    @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+     @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
     private RoomVO room;
 
 

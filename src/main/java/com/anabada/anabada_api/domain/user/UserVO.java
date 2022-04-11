@@ -2,8 +2,8 @@ package com.anabada.anabada_api.domain.user;
 
 
 import com.anabada.anabada_api.domain.NoticeVO;
-import com.anabada.anabada_api.domain.board.PostVO;
 import com.anabada.anabada_api.domain.ReportVO;
+import com.anabada.anabada_api.domain.board.PostVO;
 import com.anabada.anabada_api.dto.user.UserDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class UserVO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx", updatable = false)
+    @Column(name = "idx", updatable = false, nullable = false)
     private Long idx;
 
     @Column(name = "email", updatable = false, nullable = false, length = 100)
@@ -71,6 +71,7 @@ public class UserVO {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReportVO> reports = new ArrayList<>();
+
 
     @Builder
     public UserVO(Long idx, String email, String password, String phone, String address, String bankAccount, String bankKind, LocalDateTime createdAt, String oauth, boolean activated, AuthVO auth) {

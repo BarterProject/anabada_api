@@ -1,15 +1,13 @@
-package com.anabada.anabada_api.dto;
+package com.anabada.anabada_api.dto.delivery;
 
 
 import com.anabada.anabada_api.domain.DeliveryVO;
-import com.anabada.anabada_api.domain.item.ItemVO;
-import com.anabada.anabada_api.domain.pay.PaymentOptionVO;
+import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -40,6 +38,8 @@ public class DeliveryDTO {
 
 
     ItemDTO item;
+
+
 
     @Builder
     public DeliveryDTO(Long idx,
