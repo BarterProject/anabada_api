@@ -70,7 +70,7 @@ public class ItemFindService {
         for(int i = 0; size != items.size(); i++)
             items.add(items.get(i % items.size())); // 부족한 item 수가 전체 items 수보다 많을 수 있기 때문에 items.size()로 %연산
 
-        return items.stream().map(i -> i.dto(true, true, false, true, true)).collect(Collectors.toList());
+        return items.stream().map(i -> i.dto(true, true, false, true, true, true)).collect(Collectors.toList());
     }
 
 

@@ -54,8 +54,8 @@ public class DealRequestVO {
                 .createdAt(createdAt)
                 .state(state)
                 .tradedAt(tradedAt)
-                .requestItem(_requestItem ? requestItem.dto(false, false, false, false, false) : null)
-                .responseItem(_responseItem ? responseItem.dto(false, false, false, false, false): null)
+                .requestItem(_requestItem ? requestItem.dto(false, false, false, false, false, false) : null)
+                .responseItem(_responseItem ? responseItem.dto(false, false, false, false, false, false): null)
                 .build();
     }
 

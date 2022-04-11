@@ -2,6 +2,7 @@ package com.anabada.anabada_api.domain.message;
 
 
 import com.anabada.anabada_api.domain.user.UserVO;
+import com.anabada.anabada_api.dto.MessageEntityDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,12 +34,23 @@ public class MessageVO {
     private int state;
 
     @ManyToOne
+    @JoinColumn(name = "room_idx_fk", updatable = false, nullable = false)
+    private RoomVO room;
+
+    @ManyToOne
     @JoinColumn(name = "sender_idx_fk", updatable = false, nullable = false)
     private UserVO sender;
 
-    @ManyToOne
-    @JoinColumn(name = "room_idx_fk", updatable = false, nullable = false)
-    private RoomVO room;
+
+    public MessageEntityDTO dto(){
+        return MessageEntityDTO.builder()
+                .idx(idx)
+                .content(content)
+                .createdAt(createdAt)
+                .state(state)
+                .sender(sender.dto(false))
+                .build();
+    }
 
 
 }

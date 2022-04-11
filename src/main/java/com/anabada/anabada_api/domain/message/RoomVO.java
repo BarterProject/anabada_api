@@ -4,6 +4,7 @@ package com.anabada.anabada_api.domain.message;
 
 import com.anabada.anabada_api.domain.DeliveryVO;
 import com.anabada.anabada_api.dto.DeliveryDTO;
+import com.anabada.anabada_api.dto.RoomDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "ROOM_TB")
 @Entity
@@ -44,6 +46,10 @@ public class RoomVO {
     @JoinColumn(name = "delivery_idx_fk", nullable = false, updatable = true)
     private DeliveryVO delivery;
 
+    @OneToMany(mappedBy = "room")
+    private List<RoomUserMappingVO> mappings;
+
+
     @Builder
     public RoomVO(String name, String sender, String receiver, int state,DeliveryVO delivery) {
         this.name = name;
@@ -51,6 +57,16 @@ public class RoomVO {
         this.receiver = receiver;
         this.state = state;
         this.delivery=delivery;
+    }
+
+    public RoomDTO dto(boolean delivery){
+        return RoomDTO.builder()
+                .idx(idx)
+                .createdAt(createdAt)
+                .state(state)
+                .name(name)
+                .delivery(delivery ? this.delivery.dto(false) : null)
+                .build();
     }
 
 }

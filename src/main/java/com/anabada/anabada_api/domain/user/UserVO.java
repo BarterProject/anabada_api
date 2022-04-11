@@ -87,18 +87,18 @@ public class UserVO {
         this.auth = auth;
     }
 
-    public UserDTO dto(){
+    public UserDTO dto(boolean detail){
         return UserDTO.builder()
                 .email(email)
-                .password("*")
-                .phone(phone)
-                .address(address)
-                .bankAccount(bankAccount)
-                .bankKind(bankKind)
+                .password(detail ? "*" : null)
+                .phone(detail ? phone : null)
+                .address(detail ? address : null)
+                .bankAccount(detail ? bankAccount : null)
+                .bankKind(detail ? bankKind : null)
                 .activated(activated)
-                .oauth(oauth)
-                .auth(auth.getName())
-                .createdAt(createdAt)
+                .oauth(detail ? oauth : null)
+                .auth(detail ? auth.getName() : null)
+                .createdAt(detail ? createdAt : null)
                 .build();
     }
 
