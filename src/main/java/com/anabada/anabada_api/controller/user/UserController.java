@@ -24,14 +24,26 @@ public class UserController {
     UserUpdateService userUpdateService;
 
 
+    /**
+     * 유저 회원가입
+     *
+     * @param requestUserDTO email: 사용자 ID
+     *                       password: 비밀번호
+     *                       phone: 전화번호
+     *                       address: 집 주소
+     *                       bankAccount: 은행 계좌
+     *                       bankKind: 은행 종류
+     * @return UserDTO: 회원가입된 유저정보
+     * @throws DuplicateMemberException UserVO email 중복 오류
+     * @throws NotFoundException        올바르지 않은 권한유형 오류 (서버오류, 사용자로부터 입력받는 값 x)
+     */
     @PostMapping(path = "/user")
-    public ResponseEntity<UserDTO> getSignUp (@RequestBody @Validated(ValidationGroups.userSignUpGroup.class) UserDTO requestUserDTO) throws DuplicateMemberException, NotFoundException {
+    public ResponseEntity<UserDTO> getSignUp(@RequestBody @Validated(ValidationGroups.userSignUpGroup.class) UserDTO requestUserDTO) throws DuplicateMemberException, NotFoundException {
 
         UserDTO user = userUpdateService.signUp(requestUserDTO);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
-
 
 
 }

@@ -26,7 +26,7 @@ public class UserUpdateService {
 
     public UserDTO signUp(UserDTO dto) throws DuplicateMemberException, NotFoundException {
 
-        if(userRepository.existsByEmail(dto.getEmail()))
+        if (userRepository.existsByEmail(dto.getEmail()))
             throw new DuplicateMemberException("already exist user email");
 
         AuthVO auth = authFindService.getByName(AuthType.USER.getName());

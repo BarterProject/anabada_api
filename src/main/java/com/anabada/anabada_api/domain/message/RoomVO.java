@@ -23,7 +23,7 @@ public class RoomVO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx", updatable = false)
+    @Column(name = "idx", updatable = false,nullable = false)
     private Long idx;
 
     @CreationTimestamp
@@ -31,18 +31,12 @@ public class RoomVO {
     LocalDateTime createdAt;
 
     @Column(name = "state", updatable = true, nullable = true)
-    private int state;
+    private Long state;
 
     @Column(name = "name", updatable = false, nullable = false)
     private String name;
 
-    @Column(name = "sender", updatable = false, nullable = false)
-    private String sender;
-
-    @Column(name = "receiver", updatable = false, nullable = false)
-    private String receiver;
-
-    @OneToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_idx_fk", nullable = false, updatable = true)
     private DeliveryVO delivery;
 
@@ -51,15 +45,18 @@ public class RoomVO {
 
 
     @Builder
-    public RoomVO(String name, String sender, String receiver, int state,DeliveryVO delivery) {
+    public RoomVO(String name, Long state, DeliveryVO delivery) {
         this.name = name;
-        this.sender = sender;
-        this.receiver = receiver;
         this.state = state;
-        this.delivery=delivery;
+        this.delivery = delivery;
     }
 
-    public RoomDTO dto(boolean delivery){
+    public void setDelivery(DeliveryVO delivery) {
+        this.delivery = delivery;
+    }
+
+
+    public RoomDTO dto(boolean delivery) {
         return RoomDTO.builder()
                 .idx(idx)
                 .createdAt(createdAt)
@@ -68,5 +65,6 @@ public class RoomVO {
                 .delivery(delivery ? this.delivery.dto(false) : null)
                 .build();
     }
+
 
 }

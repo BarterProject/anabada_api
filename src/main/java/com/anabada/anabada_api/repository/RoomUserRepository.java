@@ -1,5 +1,6 @@
 package com.anabada.anabada_api.repository;
 
+
 import com.anabada.anabada_api.domain.message.RoomUserMappingVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,3 +15,4 @@ public interface RoomUserRepository extends JpaRepository<RoomUserMappingVO,Long
 
 
 }
+
