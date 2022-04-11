@@ -43,7 +43,7 @@ public class UserUpdateService {
                 .auth(auth)
                 .build();
 
-        return userRepository.save(vo).dto();
+        return userRepository.save(vo).dto(true);
 
     }
 
