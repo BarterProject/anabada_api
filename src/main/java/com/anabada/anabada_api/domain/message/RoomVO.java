@@ -3,9 +3,8 @@ package com.anabada.anabada_api.domain.message;
 
 
 import com.anabada.anabada_api.domain.DeliveryVO;
-import com.anabada.anabada_api.dto.DeliveryDTO;
-import com.anabada.anabada_api.dto.RoomDTO;
 import lombok.AccessLevel;
+import com.anabada.anabada_api.dto.room.RoomDTO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,7 @@ public class RoomVO {
     LocalDateTime createdAt;
 
     @Column(name = "state", updatable = true, nullable = true)
-    private Long state;
+    private int state;
 
     @Column(name = "name", updatable = false, nullable = false)
     private String name;
@@ -41,11 +40,11 @@ public class RoomVO {
     private DeliveryVO delivery;
 
     @OneToMany(mappedBy = "room")
-    private List<RoomUserMappingVO> mappings;
+    private List<RoomUserVO> mappings;
 
 
     @Builder
-    public RoomVO(String name, Long state, DeliveryVO delivery) {
+    public RoomVO(String name, int state, DeliveryVO delivery) {
         this.name = name;
         this.state = state;
         this.delivery = delivery;

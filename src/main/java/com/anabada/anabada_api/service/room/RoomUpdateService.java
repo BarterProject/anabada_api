@@ -42,7 +42,7 @@ public class RoomUpdateService {
         UUID saveName = UUID.randomUUID();
         RoomVO roomVO = RoomVO.builder()
                 .name(saveName.toString())
-                .state(1L)
+                .state(1)
                 .delivery(deliveryVO)
                 .build();
 

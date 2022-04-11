@@ -15,9 +15,9 @@ public class RoomUserDTO {
     private RoomDTO room;
 
     @Builder
-    public RoomUserDTO(Long idx,UserDTO user,RoomDTO room){
-        this.idx=idx;
-        this.room=room;
-        this.user=user;
+    public RoomUserDTO(Long idx, UserDTO user, RoomDTO room) {
+        this.idx = idx;
+        this.room = room;
+        this.user = user;
     }
 }

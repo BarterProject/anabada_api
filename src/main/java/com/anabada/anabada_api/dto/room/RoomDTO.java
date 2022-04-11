@@ -19,13 +19,13 @@ public class RoomDTO {
 
     private Long idx;
 
-    private Long state;
+    private int state;
 
     private String name;
 
     private DeliveryDTO delivery;
     @Builder
-    public RoomDTO(Long idx, LocalDateTime createdAt, Long state, String name,DeliveryDTO delivery){
+    public RoomDTO(Long idx, LocalDateTime createdAt, int state, String name,DeliveryDTO delivery){
         this.idx=idx;
         this.name=name;
         this.state=state;

@@ -1,12 +1,13 @@
 package com.anabada.anabada_api.service.message;
 
 import com.anabada.anabada_api.domain.message.MessageVO;
-import com.anabada.anabada_api.domain.message.RoomUserMappingVO;
+import com.anabada.anabada_api.domain.message.RoomUserVO;
 import com.anabada.anabada_api.domain.message.RoomVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.MessageEntityDTO;
 import com.anabada.anabada_api.repository.MessageRepository;
 
+import com.anabada.anabada_api.service.room.RoomFindService;
 import com.anabada.anabada_api.service.user.UserFindService;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class MessageFindService {
 
         boolean isOwner = false;
 
-        for (RoomUserMappingVO mapping : room.getMappings()) {
+        for (RoomUserVO mapping : room.getMappings()) {
             if (user == mapping.getUser()) {
                 isOwner = true;
                 break;

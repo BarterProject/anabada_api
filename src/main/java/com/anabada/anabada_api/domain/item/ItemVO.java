@@ -44,18 +44,18 @@ public class ItemVO {
     private Long state;
 
     @CreationTimestamp
-    @Column(name = "created_at",updatable = false,nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "end_at", updatable = true, nullable = true)
     private LocalDateTime endAt;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_idx_fk", nullable = false, updatable = true)
     PaymentVO payment;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_idx_fk", nullable = true, updatable = true,unique = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_idx_fk", nullable = true, updatable = true, unique = true)
     DeliveryVO delivery;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -89,7 +89,7 @@ public class ItemVO {
 
 
     public void setPayment(PaymentVO payment) {
-        this.payment= payment;
+        this.payment = payment;
     }
 
     public void addImage(ItemImageVO image) {
@@ -97,13 +97,13 @@ public class ItemVO {
         image.setItem(this);
     }
 
-    public void changeOwner(UserVO _owner){
+    public void changeOwner(UserVO _owner) {
         this.owner = _owner;
     }
 
 
     @Builder
-    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, ItemCategoryVO itemCategory, UserVO registrant, UserVO owner,DeliveryVO delivery) {
+    public ItemVO(String name, String description, Long deposit, boolean clauseAgree, Long state, PaymentVO payment, ItemCategoryVO itemCategory, UserVO registrant, UserVO owner, DeliveryVO delivery) {
         this.name = name;
         this.description = description;
         this.deposit = deposit;
@@ -113,10 +113,10 @@ public class ItemVO {
         this.itemCategory = itemCategory;
         this.registrant = registrant;
         this.owner = owner;
-        this.delivery=delivery;
+        this.delivery = delivery;
     }
 
-    public ItemDTO dto(Boolean registrant, Boolean owner, Boolean payment, Boolean category, Boolean images,Boolean delivery) {
+    public ItemDTO dto(Boolean registrant, Boolean owner, Boolean payment, Boolean category, Boolean images, Boolean delivery) {
         return ItemDTO.builder()
                 .idx(idx)
                 .name(name)
@@ -131,7 +131,7 @@ public class ItemVO {
                 .owner(owner ? this.owner.dto(true) : null)
                 .createdAt(this.createdAt)
                 .endAt(endAt)
-                .delivery(delivery?this.delivery.dto(true):null)
+                .delivery(delivery ? this.delivery.dto(true) : null)
                 .build();
 
     }

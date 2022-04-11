@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.dto;
 
 
+import com.anabada.anabada_api.dto.room.RoomDTO;
 import com.anabada.anabada_api.dto.user.UserDTO;
 import lombok.AccessLevel;
 import lombok.Getter;

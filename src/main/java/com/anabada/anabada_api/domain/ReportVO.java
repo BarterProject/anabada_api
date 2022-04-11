@@ -59,7 +59,7 @@ public class ReportVO {
                 .content(content)
                 .reply(reply)
                 .state(state)
-                .item(item ? this.item.dto(true, true, true, true, true,true) : null)
+                .item(item ? this.item.dto(true, true, true, true, true,false) : null)
                 .user(user ? this.user.dto(true) : null)
                 .build();
     }

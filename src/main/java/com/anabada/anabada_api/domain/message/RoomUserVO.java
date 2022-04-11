@@ -38,7 +38,7 @@ public class RoomUserVO {
     public RoomUserDTO dto(boolean user, boolean room) {
         return RoomUserDTO.builder()
                 .idx(idx)
-                .user(user ? this.user.dto() : null)
+                .user(user ? this.user.dto(false) : null)
                 .room(room ? this.room.dto(true) : null)
                 .build();
     }

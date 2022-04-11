@@ -43,13 +43,13 @@ public class ItemFindService {
     public List<ItemDTO> findByRegistrant() throws AuthException {
         UserVO user = userFindService.getMyUserWithAuthorities();
 
-        return itemRepository.findByRegistrant(user).stream().map(i -> i.dto(true, true, true, true, true, true)).collect(Collectors.toList());
+        return itemRepository.findByRegistrant(user).stream().map(i -> i.dto(true, true, true, true, true, false)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<ItemDTO> findByOwner() throws AuthException {
         UserVO user = userFindService.getMyUserWithAuthorities();
-        return itemRepository.findByOwner(user).stream().map(i -> i.dto(true, true, true, true, true, true)).collect(Collectors.toList());
+        return itemRepository.findByOwner(user).stream().map(i -> i.dto(true, true, true, true, true, false)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

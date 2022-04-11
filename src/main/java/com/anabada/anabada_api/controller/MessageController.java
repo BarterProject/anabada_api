@@ -1,13 +1,12 @@
 package com.anabada.anabada_api.controller;
 
 
-import com.anabada.anabada_api.domain.message.MessageVO;
-import com.anabada.anabada_api.domain.message.RoomVO;
-import com.anabada.anabada_api.dto.MessageDTO;
+
 import com.anabada.anabada_api.dto.MessageEntityDTO;
-import com.anabada.anabada_api.dto.RoomDTO;
+import com.anabada.anabada_api.dto.room.RoomDTO;
 import com.anabada.anabada_api.service.message.MessageFindService;
-import com.anabada.anabada_api.service.message.RoomFindService;
+
+import com.anabada.anabada_api.service.room.RoomFindService;
 import javassist.NotFoundException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
