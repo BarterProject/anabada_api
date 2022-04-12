@@ -1,6 +1,6 @@
 package com.anabada.anabada_api.service.delivery;
 
-import com.anabada.anabada_api.domain.DeliveryVO;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.dto.delivery.DeliveryDTO;
 import com.anabada.anabada_api.repository.DeliveryRepository;
