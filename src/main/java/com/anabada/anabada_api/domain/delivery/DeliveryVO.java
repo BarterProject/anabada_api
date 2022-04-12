@@ -1,4 +1,4 @@
-package com.anabada.anabada_api.domain;
+package com.anabada.anabada_api.domain.delivery;
 
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.message.RoomVO;
@@ -53,6 +53,9 @@ public class DeliveryVO {
      @OneToOne(mappedBy = "delivery",fetch = FetchType.LAZY)
     private RoomVO room;
 
+    @ManyToOne
+    @JoinColumn(name = "delivery_company_fk")
+    private DeliveryCompanyVO deliveryCompany;
 
 
     @Builder

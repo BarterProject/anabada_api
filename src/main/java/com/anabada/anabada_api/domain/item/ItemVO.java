@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.domain.item;
 
-import com.anabada.anabada_api.domain.DeliveryVO;
 import com.anabada.anabada_api.domain.DealRequestVO;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.pay.PaymentVO;
 import com.anabada.anabada_api.domain.user.UserVO;
