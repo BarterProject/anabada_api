@@ -19,10 +19,14 @@ import java.util.stream.Collectors;
 @Service
 public class RoomFindService {
     RoomUserRepository roomUserRepository;
+    RoomRepository roomRepository;
+
     UserFindService userFindService;
 
-    public RoomFindService(RoomUserRepository roomUserRepository, UserFindService userFindService) {
+
+    public RoomFindService(RoomUserRepository roomUserRepository, RoomRepository roomRepository, UserFindService userFindService) {
         this.roomUserRepository = roomUserRepository;
+        this.roomRepository = roomRepository;
         this.userFindService = userFindService;
     }
 
@@ -43,6 +47,16 @@ public class RoomFindService {
             throw new NotFoundException("invalid room idx");
 
         return optional.get().getRoom();
+    }
+
+    @Transactional(readOnly = true)
+    public RoomVO getByName(String name) throws NotFoundException {
+        Optional<RoomVO> optional = roomRepository.findByName(name);
+
+        if(optional.isEmpty())
+            throw new NotFoundException("invalid room name");
+
+        return optional.get();
     }
 
 }

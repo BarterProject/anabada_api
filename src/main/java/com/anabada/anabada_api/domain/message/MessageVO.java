@@ -4,6 +4,7 @@ package com.anabada.anabada_api.domain.message;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.MessageEntityDTO;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,6 +42,14 @@ public class MessageVO {
     @JoinColumn(name = "sender_idx_fk", updatable = false, nullable = false)
     private UserVO sender;
 
+
+    @Builder
+    public MessageVO(String content, int state, RoomVO room, UserVO sender) {
+        this.content = content;
+        this.state = state;
+        this.room = room;
+        this.sender = sender;
+    }
 
     public MessageEntityDTO dto(){
         return MessageEntityDTO.builder()

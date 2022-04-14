@@ -6,7 +6,6 @@ import com.anabada.anabada_api.domain.message.RoomVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.MessageEntityDTO;
 import com.anabada.anabada_api.repository.MessageRepository;
-
 import com.anabada.anabada_api.service.room.RoomFindService;
 import com.anabada.anabada_api.service.user.UserFindService;
 import javassist.NotFoundException;
@@ -15,41 +14,54 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.message.AuthException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class MessageFindService {
-
+public class MessageUpdateService {
 
     MessageRepository messageRepository;
-    RoomFindService roomFindService;
-    UserFindService userFindService;
 
-    public MessageFindService(MessageRepository messageRepository, RoomFindService roomFindService, UserFindService userFindService) {
+    UserFindService userFindService;
+    RoomFindService roomFindService;
+
+    public MessageUpdateService(MessageRepository messageRepository, UserFindService userFindService, RoomFindService roomFindService) {
         this.messageRepository = messageRepository;
-        this.roomFindService = roomFindService;
         this.userFindService = userFindService;
+        this.roomFindService = roomFindService;
     }
 
-    @Transactional(readOnly = true)
-    public List<MessageEntityDTO> getMessagesByRoomIdx(long roomIdx) throws NotFoundException, AuthException {
-        RoomVO room = roomFindService.getByIdx(roomIdx);
+    public MessageVO save(MessageVO vo){
+        return messageRepository.save(vo);
+    }
+
+    @Transactional
+    public MessageEntityDTO save(MessageEntityDTO dto) throws NotFoundException, AuthException {
+
         UserVO user = userFindService.getMyUserWithAuthorities();
+        RoomVO room = roomFindService.getByName(dto.getRoom().getName());
 
-        boolean isOwner = false;
+        List<RoomUserVO> roomUserMapping = room.getMappings();
 
-        for (RoomUserVO mapping : room.getMappings()) {
-            if (user == mapping.getUser()) {
-                isOwner = true;
+        boolean isMyRoom = false;
+        for(RoomUserVO em : roomUserMapping) {
+            if (em.getUser() == user) {
+                isMyRoom = true;
                 break;
             }
         }
 
-        if(!isOwner) throw new AuthException("not your own room");
+        if(!isMyRoom)
+            throw new AuthException("not my own message room");
 
-        List<MessageVO> messages = messageRepository.findByRoom(room);
-        return messages.stream().map(MessageVO::dto).collect(Collectors.toList());
+        MessageVO vo = MessageVO.builder()
+                .sender(user)
+                .room(room)
+                .content(dto.getContent())
+                .state(1)
+                .build();
+
+        return this.save(vo).dto();
     }
+
 
 }
 
