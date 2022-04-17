@@ -7,15 +7,18 @@ import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import com.anabada.anabada_api.service.item.DealRequestService;
 import com.anabada.anabada_api.service.item.ItemFindService;
+import com.anabada.anabada_api.service.item.ItemImageService;
 import com.anabada.anabada_api.service.item.ItemUpdateService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
@@ -28,11 +31,13 @@ public class ItemController {
     ItemUpdateService itemUpdateService;
     ItemFindService itemFindService;
     DealRequestService dealRequestService;
+    ItemImageService itemImageService;
 
-    public ItemController(ItemUpdateService itemUpdateService, ItemFindService itemFindService, DealRequestService dealRequestService) {
+    public ItemController(ItemUpdateService itemUpdateService, ItemFindService itemFindService, DealRequestService dealRequestService, ItemImageService itemImageService) {
         this.itemUpdateService = itemUpdateService;
         this.itemFindService = itemFindService;
         this.dealRequestService = dealRequestService;
+        this.itemImageService = itemImageService;
     }
 
     /**
@@ -192,6 +197,14 @@ public class ItemController {
         return new ResponseEntity<>(new MessageDTO("deal rejected"), HttpStatus.OK);
     }
 
+
+    @GetMapping(value = "/items/images/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getItemImageByName(
+            @PathVariable(value = "image-name") String itemName
+    ) throws NotFoundException, IOException {
+        byte[] image = itemImageService.getByName(itemName);
+        return new ResponseEntity<>(image, HttpStatus.OK);
+    }
 
 }
 
