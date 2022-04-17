@@ -1,24 +1,31 @@
 package com.anabada.anabada_api.controller.item;
 
 
+import com.anabada.anabada_api.config.LocalDateTimeSerializer;
 import com.anabada.anabada_api.dto.DealRequestDTO;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import com.anabada.anabada_api.service.item.DealRequestService;
 import com.anabada.anabada_api.service.item.ItemFindService;
+import com.anabada.anabada_api.service.item.ItemImageService;
 import com.anabada.anabada_api.service.item.ItemUpdateService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.Media;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,11 +35,13 @@ public class ItemController {
     ItemUpdateService itemUpdateService;
     ItemFindService itemFindService;
     DealRequestService dealRequestService;
+    ItemImageService itemImageService;
 
-    public ItemController(ItemUpdateService itemUpdateService, ItemFindService itemFindService, DealRequestService dealRequestService) {
+    public ItemController(ItemUpdateService itemUpdateService, ItemFindService itemFindService, DealRequestService dealRequestService, ItemImageService itemImageService) {
         this.itemUpdateService = itemUpdateService;
         this.itemFindService = itemFindService;
         this.dealRequestService = dealRequestService;
+        this.itemImageService = itemImageService;
     }
 
     /**
@@ -52,12 +61,19 @@ public class ItemController {
      * @throws IOException           파일저장 오류
      * @throws NotSupportedException 지원하지 않는 이미지 파일유형(jpg,jpeg,png,bmp만 지원)
      */
-    @PostMapping("/user/items")
+    @PostMapping(value = "/user/items", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<ItemDTO> saveItem(
-            @RequestPart(value = "item", required = true) @Validated(ValidationGroups.itemSaveGroup.class) ItemDTO itemDTO,
+//            @RequestPart(value = "item", required = true) @Validated(ValidationGroups.itemSaveGroup.class) ItemDTO itemDTO,
+            @RequestPart(value = "item", required = true) String itemString,
             @RequestPart(value = "img", required = true) List<MultipartFile> mfList
     ) throws AuthException, NotFoundException, IOException, NotSupportedException {
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+
+        ItemDTO itemDTO = gson.fromJson(itemString, ItemDTO.class);
 
         ItemDTO savedItem = itemUpdateService.save(itemDTO, mfList);
 
@@ -192,6 +208,14 @@ public class ItemController {
         return new ResponseEntity<>(new MessageDTO("deal rejected"), HttpStatus.OK);
     }
 
+
+    @GetMapping(value = "/items/images/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getItemImageByName(
+            @PathVariable(value = "image-name") String itemName
+    ) throws NotFoundException, IOException {
+        byte[] image = itemImageService.getByName(itemName);
+        return new ResponseEntity<>(image, HttpStatus.OK);
+    }
 
 }
 
