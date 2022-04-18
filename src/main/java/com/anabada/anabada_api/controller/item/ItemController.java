@@ -25,6 +25,7 @@ import javax.print.attribute.standard.Media;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -154,7 +155,7 @@ public class ItemController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<DealRequestDTO> saveRequest(
             @RequestBody @Validated(ValidationGroups.dealRequestGroup.class) DealRequestDTO dto
-    ) throws NotFoundException, AuthException {
+    ) throws NotFoundException, AuthException, URISyntaxException {
         DealRequestDTO dealRequestDTO = dealRequestService.save(dto);
         return new ResponseEntity<>(dealRequestDTO, HttpStatus.OK);
     }

@@ -1,10 +1,12 @@
 package com.anabada.anabada_api.service.item;
 
 import com.anabada.anabada_api.domain.DealRequestVO;
+import com.anabada.anabada_api.domain.NoticeVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.DealRequestDTO;
 import com.anabada.anabada_api.repository.DealRequestRepository;
+import com.anabada.anabada_api.service.user.NoticeUpdateService;
 import com.anabada.anabada_api.service.user.UserFindService;
 import javassist.NotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.message.AuthException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,21 +27,34 @@ public class DealRequestService {
     UserFindService userFindService;
     ItemFindService itemFindService;
     ItemUpdateService itemUpdateService;
+    NoticeUpdateService noticeUpdateService;
 
-    public DealRequestService(DealRequestRepository dealRequestRepository, UserFindService userFindService, ItemFindService itemFindService, ItemUpdateService itemUpdateService) {
+    public DealRequestService(DealRequestRepository dealRequestRepository, UserFindService userFindService, ItemFindService itemFindService, ItemUpdateService itemUpdateService, NoticeUpdateService noticeUpdateService) {
         this.dealRequestRepository = dealRequestRepository;
         this.userFindService = userFindService;
         this.itemFindService = itemFindService;
         this.itemUpdateService = itemUpdateService;
+        this.noticeUpdateService = noticeUpdateService;
     }
 
     @Transactional
-    public DealRequestVO save(DealRequestVO vo) {
+    public DealRequestVO save(DealRequestVO vo) throws URISyntaxException {
+
+        UserVO responseUser = vo.getResponseItem().getOwner();
+        NoticeVO noticeVO = NoticeVO.builder()
+                .route("/item/~~")
+                .kind("item request")
+                .content("아이템 거래 요청왔어용")
+                .state(1L)
+                .user(responseUser)
+                .build();
+
+        noticeUpdateService.save(noticeVO);
         return dealRequestRepository.save(vo);
     }
 
     @Transactional
-    public DealRequestDTO save(DealRequestDTO dto) throws NotFoundException, AuthException {
+    public DealRequestDTO save(DealRequestDTO dto) throws NotFoundException, AuthException, URISyntaxException {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
 
