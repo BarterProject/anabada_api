@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.dto.delivery;
 
 
-import com.anabada.anabada_api.domain.DeliveryVO;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import lombok.AccessLevel;
@@ -67,9 +67,6 @@ public class DeliveryDTO {
                 .trackingNumber(this.trackingNumber)
                 .build();
     }
-
-
-
 
 
 }

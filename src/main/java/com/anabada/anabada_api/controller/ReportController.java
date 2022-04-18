@@ -1,17 +1,13 @@
 package com.anabada.anabada_api.controller;
 
-import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.PageReportDTO;
 import com.anabada.anabada_api.dto.ReportDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
-import com.anabada.anabada_api.dto.item.ItemDTO;
-import com.anabada.anabada_api.repository.ReportRepository;
 import com.anabada.anabada_api.service.item.ItemFindService;
 import com.anabada.anabada_api.service.report.ReportFindService;
 import com.anabada.anabada_api.service.report.ReportUpdateService;
-import com.anabada.anabada_api.service.user.UserFindService;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.message.AuthException;
-import java.util.List;
 
 @Controller
 @RequestMapping("/api")
@@ -146,7 +141,6 @@ public class ReportController {
     @PutMapping("/items/reports/{report-idx}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ReportDTO> modifyReport(
-
             @PathVariable(value = "report-idx") Long idx,
             @RequestBody  ReportDTO reportDTO
             ) throws AuthException, NotFoundException {

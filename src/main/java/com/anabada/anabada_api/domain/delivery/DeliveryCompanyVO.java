@@ -21,7 +21,7 @@ public class DeliveryCompanyVO {
     private Long idx;
 
     @Column(name = "code", updatable = false, nullable = false)
-    private int code;
+    private String code;
 
     @Column(name = "name", updatable = false, nullable = false)
     private String name;
