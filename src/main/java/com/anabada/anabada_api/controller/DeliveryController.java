@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.security.auth.message.AuthException;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api")
@@ -26,14 +26,12 @@ public class DeliveryController {
     DeliveryFindService deliveryFindService;
     ItemFindService itemFindService;
     DeliveryCompanyFindService deliveryCompanyFindService;
-    private final RestTemplate restTemplate;
 
-    public DeliveryController(DeliveryRequestService deliveryRequestService, DeliveryFindService deliveryFindService, ItemFindService itemFindService, DeliveryCompanyFindService deliveryCompanyFindService, RestTemplate restTemplate) {
+    public DeliveryController(DeliveryRequestService deliveryRequestService, DeliveryFindService deliveryFindService, ItemFindService itemFindService, DeliveryCompanyFindService deliveryCompanyFindService) {
         this.deliveryRequestService = deliveryRequestService;
         this.deliveryFindService = deliveryFindService;
         this.itemFindService = itemFindService;
         this.deliveryCompanyFindService = deliveryCompanyFindService;
-        this.restTemplate = restTemplate;
     }
 
 
@@ -72,11 +70,15 @@ public class DeliveryController {
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLS_AMDIN')")
     public ResponseEntity<DeliveryTrackingDTO> getDeliveryTracking(
             @PathVariable(value = "item-idx") Long itemIdx
-    ) throws NotFoundException {
+    ) throws NotFoundException, URISyntaxException {
         DeliveryTrackingDTO tracking = deliveryFindService.getTracking(itemIdx);
         return new ResponseEntity<>(tracking, HttpStatus.OK);
 
     }
+
+   // @PostMapping("user/items/{item-idx}/deliveries/requested")
+   // @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    //public ResponseEntity<>
 
 
 

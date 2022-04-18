@@ -39,4 +39,27 @@ public class HttpRequestUtil<T> {
         ).getBody();
     }
 
+    public ResponseDTO<T> get(RequestEntity entity) throws URISyntaxException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(entity.getUri())
+                .queryParams(entity.getQueryParams())
+                .build()
+                .encode(StandardCharsets.UTF_8)
+                .toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(entity.getBodyParams(), headers);
+
+        return restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                httpEntity, new ParameterizedTypeReference<ResponseDTO<T>>() {
+                }
+        ).getBody();
+    }
+
 }
