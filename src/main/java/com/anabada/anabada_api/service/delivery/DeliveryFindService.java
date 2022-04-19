@@ -10,12 +10,16 @@ import com.anabada.anabada_api.repository.DeliveryRepository;
 import com.anabada.anabada_api.service.item.ItemFindService;
 import com.anabada.anabada_api.util.HttpRequestUtil;
 import com.anabada.anabada_api.util.RequestEntity;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 
 @Service
 public class DeliveryFindService {
@@ -27,36 +31,36 @@ public class DeliveryFindService {
     public DeliveryFindService(DeliveryRepository deliveryRepository,
                                ItemFindService itemFindService,
                                @Value("${smartTracking.url.search.local}") String deliveryUri,
-                                @Value("${smartTracking.client.id}")String deliveryKey){
+                               @Value("${smartTracking.client.id}") String deliveryKey) {
         this.deliveryRepository = deliveryRepository;
         this.itemFindService = itemFindService;
         this.deliveryUri = deliveryUri;
-        this.deliveryKey=deliveryKey;
+        this.deliveryKey = deliveryKey;
     }
 
 
     @Transactional(readOnly = true)
     public DeliveryDTO findByItem(Long itemIdx) throws NotFoundException {
-        ItemVO item=itemFindService.findByIdx(itemIdx);
-        DeliveryDTO delivery=item.getDelivery().dto(false);
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+        DeliveryDTO delivery = item.getDelivery().dto(false);
         return delivery;
     }
+
     @Transactional(readOnly = true)
     public DeliveryTrackingDTO getTracking(Long itemIdx) throws URISyntaxException, NotFoundException {
-        ItemVO item=itemFindService.findByIdx(itemIdx);
-        DeliveryVO deliveryVO=item.getDelivery();
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+        DeliveryVO deliveryVO = item.getDelivery();
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+        HttpRequestUtil<DeliveryTrackingDTO> requestUtil = new HttpRequestUtil<>();
 
-        HttpRequestUtil<DeliveryTrackingDTO>requestUtil=new HttpRequestUtil<>();
+        RequestEntity requestEntity = new RequestEntity(deliveryUri);
+        requestEntity.addQueryParam("t_key", deliveryKey);
+        requestEntity.addQueryParam("t_code", deliveryVO.getDeliveryCompany().getCode());
+        requestEntity.addQueryParam("t_invoice", deliveryVO.getTrackingNumber());
 
-        RequestEntity requestEntity=new RequestEntity(deliveryUri);
-        requestEntity.addQueryParam("t_key",deliveryKey);
-        requestEntity.addQueryParam("t_code",deliveryVO.getDeliveryCompany().getCode());
-        requestEntity.addQueryParam("t_invoice",deliveryVO.getTrackingNumber());
-
-
-        ResponseDTO<DeliveryTrackingDTO>response=requestUtil.get(requestEntity);
-        return response.getResponse();
+        LinkedHashMap<String, Object> response = requestUtil.request(requestEntity, HttpMethod.GET);
+        return objectMapper.convertValue(response, DeliveryTrackingDTO.class);
     }
 
 }

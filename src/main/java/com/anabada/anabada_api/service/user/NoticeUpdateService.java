@@ -8,6 +8,7 @@ import com.anabada.anabada_api.util.HttpRequestUtil;
 import com.anabada.anabada_api.util.RequestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +44,7 @@ public class NoticeUpdateService {
                 .addBodyParam("kind", notice.getKind())
                 .addBodyParam("user", notice.getUser().getEmail());
 
-        ResponseDTO<NoticeDTO> response = requestUtil.post(requestEntity);
-
+        requestUtil.request(requestEntity, HttpMethod.POST);
         return notice;
     }
 
