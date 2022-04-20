@@ -85,6 +85,8 @@ public class ItemDTO {
                 .build();
     }
 
-
+    public void setOwner(UserDTO owner) {
+        this.owner = owner;
+    }
 }
 
