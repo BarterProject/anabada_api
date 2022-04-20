@@ -105,6 +105,17 @@ public class ItemController {
 
     }
 
+    @GetMapping("/items/{item-idx}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<ItemDTO> getMyItems(
+            @PathVariable(value = "item-idx")Long itemIdx) throws NotFoundException, AuthException {
+
+        ItemDTO item = itemFindService.findItemDTOByIdx(itemIdx);
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
+
+
     /**
      * 특정 아이템이 받은 거래 요청 리스트 반환
      *
