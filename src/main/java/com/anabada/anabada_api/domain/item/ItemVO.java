@@ -1,6 +1,6 @@
 package com.anabada.anabada_api.domain.item;
 
-import com.anabada.anabada_api.domain.DeliveryVO;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.domain.DealRequestVO;
 import com.anabada.anabada_api.domain.ReportVO;
 import com.anabada.anabada_api.domain.pay.PaymentVO;
@@ -131,7 +131,7 @@ public class ItemVO {
                 .owner(owner ? this.owner.dto(true) : null)
                 .createdAt(this.createdAt)
                 .endAt(endAt)
-                .delivery(delivery ? this.delivery != null ? this.delivery.dto(true) : null : null)
+                .delivery(delivery ? this.delivery != null ? this.delivery.dto(true,false,false) : null : null)
                 .build();
 
     }
