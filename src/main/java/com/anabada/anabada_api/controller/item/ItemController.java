@@ -21,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
 import javax.security.auth.message.AuthException;
 import javax.transaction.NotSupportedException;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class ItemController {
     /**
      * 아이템 등록
      *
-     * @param itemDTO 아이템 정보
+     * @param //itemDTO 아이템 정보
      *                name: 아이템명
      *                description: 아이템 설명
      *                clause_agree: 약관 동의여부

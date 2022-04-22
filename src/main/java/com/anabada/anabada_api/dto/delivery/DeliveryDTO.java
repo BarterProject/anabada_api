@@ -39,11 +39,11 @@ public class DeliveryDTO {
 
     ItemDTO item;
 
-
+    DeliveryCompanyDTO company;
 
     @Builder
     public DeliveryDTO(Long idx,
-                       String address,Long state, LocalDateTime createdAt, LocalDateTime dueAt, String phone, String receiverName, boolean clauseAgree, String trackingNumber, ItemDTO item){
+                       String address,Long state, LocalDateTime createdAt, LocalDateTime dueAt, String phone, String receiverName, boolean clauseAgree, String trackingNumber, ItemDTO item,DeliveryCompanyDTO company){
         this.idx=idx;
         this.state=state;
         this.createdAt=createdAt;
@@ -54,6 +54,7 @@ public class DeliveryDTO {
         this.clauseAgree=clauseAgree;
         this.trackingNumber=trackingNumber;
         this.item=item;
+        this.company=company;
     }
 
     public DeliveryVO toEntity(){

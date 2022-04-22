@@ -3,7 +3,6 @@ package com.anabada.anabada_api.service.delivery;
 
 import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.domain.item.ItemVO;
-import com.anabada.anabada_api.dto.ResponseDTO;
 import com.anabada.anabada_api.dto.delivery.DeliveryDTO;
 import com.anabada.anabada_api.dto.delivery.DeliveryTrackingDTO;
 import com.anabada.anabada_api.repository.DeliveryRepository;
@@ -20,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 @Service
 public class DeliveryFindService {
@@ -42,10 +42,19 @@ public class DeliveryFindService {
     @Transactional(readOnly = true)
     public DeliveryDTO findByItem(Long itemIdx) throws NotFoundException {
         ItemVO item = itemFindService.findByIdx(itemIdx);
-        DeliveryDTO delivery = item.getDelivery().dto(false);
+        DeliveryDTO delivery = item.getDelivery().dto(false,true,false);
         return delivery;
     }
 
+    @Transactional(readOnly = true)
+    public DeliveryVO findByIdx(Long idx)throws NotFoundException{
+
+        Optional<DeliveryVO>delivery=deliveryRepository.findById(idx);
+        if(delivery.isEmpty())
+            throw new NotFoundException("invalid");
+
+        return delivery.get();
+    }
     @Transactional(readOnly = true)
     public DeliveryTrackingDTO getTracking(Long itemIdx) throws URISyntaxException, NotFoundException {
         ItemVO item = itemFindService.findByIdx(itemIdx);
@@ -60,6 +69,7 @@ public class DeliveryFindService {
         requestEntity.addQueryParam("t_invoice", deliveryVO.getTrackingNumber());
 
         LinkedHashMap<String, Object> response = requestUtil.request(requestEntity, HttpMethod.GET);
+
         return objectMapper.convertValue(response, DeliveryTrackingDTO.class);
     }
 

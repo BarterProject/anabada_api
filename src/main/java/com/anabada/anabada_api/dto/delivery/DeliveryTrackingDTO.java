@@ -12,6 +12,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeliveryTrackingDTO {
 
+
+    private String complete;
+
+
     private String itemName;
 
     private String invoiceNo;

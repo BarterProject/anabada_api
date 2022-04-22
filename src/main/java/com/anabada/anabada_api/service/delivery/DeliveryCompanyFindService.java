@@ -23,8 +23,10 @@ public class DeliveryCompanyFindService {
     @Transactional(readOnly = true)
     public DeliveryCompanyVO findByIdx(Long idx)throws NotFoundException{
         Optional<DeliveryCompanyVO>company=deliveryCompanyRepository.findById(idx);
+
         if(company.isEmpty())
             throw new NotFoundException("invalid company idx");
+
         return company.get();
     }
 

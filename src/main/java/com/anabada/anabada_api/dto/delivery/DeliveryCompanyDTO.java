@@ -13,12 +13,21 @@ public class DeliveryCompanyDTO {
 
     private String name;
 
-    private int code;
+    private String code;
 
     @Builder
-    public DeliveryCompanyDTO(Long idx,String name,int code){
+    public DeliveryCompanyDTO(Long idx,String name,String code){
         this.idx=idx;
         this.code=code;
         this.name=name;
     }
+
+    DeliveryCompanyDTO companyDTO(){
+        return DeliveryCompanyDTO.builder()
+                .idx(idx)
+                .name(name)
+                .code(code)
+                .build();
+    }
+
 }

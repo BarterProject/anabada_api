@@ -1,7 +1,9 @@
 package com.anabada.anabada_api.domain.delivery;
 
 
+import com.anabada.anabada_api.dto.delivery.DeliveryCompanyDTO;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +28,23 @@ public class DeliveryCompanyVO {
     @Column(name = "name", updatable = false, nullable = false)
     private String name;
 
-   @OneToMany(mappedBy = "deliveryCompany", fetch = FetchType.LAZY)
-   List<DeliveryVO> deliveries=new ArrayList<>();
+    @OneToMany(mappedBy = "deliveryCompany", fetch = FetchType.LAZY)
+    List<DeliveryVO> deliveries=new ArrayList<>();
+
+
+   @Builder
+    public DeliveryCompanyVO(String code,String name) {
+    this.code=code;
+    this.name=name;
+   }
+
+   public DeliveryCompanyDTO dto(){
+       return DeliveryCompanyDTO.builder()
+               .idx(idx)
+               .name(name)
+               .code(code)
+               .build();
+   }
+
+
 }

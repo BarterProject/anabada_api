@@ -131,7 +131,7 @@ public class ItemVO {
                 .owner(owner ? this.owner.dto(true) : null)
                 .createdAt(this.createdAt)
                 .endAt(endAt)
-                .delivery(delivery ? this.delivery.dto(true) : null)
+                .delivery(delivery ? this.delivery.dto(true,false,false) : null)
                 .build();
 
     }

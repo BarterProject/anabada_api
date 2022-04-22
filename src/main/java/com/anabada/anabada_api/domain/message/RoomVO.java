@@ -60,7 +60,7 @@ public class RoomVO {
                 .createdAt(createdAt)
                 .state(state)
                 .name(name)
-                .delivery(delivery ? this.delivery.dto(false) : null)
+                .delivery(delivery ? this.delivery.dto(false,false,false) : null)
                 .build();
     }
 

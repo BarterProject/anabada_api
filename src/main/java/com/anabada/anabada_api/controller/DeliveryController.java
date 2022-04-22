@@ -4,9 +4,10 @@ package com.anabada.anabada_api.controller;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.delivery.DeliveryDTO;
 import com.anabada.anabada_api.dto.delivery.DeliveryTrackingDTO;
+import com.anabada.anabada_api.dto.delivery.RegisterTrackingDTO;
 import com.anabada.anabada_api.service.delivery.DeliveryCompanyFindService;
 import com.anabada.anabada_api.service.delivery.DeliveryFindService;
-import com.anabada.anabada_api.service.delivery.DeliveryRequestService;
+import com.anabada.anabada_api.service.delivery.DeliveryUpdateService;
 import com.anabada.anabada_api.service.item.ItemFindService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,13 @@ import java.net.URISyntaxException;
 @RequestMapping("/api")
 public class DeliveryController {
 
-    DeliveryRequestService deliveryRequestService;
+    DeliveryUpdateService deliveryUpdateService;
     DeliveryFindService deliveryFindService;
     ItemFindService itemFindService;
     DeliveryCompanyFindService deliveryCompanyFindService;
 
-    public DeliveryController(DeliveryRequestService deliveryRequestService, DeliveryFindService deliveryFindService, ItemFindService itemFindService, DeliveryCompanyFindService deliveryCompanyFindService) {
-        this.deliveryRequestService = deliveryRequestService;
+    public DeliveryController(DeliveryUpdateService deliveryUpdateService, DeliveryFindService deliveryFindService, ItemFindService itemFindService, DeliveryCompanyFindService deliveryCompanyFindService) {
+        this.deliveryUpdateService = deliveryUpdateService;
         this.deliveryFindService = deliveryFindService;
         this.itemFindService = itemFindService;
         this.deliveryCompanyFindService = deliveryCompanyFindService;
@@ -53,8 +54,18 @@ public class DeliveryController {
             @PathVariable(value = "item-idx") Long idx,
             @RequestBody @Validated(ValidationGroups.deliveryRequestGroup.class) DeliveryDTO deliveryDTO)
             throws NotFoundException, AuthException {
-        DeliveryDTO saveDelivery = deliveryRequestService.save(idx, deliveryDTO);
+        DeliveryDTO saveDelivery = deliveryUpdateService.save(idx, deliveryDTO);
         return new ResponseEntity<>(saveDelivery, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/user/items/deliveries/{delivery-idx}")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<DeliveryDTO>saveTracking(
+            @PathVariable(value = "delivery-idx")Long idx,
+            @RequestBody RegisterTrackingDTO dto
+            )throws NotFoundException{
+        DeliveryDTO saveTracking=deliveryUpdateService.saveTrackingNumber(idx,dto);
+        return new ResponseEntity<>(saveTracking,HttpStatus.OK);
     }
 
     @GetMapping("user/items/{item-idx}/deliveries")
@@ -76,9 +87,7 @@ public class DeliveryController {
 
     }
 
-   // @PostMapping("user/items/{item-idx}/deliveries/requested")
-   // @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    //public ResponseEntity<>
+
 
 
 
