@@ -34,9 +34,27 @@ public class ItemFindService {
         Optional<ItemVO> item = itemRepository.findById(idx);
 
         if (item.isEmpty())
-            throw new NotFoundException("Invalid");
+            throw new NotFoundException("Invalid idx");
 
         return item.get();
+    }
+
+    @Transactional(readOnly = true)
+    public ItemDTO findItemDTOByIdx(Long idx) throws NotFoundException, AuthException {
+
+        //TODO 유저권한에 따른 정보 차별적 전달 좀더 세분화 해야함
+
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        ItemVO item = this.findByIdx(idx);
+
+        if(item.getOwner() == user)
+            return item.dto(false, true, false, true, true, false);
+        else{
+            ItemDTO dto = item.dto(false, false, false, true, true, false);
+            dto.setOwner(item.getOwner().dto(false));
+            return dto;
+        }
+
     }
 
     @Transactional(readOnly = true)
