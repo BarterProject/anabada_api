@@ -2,10 +2,12 @@ package com.anabada.anabada_api.controller.item;
 
 
 import com.anabada.anabada_api.config.LocalDateTimeSerializer;
+import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.dto.DealRequestDTO;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
+import com.anabada.anabada_api.dto.item.PageItemDTO;
 import com.anabada.anabada_api.service.item.DealRequestService;
 import com.anabada.anabada_api.service.item.ItemFindService;
 import com.anabada.anabada_api.service.item.ItemImageService;
@@ -13,6 +15,9 @@ import com.anabada.anabada_api.service.item.ItemUpdateService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javassist.NotFoundException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -228,6 +233,44 @@ public class ItemController {
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
+    /* --- 관리자기능 --- */
+
+    @GetMapping(value = "/admin/items")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<PageItemDTO> getItemList(
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        PageItemDTO page = itemFindService.findWithPage(pageable);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/admin/items/{item-idx}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<ItemDTO> getItemList(
+            @PathVariable(value = "item-idx") Long itemIdx
+    ) throws NotFoundException {
+        ItemDTO item = itemFindService.findByIdxDTO(itemIdx);
+        return new ResponseEntity<>(item, HttpStatus.OK);
+    }
+
+    @PutMapping("/admin/items/{item-idx}/deactivation")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> deactivateItem(
+            @PathVariable(value = "item-idx")Long itemIdx
+    ) throws NotFoundException {
+        itemUpdateService.activateItem(itemIdx, false);
+        return new ResponseEntity<>(new MessageDTO("item deactivated"), HttpStatus.OK);
+    }
+
+    @PutMapping("/admin/items/{item-idx}/activation")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> activateItem(
+            @PathVariable(value = "item-idx")Long itemIdx
+    ) throws NotFoundException {
+        itemUpdateService.activateItem(itemIdx, true);
+        return new ResponseEntity<>(new MessageDTO("item activated"), HttpStatus.OK);
+    }
 }
 
 

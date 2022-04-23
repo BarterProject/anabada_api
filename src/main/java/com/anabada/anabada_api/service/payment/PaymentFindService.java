@@ -27,19 +27,18 @@ public class PaymentFindService {
     ItemFindService itemFindService;
     UserFindService userFindService;
 
-    public PaymentFindService(PayRepository payRepository,ItemFindService itemFindService,UserFindService userFindService)
-    {
-        this.payRepository=payRepository;
-        this.itemFindService=itemFindService;
-        this.userFindService=userFindService;
+    public PaymentFindService(PayRepository payRepository, ItemFindService itemFindService, UserFindService userFindService) {
+        this.payRepository = payRepository;
+        this.itemFindService = itemFindService;
+        this.userFindService = userFindService;
 
     }
 
     @Transactional(readOnly = true)
-    public PaymentVO findByIdx(Long idx)throws NotFoundException{
-        Optional<PaymentVO>payment=payRepository.findById(idx);
+    public PaymentVO findByIdx(Long idx) throws NotFoundException {
+        Optional<PaymentVO> payment = payRepository.findById(idx);
 
-        if(payment.isEmpty())
+        if (payment.isEmpty())
             throw new NotFoundException("invalid");
 
         return payment.get();
@@ -54,14 +53,14 @@ public class PaymentFindService {
     }
 
     @Transactional(readOnly = true)
-    public PagePaymentDTO findAll(Pageable pageable){
-        Page<PaymentVO> page=payRepository.findAll(pageable);
-        List<PaymentDTO> payments=page.stream().map(i->i.dto(false)).collect(Collectors.toList());
+    public PagePaymentDTO findAll(Pageable pageable) {
+        Page<PaymentVO> page = payRepository.findAll(pageable);
+        List<PaymentDTO> payments = page.stream().map(i -> i.dto(false)).collect(Collectors.toList());
 
         return PagePaymentDTO.builder()
                 .payments(payments)
                 .currentPage(pageable.getPageNumber())
-                .totalPage(page.getTotalPages()-1)
+                .totalPage(page.getTotalPages() - 1)
                 .build();
     }
 
@@ -79,7 +78,7 @@ public class PaymentFindService {
                 .build();
 
      */
-    }
+}
 
 
 

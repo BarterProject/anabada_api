@@ -28,16 +28,17 @@ public class ItemUpdateService {
     PaymentUpdateService paymentUpdateService;
     CategoryFindService categoryFindService;
     ItemImageService itemImageService;
+    ItemFindService itemFindService;
 
 
-    public ItemUpdateService(ItemRepository itemRepository, UserFindService userFindService, PaymentUpdateService paymentUpdateService, CategoryFindService categoryFindService, ItemImageService itemImageService) {
+    public ItemUpdateService(ItemRepository itemRepository, UserFindService userFindService, PaymentUpdateService paymentUpdateService, CategoryFindService categoryFindService, ItemImageService itemImageService, ItemFindService itemFindService) {
         this.itemRepository = itemRepository;
         this.userFindService = userFindService;
         this.paymentUpdateService = paymentUpdateService;
         this.categoryFindService = categoryFindService;
         this.itemImageService = itemImageService;
+        this.itemFindService = itemFindService;
     }
-
 
     @Transactional
     public ItemVO save(ItemVO item) {
@@ -76,6 +77,13 @@ public class ItemUpdateService {
 
         return savedItem.dto(true, true, true, true, true, false);
 
+    }
+
+    @Transactional
+    public void activateItem(Long itemIdx, boolean isActivate) throws NotFoundException {
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+        item.activate(isActivate);
+        this.save(item);
     }
 
 

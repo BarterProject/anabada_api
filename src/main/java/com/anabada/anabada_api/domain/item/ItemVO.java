@@ -58,7 +58,7 @@ public class ItemVO {
     @JoinColumn(name = "delivery_idx_fk", nullable = true, updatable = true, unique = true)
     DeliveryVO delivery;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_idx_fk", nullable = true, updatable = true)
     ItemCategoryVO itemCategory;
 
@@ -99,6 +99,14 @@ public class ItemVO {
 
     public void changeOwner(UserVO _owner) {
         this.owner = _owner;
+    }
+
+    public void deleteCategory(){
+        this.itemCategory = null;
+    }
+
+    public void activate(boolean isActivated){
+        this.state = isActivated ? 1L : 0;
     }
 
 

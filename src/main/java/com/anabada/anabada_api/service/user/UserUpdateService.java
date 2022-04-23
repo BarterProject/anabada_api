@@ -10,20 +10,30 @@ import javassist.NotFoundException;
 import javassist.bytecode.DuplicateMemberException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserUpdateService {
 
     UserRepository userRepository;
+
+    UserFindService userFindService;
     private final PasswordEncoder passwordEncoder;
     AuthFindService authFindService;
 
-    public UserUpdateService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthFindService authFindService) {
+    public UserUpdateService(UserRepository userRepository, UserFindService userFindService, PasswordEncoder passwordEncoder, AuthFindService authFindService) {
         this.userRepository = userRepository;
+        this.userFindService = userFindService;
         this.passwordEncoder = passwordEncoder;
         this.authFindService = authFindService;
     }
 
+    @Transactional
+    public UserVO save(UserVO vo){
+        return userRepository.save(vo);
+    }
+
+    @Transactional
     public UserDTO signUp(UserDTO dto) throws DuplicateMemberException, NotFoundException {
 
         if (userRepository.existsByEmail(dto.getEmail()))
@@ -43,8 +53,15 @@ public class UserUpdateService {
                 .auth(auth)
                 .build();
 
-        return userRepository.save(vo).dto(true);
+        return this.save(vo).dto(true);
 
+    }
+
+    @Transactional
+    public void activateUser(Long userIdx, boolean isActivate) throws NotFoundException {
+        UserVO user = userFindService.findByIdx(userIdx);
+        user.activate(isActivate);
+        this.save(user);
     }
 
 }
