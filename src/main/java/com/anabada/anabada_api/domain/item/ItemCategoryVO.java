@@ -27,6 +27,9 @@ public class ItemCategoryVO {
     @JoinColumn(name = "upper_category_idx", updatable = true, nullable = true)
     private ItemCategoryVO upperCategory;
 
+    @OneToMany(mappedBy = "itemCategory")
+    List<ItemVO> itemList;
+
     @Builder
     public ItemCategoryVO(String name) {
         this.name = name;

@@ -106,4 +106,8 @@ public class UserVO {
     public void setUserImage(UserImageVO userImage) {
         this.userImage = userImage;
     }
+
+    public void activate(boolean isActivated){
+        this.activated = isActivated;
+    }
 }

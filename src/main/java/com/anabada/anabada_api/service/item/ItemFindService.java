@@ -3,11 +3,14 @@ package com.anabada.anabada_api.service.item;
 import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.item.ItemDTO;
+import com.anabada.anabada_api.dto.item.PageItemDTO;
 import com.anabada.anabada_api.dto.user.UserDTO;
 import com.anabada.anabada_api.repository.ItemRepository;
 import com.anabada.anabada_api.service.user.UserFindService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,16 @@ public class ItemFindService {
     }
 
     @Transactional(readOnly = true)
+    public ItemDTO findByIdxDTO(Long idx) throws NotFoundException {
+        Optional<ItemVO> item = itemRepository.findById(idx);
+
+        if (item.isEmpty())
+            throw new NotFoundException("Invalid idx");
+
+        return item.get().dto(true, true, true, true, true, true);
+    }
+
+    @Transactional(readOnly = true)
     public ItemDTO findItemDTOByIdx(Long idx) throws NotFoundException, AuthException {
 
         //TODO 유저권한에 따른 정보 차별적 전달 좀더 세분화 해야함
@@ -47,9 +60,9 @@ public class ItemFindService {
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = this.findByIdx(idx);
 
-        if(item.getOwner() == user)
+        if (item.getOwner() == user)
             return item.dto(false, true, false, true, true, false);
-        else{
+        else {
             ItemDTO dto = item.dto(false, false, false, true, true, false);
             dto.setOwner(item.getOwner().dto(false));
             return dto;
@@ -90,6 +103,18 @@ public class ItemFindService {
 
 
         return items.stream().map(i -> i.dto(true, true, false, true, true, false)).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PageItemDTO findWithPage(Pageable pageable) {
+        Page<ItemVO> page = itemRepository.findAll(pageable);
+        List<ItemDTO> items = page.stream().map(i -> i.dto(false, false, false, true, true, false)).collect(Collectors.toList());
+
+        return PageItemDTO.builder()
+                .items(items)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
     }
 
 

@@ -2,6 +2,7 @@ package com.anabada.anabada_api.controller.item;
 
 
 import com.anabada.anabada_api.domain.item.ItemCategoryVO;
+import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemCategoryDTO;
 import com.anabada.anabada_api.service.item.CategoryFindService;
@@ -62,6 +63,16 @@ public class CategoryController {
         ItemCategoryDTO savedDTO = categoryUpdateService.save(dto);
 
         return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/items/categories/{category-idx}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> deleteCategory(
+            @PathVariable(value = "category-idx") Long categoryIdx
+    ) throws NotFoundException {
+
+        categoryUpdateService.delete(categoryIdx);
+        return new ResponseEntity<>(new MessageDTO("category deleted"), HttpStatus.NO_CONTENT);
     }
 
 
