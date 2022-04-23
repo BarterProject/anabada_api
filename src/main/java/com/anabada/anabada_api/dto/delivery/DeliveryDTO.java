@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.dto.delivery;
 
 
-import com.anabada.anabada_api.domain.DeliveryVO;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.dto.ValidationGroups;
 import com.anabada.anabada_api.dto.item.ItemDTO;
 import lombok.AccessLevel;
@@ -39,11 +39,11 @@ public class DeliveryDTO {
 
     ItemDTO item;
 
-
+    DeliveryCompanyDTO company;
 
     @Builder
     public DeliveryDTO(Long idx,
-                       String address,Long state, LocalDateTime createdAt, LocalDateTime dueAt, String phone, String receiverName, boolean clauseAgree, String trackingNumber, ItemDTO item){
+                       String address,Long state, LocalDateTime createdAt, LocalDateTime dueAt, String phone, String receiverName, boolean clauseAgree, String trackingNumber, ItemDTO item,DeliveryCompanyDTO company){
         this.idx=idx;
         this.state=state;
         this.createdAt=createdAt;
@@ -54,6 +54,7 @@ public class DeliveryDTO {
         this.clauseAgree=clauseAgree;
         this.trackingNumber=trackingNumber;
         this.item=item;
+        this.company=company;
     }
 
     public DeliveryVO toEntity(){
@@ -67,9 +68,6 @@ public class DeliveryDTO {
                 .trackingNumber(this.trackingNumber)
                 .build();
     }
-
-
-
 
 
 }

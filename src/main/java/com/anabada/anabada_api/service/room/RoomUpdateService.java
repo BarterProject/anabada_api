@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.service.room;
 
 
-import com.anabada.anabada_api.domain.DeliveryVO;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.domain.message.RoomVO;
 import com.anabada.anabada_api.domain.user.UserVO;
 import com.anabada.anabada_api.dto.room.RoomDTO;

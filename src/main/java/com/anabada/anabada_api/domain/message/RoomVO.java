@@ -1,10 +1,9 @@
 package com.anabada.anabada_api.domain.message;
 
 
-
-import com.anabada.anabada_api.domain.DeliveryVO;
-import lombok.AccessLevel;
+import com.anabada.anabada_api.domain.delivery.DeliveryVO;
 import com.anabada.anabada_api.dto.room.RoomDTO;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,9 +60,10 @@ public class RoomVO {
                 .createdAt(createdAt)
                 .state(state)
                 .name(name)
-                .delivery(delivery ? this.delivery.dto(false) : null)
+                .delivery(delivery ? this.delivery.dto(false,false,false) : null)
                 .build();
     }
+
 
 
 }
