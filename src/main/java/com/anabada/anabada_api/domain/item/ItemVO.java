@@ -101,8 +101,8 @@ public class ItemVO {
         this.owner = _owner;
     }
 
-    public void deleteCategory(){
-        this.itemCategory = null;
+    public void deleteCategory(ItemCategoryVO defaultCategory){
+        this.itemCategory = defaultCategory;
     }
 
     public void activate(boolean isActivated){

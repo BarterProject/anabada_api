@@ -49,10 +49,11 @@ public class CategoryUpdateService {
     @Transactional
     public void delete(Long categoryIdx) throws NotFoundException {
         ItemCategoryVO category = categoryFindService.getByIdx(categoryIdx);
+        ItemCategoryVO defaultCategory = categoryFindService.getByIdx(7L);
 
         List<ItemVO> itemList = category.getItemList();
         for(ItemVO item : itemList) {
-            item.deleteCategory();
+            item.deleteCategory(defaultCategory);
             itemUpdateService.save(item);
         }
 

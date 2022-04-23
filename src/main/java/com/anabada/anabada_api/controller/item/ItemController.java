@@ -2,7 +2,6 @@ package com.anabada.anabada_api.controller.item;
 
 
 import com.anabada.anabada_api.config.LocalDateTimeSerializer;
-import com.anabada.anabada_api.domain.item.ItemVO;
 import com.anabada.anabada_api.dto.DealRequestDTO;
 import com.anabada.anabada_api.dto.MessageDTO;
 import com.anabada.anabada_api.dto.ValidationGroups;
