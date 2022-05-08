@@ -42,19 +42,20 @@ public class DeliveryFindService {
     @Transactional(readOnly = true)
     public DeliveryDTO findByItem(Long itemIdx) throws NotFoundException {
         ItemVO item = itemFindService.findByIdx(itemIdx);
-        DeliveryDTO delivery = item.getDelivery().dto(false,true,false);
+        DeliveryDTO delivery = item.getDelivery().dto(false, true, false);
         return delivery;
     }
 
     @Transactional(readOnly = true)
-    public DeliveryVO findByIdx(Long idx)throws NotFoundException{
+    public DeliveryVO findByIdx(Long idx) throws NotFoundException {
 
-        Optional<DeliveryVO>delivery=deliveryRepository.findById(idx);
-        if(delivery.isEmpty())
+        Optional<DeliveryVO> delivery = deliveryRepository.findById(idx);
+        if (delivery.isEmpty())
             throw new NotFoundException("invalid");
 
         return delivery.get();
     }
+
     @Transactional(readOnly = true)
     public DeliveryTrackingDTO getTracking(Long itemIdx) throws URISyntaxException, NotFoundException {
         ItemVO item = itemFindService.findByIdx(itemIdx);

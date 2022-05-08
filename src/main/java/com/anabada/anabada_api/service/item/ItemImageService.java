@@ -42,7 +42,8 @@ public class ItemImageService {
 
         String extension =  "." + Objects.requireNonNull(mf.getContentType()).split("/")[1];
 
-        if(!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png") || extension.equals(".bmp")))
+        if(!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png") || extension.equals(".bmp")
+                || extension.equals(".heif") || extension.equals(".heic")))
             throw new NotSupportedException("not supported extension : " + extension);
 
         if (mf.getSize() > maxFileSize)
