@@ -1,6 +1,6 @@
 package com.anabada.anabada_api.exception;
 
-import com.anabada.anabada_api.dto.MessageDTO;
+import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import javassist.NotFoundException;
 import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,17 @@ import java.nio.file.NoSuchFileException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiExceptionEntity> ApiException(ApiException e){
+        log.error("Api Exception " + e.toString());
+        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
+                .errorCode(e.getError().getCode())
+                .errorMessage(e.getError().getMessage())
+                .build();
+
+        return new ResponseEntity<>(apiExceptionEntity, e.getError().getStatus());
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<MessageDTO> NotFoundException(NotFoundException e){

@@ -1,7 +1,7 @@
 package com.anabada.anabada_api.util;
 
 
-import com.anabada.anabada_api.dto.delivery.DeliveryTrackingDTO;
+import com.anabada.anabada_api.domain.delivery.dto.DeliveryTrackingDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

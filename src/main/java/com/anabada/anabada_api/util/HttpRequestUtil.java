@@ -10,13 +10,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 
 public class HttpRequestUtil<T> {
 
-    public LinkedHashMap<String, Object> request(RequestEntity entity, HttpMethod method) throws URISyntaxException {
+    public LinkedHashMap<String, Object> request(RequestEntity entity, HttpMethod method) {
         RestTemplate restTemplate = new RestTemplate();
 
         URI uri = UriComponentsBuilder
