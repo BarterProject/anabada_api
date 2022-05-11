@@ -14,7 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,6 +83,19 @@ public class DealRequestService {
         return this.save(dealVO);
     }
 
+
+
+    @Transactional
+    public void delete(Long requestIdx){
+        DealRequestVO request = this.findByIdx(requestIdx);
+        UserVO user = userFindService.getMyUserWithAuthorities();
+
+        if(request.getRequestItem().getOwner() != user)
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        dealRequestRepository.delete(request);
+    }
+
     @Transactional
     public void handleRequest(Long requestIdx, Boolean accept) {
 
@@ -92,6 +105,9 @@ public class DealRequestService {
 
         if(request.getResponseItem().getOwner() != responseUser)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        if(request.getCreatedAt().plusMinutes(1L).isBefore(LocalDateTime.now()))
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         if(accept){
             request.getRequestItem().changeOwner(responseUser);
@@ -116,6 +132,12 @@ public class DealRequestService {
 
     }
 
+
+    @Transactional(readOnly = true)
+    public DealRequestVO findByIdx(Long idx){
+        return dealRequestRepository.findById(idx).orElseThrow(() -> new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION));
+    }
+
     @Transactional(readOnly = true)
     public boolean dealRequestDuplicateCheck(ItemVO request, ItemVO response) {
         List<DealRequestVO> requests = dealRequestRepository.findByRequestItemAndResponseItemAndState(request, response, 1);
@@ -123,7 +145,7 @@ public class DealRequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<DealRequestVO> getRequestsByItem(Long itemIdx){
+    public List<DealRequestVO> getRequestsByItem(Long itemIdx, int state){
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
@@ -131,12 +153,12 @@ public class DealRequestService {
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
 
-        return  dealRequestRepository.findByRequestItem(item);
+        return  dealRequestRepository.findByRequestItemAndState(item, state);
 //        return item.getDealRequestItemList();
     }
 
     @Transactional(readOnly = true)
-    public List<DealRequestVO> getResponsesByItem(Long itemIdx) {
+    public List<DealRequestVO> getResponsesByItem(Long itemIdx, int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
@@ -144,7 +166,7 @@ public class DealRequestService {
             throw new BadCredentialsException("not your own item");
         }
 
-        return  dealRequestRepository.findByResponseItem(item);
+        return  dealRequestRepository.findByResponseItemAndState(item, state);
     }
 
     @Transactional(readOnly = true)

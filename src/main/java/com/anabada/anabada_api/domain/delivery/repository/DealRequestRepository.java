@@ -13,8 +13,8 @@ public interface DealRequestRepository extends JpaRepository<DealRequestVO, Long
 
     public List<DealRequestVO> findByRequestItemAndResponseItemAndState(ItemVO requestItem, ItemVO responseItem, int state);
 
-    public List<DealRequestVO> findByRequestItem(ItemVO requestItem);
+    public List<DealRequestVO> findByRequestItemAndState(ItemVO requestItem, int state);
 
-    public List<DealRequestVO> findByResponseItem(ItemVO responseItem);
+    public List<DealRequestVO> findByResponseItemAndState(ItemVO responseItem, int state);
 
 }

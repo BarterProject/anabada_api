@@ -90,6 +90,7 @@ public class ItemVO {
 
     public void setDelivery(DeliveryVO delivery) {
         this.delivery = delivery;
+        this.state = STATE.EXCHANGING.ordinal();
         delivery.setItem(this);
     }
 

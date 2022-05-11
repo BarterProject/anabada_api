@@ -97,9 +97,10 @@ public class ItemController {
     @GetMapping("/user/items/{item-idx}/requests")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<DealRequestDTO>> getRequestsByItem(
-            @PathVariable(value = "item-idx") Long itemIdx
+            @PathVariable(value = "item-idx") Long itemIdx,
+            @RequestParam(value = "state", defaultValue = "1") int state
     ) {
-        List<DealRequestVO> list = dealRequestService.getRequestsByItem(itemIdx);
+        List<DealRequestVO> list = dealRequestService.getRequestsByItem(itemIdx, state);
         List<DealRequestDTO> dtos = list.stream().map(DealRequestDTO::fromEntity).collect(Collectors.toList());
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
@@ -108,11 +109,21 @@ public class ItemController {
     @GetMapping("/user/items/{item-idx}/responses")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<DealRequestDTO>> getResponsesByItem(
-            @PathVariable(value = "item-idx") Long itemIdx
+            @PathVariable(value = "item-idx") Long itemIdx,
+            @RequestParam(value = "state", defaultValue = "1") int state
     ) {
-        List<DealRequestVO> list = dealRequestService.getResponsesByItem(itemIdx);
+        List<DealRequestVO> list = dealRequestService.getResponsesByItem(itemIdx, state);
         List<DealRequestDTO> dtos = list.stream().map(DealRequestDTO::fromEntity).collect(Collectors.toList());
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/items/requests/{request-idx}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> deleteRequest(
+            @PathVariable(value = "request-idx") Long itemIdx
+    ){
+        dealRequestService.delete(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("delete success"), HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/user/items/requests")

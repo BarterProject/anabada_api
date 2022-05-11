@@ -78,6 +78,7 @@ public class ItemFindService {
     public List<ItemVO> findByRandom(int size) {
 
         List<Long> idxList = itemRepository.findIdxByState(ItemVO.STATE.APPLIED.ordinal());
+        UserVO user = userFindService.getMyUserWithAuthorities();
         List<Long> randomList = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
@@ -85,6 +86,9 @@ public class ItemFindService {
             randomList.add(randNum);
         }
         List<ItemVO> items = itemRepository.findByIdxList(randomList);
+
+        //내 아이템 제거
+        items.removeIf(item -> item.getOwner() == user);
 
         //random idx가 중복되어 items 수가 size 개수보다 작을 수 있음
         //부족한 수만큼 중복되어 전달될 수 있도록 앞부분에서 복사하여 뒷부분에 추가
@@ -97,9 +101,7 @@ public class ItemFindService {
 
     @Transactional(readOnly = true)
     public Page<ItemVO> findWithPage(Pageable pageable) {
-        Page<ItemVO> page = itemRepository.findAll(pageable);
-
-        return page;
+        return itemRepository.findAll(pageable);
     }
 
 

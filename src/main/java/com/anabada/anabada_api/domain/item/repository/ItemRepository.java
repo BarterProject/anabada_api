@@ -26,7 +26,7 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
     @Query(value = "select e from ItemVO e where e.idx IN (:idxList)")
     public List<ItemVO> findByIdxList(List<Long> idxList);
 
-    public Optional<ItemVO> findByIdx(Long idx);
+    public Optional<ItemVO> findByIdxAndState(Long idx, int state);
 
     @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
     public Optional<ItemVO> findWithAllByIdx(Long idx);
