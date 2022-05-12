@@ -12,11 +12,14 @@ public enum ExceptionEnum {
     ACCESS_DENIED_EXCEPTION(HttpStatus.UNAUTHORIZED, "A0001"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S0001"),
 
+    ACCESS_DENIED_NOT_OWN_EXCEPTION(HttpStatus.UNAUTHORIZED, "A0002", "권한이 없습니다"),
+
     RUNTIME_EXCEPTION_MEMBER_DUPLICATED(HttpStatus.BAD_REQUEST, "B0002", "member duplicated"),
     RUNTIME_EXCEPTION_INVALID_DOMAIN(HttpStatus.BAD_REQUEST, "B0003", "email domain is not valid"),
     RUNTIME_EXCEPTION_NOT_SUPPORT(HttpStatus.BAD_REQUEST, "B0004", "지원하지 않는 입력방식입니다."),
     RUNTIME_EXCEPTION_NOT_ACTIVATED(HttpStatus.BAD_REQUEST, "B0005", "활성화 되지 않았습니다."),
-    RUNTIME_EXCEPTION_VALID_ERROR(HttpStatus.BAD_REQUEST, "B0006", "필수 파라미터가 없거나 형식이 잘못되었습니다.");
+    RUNTIME_EXCEPTION_VALID_ERROR(HttpStatus.BAD_REQUEST, "B0006", "필수 파라미터가 없거나 형식이 잘못되었습니다."),
+    RUNTIME_EXCEPTION_REQUEST_DUPLICATED(HttpStatus.BAD_REQUEST, "B0007", "request duplicated");
 
     private final HttpStatus status;
     private final String code;

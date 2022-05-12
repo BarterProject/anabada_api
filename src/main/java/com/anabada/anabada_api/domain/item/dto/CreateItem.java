@@ -20,6 +20,10 @@ public class CreateItem {
         String name;
         String description;
         boolean clause;
+
+        public boolean validate(){
+            return payment != null && categoryIdx != null && name != null && description != null;
+        }
     }
 
     @AllArgsConstructor

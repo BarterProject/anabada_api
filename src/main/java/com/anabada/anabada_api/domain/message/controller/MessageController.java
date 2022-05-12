@@ -33,7 +33,7 @@ public class MessageController {
         this.messageUpdateService = messageUpdateService;
     }
 
-    @GetMapping("/rooms")
+    @GetMapping("/v2/rooms")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<RoomDTO>> getMyRooms() {
         List<RoomVO> vos = roomFindService.getMyRooms();
@@ -42,7 +42,7 @@ public class MessageController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/rooms/{room-idx}/messages")
+    @GetMapping("/v2/rooms/{room-idx}/messages")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<MessageEntityDTO>> getMessagesByRoomIdx(
             @PathVariable("room-idx") Long roomIdx

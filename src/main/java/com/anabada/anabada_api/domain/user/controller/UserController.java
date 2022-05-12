@@ -33,7 +33,7 @@ public class UserController {
     @Autowired
     UserFindService userFindService;
 
-    @PostMapping(path = "/user")
+    @PostMapping(path = "/v2/user")
     public ResponseEntity<CreateUser.Response> getSignUp(
             @RequestBody @Validated CreateUser.Request request){
 
@@ -42,7 +42,7 @@ public class UserController {
         return new ResponseEntity<>(new CreateUser.Response(idx), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/user")
+    @GetMapping(path = "/v2/user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<UserDTO> getUserInfo() {
 

@@ -65,8 +65,8 @@ public class DeliveryDTO {
                 .address(vo.getAddress())
                 .receiverName(vo.getReceiverName())
                 .trackingNumber(vo.getTrackingNumber())
-                .build();
-//                .company(DeliveryCompanyDTO.fromEntity(vo.getDeliveryCompany())).build();
+//                .build();
+                .company(vo.getDeliveryCompany() != null ? DeliveryCompanyDTO.fromEntity(vo.getDeliveryCompany()) : null).build();
     }
 
 

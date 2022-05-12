@@ -29,7 +29,7 @@ public class CategoryController {
         this.categoryFindService = categoryFindService;
     }
 
-    @GetMapping("/items/categories")
+    @GetMapping("/v2/items/categories")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemCategoryDTO>> getAll(
             @RequestParam(value = "name", defaultValue = "") String name
@@ -41,7 +41,7 @@ public class CategoryController {
 
     }
 
-    @PostMapping("/items/categories")
+    @PostMapping("/v2/items/categories")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CreateCategory.Response> saveCategory(
             CreateCategory.Request request

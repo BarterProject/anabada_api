@@ -40,18 +40,7 @@ public class ReportController {
     ReportUpdateService reportUpdateService;
     ItemFindService itemFindService;
 
-    @GetMapping("/item/reports/{report-idx}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<ReportDTO> getReportByIdx(
-            @PathVariable(value = "report-idx") Long idx) {
-
-        ReportVO vo = reportFindService.findWithALlByIdx(idx);
-        ReportDTO dto = ReportDTO.withAllFromEntity(vo);
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
-    }
-
-    @GetMapping("/item/reports")
+    @GetMapping("/v2/item/reports")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PageReportDTO> getAllReports(
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -64,6 +53,17 @@ public class ReportController {
                 .currentPage(pageable.getPageNumber())
                 .totalPage(page.getTotalPages() - 1)
                 .build();
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/v2/item/reports/{report-idx}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<ReportDTO> getReportByIdx(
+            @PathVariable(value = "report-idx") Long idx) {
+
+        ReportVO vo = reportFindService.findWithALlByIdx(idx);
+        ReportDTO dto = ReportDTO.withAllFromEntity(vo);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -88,7 +88,7 @@ public class ReportController {
 
     }
 
-    @PostMapping("/items/{item-idx}/reports")
+    @PostMapping("/v2/items/{item-idx}/reports")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<CreateReport.Response> saveReport(
             @PathVariable(value = "item-idx") Long itemIdx,
@@ -98,9 +98,9 @@ public class ReportController {
         return new ResponseEntity<>(new CreateReport.Response(vo.getIdx()), HttpStatus.CREATED);
     }
 
-    @PutMapping("/items/reports/{report-idx}/complete")
+    @PutMapping("/v2/items/reports/{report-idx}/complete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<MessageDTO> modifyReport(
+    public ResponseEntity<MessageDTO> completeReport(
             @PathVariable(value = "report-idx") Long idx
     ) {
         reportUpdateService.changeState(idx, ReportVO.STATE.COMPLETED.ordinal());
@@ -108,7 +108,7 @@ public class ReportController {
         return new ResponseEntity<>(new MessageDTO("state changed"), HttpStatus.OK);
     }
 
-    @DeleteMapping("items/reports/{report-idx}")
+    @DeleteMapping("/v2/items/reports/{report-idx}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> deleteReport(
             @PathVariable(value = "report-idx") Long idx) {

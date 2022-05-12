@@ -26,7 +26,7 @@ public class NoticeController {
         this.noticeFindService = noticeFindService;
     }
 
-    @GetMapping("/users/notices")
+    @GetMapping("/v2/users/notices")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<NoticeDTO>> getMyNotices() {
         List<NoticeVO> list = noticeFindService.getMyNotices();

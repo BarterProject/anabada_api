@@ -40,14 +40,17 @@ public class ItemImageService {
 
     public ItemImageVO save(MultipartFile mf, ItemVO item, Long order){
 
+        if(mf.getSize() == 0L)
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR);
+
         String extension =  "." + Objects.requireNonNull(mf.getContentType()).split("/")[1];
 
         if(!(extension.equals(".jpg") || extension.equals(".jpeg") || extension.equals(".png") || extension.equals(".bmp")
                 || extension.equals(".heif") || extension.equals(".heic")))
-            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_NOT_SUPPORT);
 
         if (mf.getSize() > maxFileSize)
-            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_NOT_SUPPORT);
 
         UUID saveName = UUID.randomUUID();
         fileUtil.saveFile(mf, saveName + extension, UPLOADPATH);

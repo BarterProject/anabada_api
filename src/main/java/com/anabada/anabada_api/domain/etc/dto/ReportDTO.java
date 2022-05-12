@@ -47,7 +47,7 @@ ReportDTO {
                 .content(vo.getContent())
                 .title(vo.getTitle())
                 .state(vo.getState())
-                .item(ItemDTO.listFromEntity(vo.getItem()))
+                .item(ItemDTO.onlyIdxFromEntity(vo.getItem()))
                 .reply(vo.getReply())
                 .user(UserDTO.simpleFromEntity(vo.getUser()))
                 .build();
@@ -55,6 +55,7 @@ ReportDTO {
 
     public static ReportDTO fromEntity(ReportVO vo) {
         return ReportDTO.builder()
+                .idx(vo.getIdx())
                 .content(vo.getContent())
                 .title(vo.getTitle())
                 .state(vo.getState())

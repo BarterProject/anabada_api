@@ -46,7 +46,7 @@ public class ItemFindService {
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
         if(item.get().getOwner() != user)
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_NOT_OWN_EXCEPTION);
 
         return item.get();
     }

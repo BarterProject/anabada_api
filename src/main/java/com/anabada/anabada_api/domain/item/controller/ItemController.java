@@ -10,6 +10,8 @@ import com.anabada.anabada_api.domain.item.service.ItemFindService;
 import com.anabada.anabada_api.domain.item.service.ItemImageService;
 import com.anabada.anabada_api.domain.item.service.ItemUpdateService;
 import com.anabada.anabada_api.domain.message.dto.MessageDTO;
+import com.anabada.anabada_api.exception.ApiException;
+import com.anabada.anabada_api.exception.ExceptionEnum;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javassist.NotFoundException;
@@ -45,45 +47,7 @@ public class ItemController {
         this.itemImageService = itemImageService;
     }
 
-    @PostMapping(value = "/user/items", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<CreateItem.Response> saveItem(
-            @RequestPart(value = "item", required = true) String itemString,
-            @RequestPart(value = "img", required = true) List<MultipartFile> mfList
-    ){
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
-        Gson gson = gsonBuilder.setPrettyPrinting().create();
-
-        CreateItem.Request request = gson.fromJson(itemString, CreateItem.Request.class);
-
-        ItemVO item = itemUpdateService.save(request, mfList);
-
-        return new ResponseEntity<>(new CreateItem.Response(item.getIdx()), HttpStatus.CREATED);
-    }
-
-    @GetMapping("/user/items")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<ItemDTO>> getMyItems(
-            @RequestParam(value = "option", defaultValue = "registrant") String option
-    ) throws NotFoundException {
-        List<ItemDTO> dto;
-
-        if (option.equals("registrant")) {
-            List<ItemVO> items = itemFindService.findByRegistrant();
-            dto = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
-        } else if (option.equals("owner")) {
-            List<ItemVO> items = itemFindService.findByOwner();
-            dto = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
-        } else
-            throw new NotFoundException("invalid request");
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
-
-    }
-
-    @GetMapping("/items/{item-idx}")
+    @GetMapping("/v2/items/{item-idx}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<ItemDTO> getMyItemByIdx(
             @PathVariable(value = "item-idx") Long itemIdx) {
@@ -94,7 +58,65 @@ public class ItemController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/user/items/{item-idx}/requests")
+    @PostMapping(value = "/v2/user/items", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<CreateItem.Response> saveItem(
+            @RequestPart(value = "item", required = true) String itemString,
+            @RequestPart(value = "img", required = true) List<MultipartFile> mfList
+    ){
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+
+
+        CreateItem.Request request = gson.fromJson(itemString, CreateItem.Request.class);
+        if(!request.validate()) throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR);
+
+        Long dto = itemUpdateService.save(request, mfList);
+
+        return new ResponseEntity<>(new CreateItem.Response(dto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/v2/user/items")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<ItemDTO>> getMyItems(
+            @RequestParam(value = "option", defaultValue = "registrant") String option
+    ) {
+        List<ItemDTO> dto;
+
+        if (option.equals("registrant")) {
+            List<ItemVO> items = itemFindService.findByRegistrant();
+            dto = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
+        } else if (option.equals("owner")) {
+            List<ItemVO> items = itemFindService.findByOwner();
+            dto = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
+        } else
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/v2/items")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<ItemDTO>> getRandomItems(
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        List<ItemVO> items = itemFindService.findByRandom(size);
+        List<ItemDTO> dtos = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
+
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @PostMapping("/v2/user/items/requests")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<DealRequest.Response> saveRequest(
+            @RequestBody DealRequest.Request request
+    ) {
+        Long idx = dealRequestService.save(request);
+        return new ResponseEntity<>(new DealRequest.Response(idx), HttpStatus.OK);
+    }
+
+    @GetMapping("/v2/user/items/{item-idx}/requests")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<DealRequestDTO>> getRequestsByItem(
             @PathVariable(value = "item-idx") Long itemIdx,
@@ -106,7 +128,7 @@ public class ItemController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/user/items/{item-idx}/responses")
+    @GetMapping("/v2/user/items/{item-idx}/responses")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<DealRequestDTO>> getResponsesByItem(
             @PathVariable(value = "item-idx") Long itemIdx,
@@ -117,38 +139,7 @@ public class ItemController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/items/requests/{request-idx}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<MessageDTO> deleteRequest(
-            @PathVariable(value = "request-idx") Long itemIdx
-    ){
-        dealRequestService.delete(itemIdx);
-        return new ResponseEntity<>(new MessageDTO("delete success"), HttpStatus.NO_CONTENT);
-    }
-
-    @PostMapping("/user/items/requests")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<DealRequestDTO> saveRequest(
-            @RequestBody DealRequest.Request request
-    ) {
-        DealRequestVO vo = dealRequestService.save(request);
-        DealRequestDTO dto = DealRequestDTO.fromEntity(vo);
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
-    }
-
-    @GetMapping("/items")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<List<ItemDTO>> getRandomItems(
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        List<ItemVO> items = itemFindService.findByRandom(size);
-        List<ItemDTO> dtos = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
-
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
-    }
-
-
-    @PutMapping("/user/items/requests/{request-idx}/accept")
+    @PutMapping("/v2/user/items/requests/{request-idx}/accept")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> acceptRequest(
             @PathVariable(value = "request-idx") Long requestIdx) {
@@ -158,13 +149,22 @@ public class ItemController {
     }
 
 
-    @PutMapping("/user/items/requests/{request-idx}/decline")
+    @PutMapping("/v2/user/items/requests/{request-idx}/decline")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> declineRequest(
             @PathVariable(value = "request-idx") Long requestIdx) {
 
         dealRequestService.handleRequest(requestIdx, false);
         return new ResponseEntity<>(new MessageDTO("deal rejected"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/v2/user/items/requests/{request-idx}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> deleteRequest(
+            @PathVariable(value = "request-idx") Long itemIdx
+    ){
+        dealRequestService.delete(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("delete success"), HttpStatus.NO_CONTENT);
     }
 
 

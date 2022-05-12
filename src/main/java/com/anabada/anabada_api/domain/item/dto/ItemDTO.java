@@ -154,6 +154,12 @@ public class ItemDTO {
                 .build();
     }
 
+    public static ItemDTO onlyIdxFromEntity(ItemVO vo){
+        return ItemDTO.builder()
+                .idx(vo.getIdx())
+                .build();
+    }
+
 
 }
 

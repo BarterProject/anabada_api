@@ -83,6 +83,7 @@ public class DeliveryVO {
     public void setTrackingInfo(String trackingNumber, DeliveryCompanyVO deliveryCompany) {
         this.trackingNumber = trackingNumber;
         this.deliveryCompany = deliveryCompany;
+        this.state = STATE.EXCHANGING.ordinal();
     }
 
 }

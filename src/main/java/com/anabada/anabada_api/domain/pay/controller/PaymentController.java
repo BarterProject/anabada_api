@@ -8,6 +8,7 @@ import com.anabada.anabada_api.domain.pay.service.PaymentUpdateService;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,8 +29,9 @@ public class PaymentController {
         this.paymentFindOptionService = paymentFindOptionService;
     }
 
-    @GetMapping(path = "/items/payments/options")
-    public ResponseEntity<List<PaymentOptionDTO>> getPaymentOptionByIdx() {
+    @GetMapping(path = "/v2/items/payments/options")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<PaymentOptionDTO>> getPaymentOptions() {
         List<PaymentOptionVO> options = paymentFindOptionService.findAll();
         List<PaymentOptionDTO> dtos = options.stream().map(PaymentOptionDTO::fromEntity).collect(Collectors.toList());
 

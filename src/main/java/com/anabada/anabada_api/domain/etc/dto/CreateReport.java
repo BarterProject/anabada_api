@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @NoArgsConstructor
 @Getter
 public class CreateReport {
@@ -13,7 +15,10 @@ public class CreateReport {
     @Builder
     public static class Request{
 
+        @NotBlank
         String title;
+
+        @NotBlank
         String content;
 
     }

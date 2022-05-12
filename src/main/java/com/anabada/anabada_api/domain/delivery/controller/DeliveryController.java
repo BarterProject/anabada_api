@@ -35,30 +35,27 @@ public class DeliveryController {
     }
 
 
-    @PostMapping("/user/items/{item-idx}/deliveries")
+    @PostMapping("/v2/user/items/{item-idx}/deliveries")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<DeliveryDTO> saveDelivery(
+    public ResponseEntity<CreateDelivery.Response> saveDelivery(
             @PathVariable(value = "item-idx") Long idx,
             @RequestBody CreateDelivery.Request request) {
 
         Long id = deliveryUpdateService.save(idx, request);
         DeliveryVO vo = deliveryFindService.findByIdx(id);
-        DeliveryDTO dto = DeliveryDTO.fromEntity(vo);
 
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        return new ResponseEntity<>(new CreateDelivery.Response(vo.getIdx()), HttpStatus.CREATED);
     }
 
-    @PostMapping("/user/items/deliveries/{delivery-idx}")
+    @PostMapping("/v2/user/items/deliveries/{delivery-idx}")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<DeliveryDTO> saveTracking(
+    public ResponseEntity<RegisterTracking.Response> saveTracking(
             @PathVariable(value = "delivery-idx") Long idx,
             @RequestBody RegisterTracking.Request request
     ) {
+        deliveryUpdateService.saveTrackingNumber(idx, request);
 
-        DeliveryVO vo = deliveryUpdateService.saveTrackingNumber(idx, request);
-        DeliveryDTO dto = DeliveryDTO.fromEntity(vo);
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return new ResponseEntity<>(new RegisterTracking.Response("saved"), HttpStatus.OK);
     }
 
     @GetMapping("user/items/{item-idx}/deliveries")
@@ -72,8 +69,8 @@ public class DeliveryController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("user/items/{item-idx}/deliveries/details")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLS_AMDIN')")
+    @GetMapping("/v2/user/items/{item-idx}/deliveries/tracking")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<DeliveryTrackingDTO> getDeliveryTracking(
             @PathVariable(value = "item-idx") Long itemIdx
     ) {

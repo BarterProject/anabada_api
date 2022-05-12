@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.server.NotAcceptableStatusException;
 
 import javax.transaction.NotSupportedException;
@@ -53,6 +56,40 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiExceptionEntity, ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getStatus());
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiExceptionEntity> MethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
+        log.error(e.getMessage());
+        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
+                .errorCode(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getCode())
+                .errorMessage(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getMessage())
+                .build();
+
+        return new ResponseEntity<>(apiExceptionEntity, ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getStatus());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiExceptionEntity> AccessDeniedException(AccessDeniedException e){
+        log.error(e.getMessage());
+        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
+                .errorCode(ExceptionEnum.ACCESS_DENIED_EXCEPTION.getCode())
+                .errorMessage(ExceptionEnum.ACCESS_DENIED_EXCEPTION.getMessage())
+                .build();
+
+        return new ResponseEntity<>(apiExceptionEntity, ExceptionEnum.ACCESS_DENIED_EXCEPTION.getStatus());
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ApiExceptionEntity> AccessDeniedException(MissingServletRequestPartException e){
+        log.error(e.getMessage());
+        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
+                .errorCode(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getCode())
+                .errorMessage(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getMessage())
+                .build();
+
+        return new ResponseEntity<>(apiExceptionEntity, ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getStatus());
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageDTO> Exception(Exception e){

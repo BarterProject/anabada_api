@@ -53,7 +53,7 @@ public class DealRequestService {
     }
 
     @Transactional
-    public DealRequestVO save(DealRequest.Request request){
+    public Long save(DealRequest.Request request){
 
         UserVO user = userFindService.getMyUserWithAuthorities();
 
@@ -62,16 +62,16 @@ public class DealRequestService {
 
 
         if (requestItem.getOwner() != user)
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_NOT_OWN_EXCEPTION);
 
         if (response.getOwner() == user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
-        if (response.getState() != 1)
+        if (response.getState() != 1 || requestItem.getState() != 1)
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         if(this.dealRequestDuplicateCheck(requestItem, response))
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_REQUEST_DUPLICATED);
 
 
         DealRequestVO dealVO = DealRequestVO.builder()
@@ -80,7 +80,7 @@ public class DealRequestService {
                 .state(DealRequestVO.STATE.ONGOING.ordinal())
                 .build();
 
-        return this.save(dealVO);
+        return this.save(dealVO).getIdx();
     }
 
 
@@ -105,6 +105,9 @@ public class DealRequestService {
 
         if(request.getResponseItem().getOwner() != responseUser)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        if(request.getState() != 1)
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         if(request.getCreatedAt().plusMinutes(1L).isBefore(LocalDateTime.now()))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
@@ -154,7 +157,6 @@ public class DealRequestService {
 
 
         return  dealRequestRepository.findByRequestItemAndState(item, state);
-//        return item.getDealRequestItemList();
     }
 
     @Transactional(readOnly = true)

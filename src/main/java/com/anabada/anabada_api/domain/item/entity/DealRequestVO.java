@@ -51,6 +51,6 @@ public class DealRequestVO {
     }
 
     public void close(){
-        this.state = 2;
+        this.state = STATE.CLOSED.ordinal();
     }
 }

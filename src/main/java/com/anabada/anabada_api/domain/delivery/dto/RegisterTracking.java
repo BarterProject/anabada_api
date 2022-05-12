@@ -1,9 +1,6 @@
 package com.anabada.anabada_api.domain.delivery.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,5 +13,12 @@ public class RegisterTracking {
 
         Long deliveryCompanyIdx;
     }
+
+    @AllArgsConstructor
+    @Getter
+    public static class Response{
+        String message;
+    }
+
 
 }

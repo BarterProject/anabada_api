@@ -43,7 +43,7 @@ public class ItemUpdateService {
 
 
     @Transactional
-    public ItemVO save(CreateItem.Request request, List<MultipartFile> mfList) {
+    public Long save(CreateItem.Request request, List<MultipartFile> mfList) {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
         PaymentVO payment = paymentUpdateService.save(request.getPayment());
@@ -71,7 +71,7 @@ public class ItemUpdateService {
             i++;
         }
 
-        return savedItem;
+        return savedItem.getIdx();
     }
 
     @Transactional

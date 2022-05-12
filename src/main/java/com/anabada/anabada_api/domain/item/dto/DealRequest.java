@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.item.dto;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,10 @@ public class DealRequest {
     }
 
 
+    @Getter
+    @AllArgsConstructor
     public static class Response{
+        Long idx;
 
     }
 
