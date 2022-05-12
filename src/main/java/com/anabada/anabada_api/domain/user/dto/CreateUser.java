@@ -2,7 +2,9 @@ package com.anabada.anabada_api.domain.user.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -12,9 +14,11 @@ public class CreateUser {
     @Getter
     public static class Request {
         @NotBlank(message = "아이디가 입력되지 않았습니다.")
+        @Email
         String email;
 
         @NotBlank(message = "비밀번호가 입력되지 않았습니다.")
+        @Size(min = 8, message = "비밀번호는 최소 8자 이상 이어야 합니다.")
         String password;
 
         @NotBlank(message = "전화번호가 입력되지 않았습니다.")
