@@ -26,7 +26,7 @@ public class AuthController {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
-    @PostMapping("/user/authentication")
+    @PostMapping("/v2/user/authentication")
     public ResponseEntity<AuthorizeUser.Response> authorize(
             @RequestBody @Validated AuthorizeUser.Request request) {
 
