@@ -6,6 +6,7 @@ import javassist.bytecode.DuplicateMemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,58 +32,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiExceptionEntity, e.getError().getStatus());
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<MessageDTO> NotFoundException(NotFoundException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiExceptionEntity> ApiException(HttpMessageNotReadableException e){
+        log.error("Api Exception " + e.toString());
+        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
+                .errorCode(ExceptionEnum.RUNTIME_EXCEPTION.getCode())
+                .errorMessage("invalid input type")
+                .build();
 
-    @ExceptionHandler(NoSuchFileException.class)
-    public ResponseEntity<MessageDTO> NoSuchFileException(NoSuchFileException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<MessageDTO> IllegalAccessException(IllegalAccessException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(DuplicateMemberException.class)
-    public ResponseEntity<MessageDTO> DuplicateMemberException(DuplicateMemberException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NotSupportedException.class)
-    public ResponseEntity<MessageDTO> NotSupportedException(NotSupportedException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-    }
-
-    @ExceptionHandler(NotAcceptableStatusException.class)
-    public ResponseEntity<MessageDTO> NotAcceptableStatusException(NotAcceptableStatusException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(apiExceptionEntity, ExceptionEnum.RUNTIME_EXCEPTION.getStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<MessageDTO> MethodArgumentNotValidException(MethodArgumentNotValidException e){
+    public ResponseEntity<ApiExceptionEntity> MethodArgumentNotValidException(MethodArgumentNotValidException e){
         log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getAllErrors().get(0).getDefaultMessage()), HttpStatus.BAD_REQUEST);
-    }
+        ApiExceptionEntity apiExceptionEntity = ApiExceptionEntity.builder()
+                .errorCode(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getCode())
+                .errorMessage(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getMessage())
+                .build();
 
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<MessageDTO> IOException(IOException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<MessageDTO> BadCredentialsException(BadCredentialsException e){
-        log.error(e.getMessage());
-        return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiExceptionEntity, ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
