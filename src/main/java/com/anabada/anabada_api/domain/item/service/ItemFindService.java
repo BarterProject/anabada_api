@@ -65,12 +65,16 @@ public class ItemFindService {
     @Transactional(readOnly = true)
     public List<ItemVO> findByRegistrant(int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
+        if(state == -1)
+            return itemRepository.findByRegistrant(user);
         return itemRepository.findByRegistrantAndState(user, state);
     }
 
     @Transactional(readOnly = true)
     public List<ItemVO> findByOwner(int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
+        if(state == -1)
+            return itemRepository.findByOwner(user);
         return itemRepository.findByOwnerAndState(user, state);
     }
 

@@ -16,8 +16,13 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
 
     @EntityGraph(attributePaths = {"itemCategory", "registrant", "owner", "images"})
     public List<ItemVO> findByRegistrantAndState(UserVO registrant, int state);
+    @EntityGraph(attributePaths = {"itemCategory", "registrant", "owner", "images"})
+    public List<ItemVO> findByRegistrant(UserVO registrant);
     @EntityGraph(attributePaths = {"itemCategory", "images"})
     public List<ItemVO> findByOwnerAndState(UserVO Owner, int state);
+
+    @EntityGraph(attributePaths = {"itemCategory", "images"})
+    public List<ItemVO> findByOwner(UserVO Owner);
 
     @Query(value = "select e.idx from ItemVO e where e.state = :state")
     public List<Long> findIdxByState(int state);

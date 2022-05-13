@@ -81,7 +81,7 @@ public class ItemController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemDTO>> getMyItems(
             @RequestParam(value = "option", defaultValue = "registrant") String option,
-            @RequestParam(value = "state", defaultValue = "1") int state
+            @RequestParam(value = "state", defaultValue = "-1") int state
     ) {
         List<ItemDTO> dto;
 
