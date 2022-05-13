@@ -29,6 +29,10 @@ public class PostVO {
     @Column(name = "content", updatable = true, nullable = false)
     private String content;
 
+    @Lob
+    @Column(name = "reply", updatable = true, nullable = false)
+    private String reply;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
