@@ -2,21 +2,19 @@ package com.anabada.anabada_api.domain.delivery.controller;
 
 
 import com.anabada.anabada_api.domain.delivery.dto.CreateDelivery;
+import com.anabada.anabada_api.domain.delivery.dto.DeliveryDTO;
 import com.anabada.anabada_api.domain.delivery.dto.DeliveryTrackingDTO;
 import com.anabada.anabada_api.domain.delivery.dto.RegisterTracking;
 import com.anabada.anabada_api.domain.delivery.entity.DeliveryVO;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryCompanyFindService;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryFindService;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryUpdateService;
-import com.anabada.anabada_api.domain.delivery.dto.DeliveryDTO;
 import com.anabada.anabada_api.domain.item.service.ItemFindService;
-import javassist.NotFoundException;
+import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.security.auth.message.AuthException;
 
 @RestController
 @RequestMapping("/api")
@@ -77,4 +75,16 @@ public class DeliveryController {
 
         return new ResponseEntity<>(tracking, HttpStatus.OK);
     }
+
+    @PostMapping("/v2/user/items/deliveries/{item-idx}/complete")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> completeDelivery(
+            @PathVariable(value = "item-idx") Long itemIdx
+    ) {
+        deliveryUpdateService.completeDelivery(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("COMPLETE DELIVERY"), HttpStatus.OK);
+    }
+
+
+
 }

@@ -64,10 +64,11 @@ public class DeliveryVO {
     }
 
     public enum STATE {
-        INACTIVATED,
-        APPLIED,
-        EXCHANGING,
-        TERMINATED
+        INACTIVATED, // 비활성화
+        APPLIED, // 등록됨
+        EXCHANGING,//교환중
+        TERMINATED//종료
+
     }
 
 
@@ -86,4 +87,7 @@ public class DeliveryVO {
         this.state = STATE.EXCHANGING.ordinal();
     }
 
+    public void completeState() {
+       this.state=STATE.TERMINATED.ordinal();
+    }
 }
