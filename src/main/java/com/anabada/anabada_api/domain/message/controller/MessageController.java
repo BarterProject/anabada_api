@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.message.controller;
 
 
+import com.anabada.anabada_api.domain.etc.dto.PageDTO;
 import com.anabada.anabada_api.domain.message.dto.CreateMessage;
 import com.anabada.anabada_api.domain.message.dto.MessageEntityDTO;
 import com.anabada.anabada_api.domain.message.dto.RoomDTO;
@@ -10,6 +11,10 @@ import com.anabada.anabada_api.domain.message.service.MessageFindService;
 import com.anabada.anabada_api.domain.message.service.MessageUpdateService;
 
 import com.anabada.anabada_api.domain.message.service.RoomFindService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,14 +49,21 @@ public class MessageController {
 
     @GetMapping("/v2/rooms/{room-idx}/messages")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<List<MessageEntityDTO>> getMessagesByRoomIdx(
-            @PathVariable("room-idx") Long roomIdx
+    public ResponseEntity<PageDTO<MessageEntityDTO>> getMessagesByRoomIdx(
+            @PathVariable("room-idx") Long roomIdx,
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
     ) {
 
-        List<MessageVO> vos = messageFindService.getMessagesByRoomIdx(roomIdx);
-        List<MessageEntityDTO> dtos = vos.stream().map(MessageEntityDTO::withUserFromEntity).collect(Collectors.toList());
+        Page<MessageVO> page = messageFindService.getMessagesByRoomIdx(roomIdx, pageable);
+        List<MessageEntityDTO> dtos = page.getContent().stream().map(MessageEntityDTO::withUserFromEntity).collect(Collectors.toList());
 
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+        PageDTO<MessageEntityDTO> pageDTO = PageDTO.<MessageEntityDTO>builder()
+                .contents(dtos)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
+
+        return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
     @PostMapping("/rooms/messages")
