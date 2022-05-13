@@ -42,9 +42,8 @@ public class DeliveryController {
             @RequestBody CreateDelivery.Request request) {
 
         Long id = deliveryUpdateService.save(idx, request);
-        DeliveryVO vo = deliveryFindService.findByIdx(id);
 
-        return new ResponseEntity<>(new CreateDelivery.Response(vo.getIdx()), HttpStatus.CREATED);
+        return new ResponseEntity<>(new CreateDelivery.Response(id), HttpStatus.CREATED);
     }
 
     @PostMapping("/v2/user/items/deliveries/{delivery-idx}")

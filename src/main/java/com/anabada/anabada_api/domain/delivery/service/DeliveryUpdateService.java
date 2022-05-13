@@ -53,10 +53,13 @@ public class DeliveryUpdateService {
     @Transactional
     public Long save(Long idx, CreateDelivery.Request request){
 
+        UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(idx);
 
         if (item.getDelivery() != null)
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+        if(item.getOwner() != user)
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
         DeliveryVO deliveryVO = DeliveryVO.builder()
                 .receiverName(request.getReceiverName())
