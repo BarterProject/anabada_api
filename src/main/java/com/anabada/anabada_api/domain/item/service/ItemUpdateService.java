@@ -59,7 +59,7 @@ public class ItemUpdateService {
                 .deposit(payment.getAmount())
                 .owner(user)
                 .registrant(user)
-                .state(ItemVO.STATE.APPLIED.ordinal())
+                .state(ItemVO.STATE.WAITING.ordinal())
                 .build();
 
         ItemVO savedItem = itemRepository.save(item);

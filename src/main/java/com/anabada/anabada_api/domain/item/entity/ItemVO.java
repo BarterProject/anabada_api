@@ -85,7 +85,8 @@ public class ItemVO {
         INACTIVATED,
         APPLIED,
         EXCHANGING,
-        TERMINATED
+        TERMINATED,
+        WAITING,
     }
 
     public void setDelivery(DeliveryVO delivery) {
