@@ -10,6 +10,8 @@ import com.anabada.anabada_api.domain.pay.entity.PaymentVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
 import com.anabada.anabada_api.domain.pay.service.PaymentUpdateService;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
+import com.anabada.anabada_api.exception.ApiException;
+import com.anabada.anabada_api.exception.ExceptionEnum;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,4 +83,27 @@ public class ItemUpdateService {
     }
 
 
+    @Transactional
+    public void refundRequest(Long itemIdx) {
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+        UserVO user = userFindService.getMyUserWithAuthorities();
+
+        if(!(item.getRegistrant() == item.getOwner()))
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+
+        if(item.getOwner() != user)
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        item.requestRefund();
+    }
+
+    @Transactional
+    public void refundComplete(Long itemIdx) {
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+
+        if(item.getState() != ItemVO.STATE.REFUND.ordinal())
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+
+        item.refund();
+    }
 }

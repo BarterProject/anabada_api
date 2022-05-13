@@ -178,6 +178,14 @@ public class ItemController {
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
+    @PostMapping("/v2/user/items/{item-idx}/refund")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> refundRequest(
+            @PathVariable(value = "item-idx") Long itemIdx) {
+        itemUpdateService.refundRequest(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("refund requested"), HttpStatus.OK);
+    }
+
     /* --- 관리자기능 --- */
 
     @GetMapping(value = "/v2/admin/items")
@@ -226,6 +234,16 @@ public class ItemController {
         itemUpdateService.activateItem(itemIdx, true);
         return new ResponseEntity<>(new MessageDTO("item activated"), HttpStatus.OK);
     }
+
+    @PutMapping("/v2/admin/items/{item-idx}/refund")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<MessageDTO> refundComplete(
+            @PathVariable(value = "item-idx") Long itemIdx) {
+        itemUpdateService.refundComplete(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("refund complete"), HttpStatus.OK);
+    }
+
+
 }
 
 
