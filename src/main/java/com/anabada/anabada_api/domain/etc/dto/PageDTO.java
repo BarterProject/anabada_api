@@ -1,6 +1,6 @@
-package com.anabada.anabada_api.domain.board.dto;
+package com.anabada.anabada_api.domain.etc.dto;
 
-import com.anabada.anabada_api.domain.user.dto.UserDTO;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PagePost {
-
-    List<PostDTO> posts = new ArrayList<>();
+public class PageDTO<T> {
+    List<T> contents = new ArrayList<>();
 
     @JsonProperty("total_page")
     int totalPage;
@@ -23,8 +23,8 @@ public class PagePost {
     int currentPage;
 
     @Builder
-    public PagePost(List<PostDTO> posts, int totalPage, int currentPage) {
-        this.posts = posts;
+    public PageDTO(List<T> contents, int totalPage, int currentPage) {
+        this.contents = contents;
         this.totalPage = totalPage;
         this.currentPage = currentPage;
     }

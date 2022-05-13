@@ -1,12 +1,12 @@
 package com.anabada.anabada_api.domain.board.controller;
 
 import com.anabada.anabada_api.domain.board.dto.CreatePost;
-import com.anabada.anabada_api.domain.board.dto.PagePost;
 import com.anabada.anabada_api.domain.board.dto.PostDTO;
 import com.anabada.anabada_api.domain.board.dto.ReplyPost;
 import com.anabada.anabada_api.domain.board.entity.PostVO;
 import com.anabada.anabada_api.domain.board.service.PostFindService;
 import com.anabada.anabada_api.domain.board.service.PostUpdateService;
+import com.anabada.anabada_api.domain.etc.dto.PageDTO;
 import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,15 +61,15 @@ public class PostController {
 
     @GetMapping("/v2/admin/boards/{board-idx}/posts")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<PagePost> getAllPosts(
+    public ResponseEntity<PageDTO<PostDTO>> getAllPosts(
             @PathVariable(name = "board-idx") Long boardIdx,
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<PostVO> page = postFindService.findAll(boardIdx, pageable);
         List<PostDTO> dtos = page.getContent().stream().map(PostDTO::fromEntityWithUser).collect(Collectors.toList());
 
-        PagePost pageDTO = PagePost.builder()
-                .posts(dtos)
+        PageDTO<PostDTO> pageDTO = PageDTO.<PostDTO>builder()
+                .contents(dtos)
                 .currentPage(pageable.getPageNumber())
                 .totalPage(page.getTotalPages() - 1)
                 .build();
