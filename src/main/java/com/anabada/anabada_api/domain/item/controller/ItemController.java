@@ -80,15 +80,16 @@ public class ItemController {
     @GetMapping("/v2/user/items")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<ItemDTO>> getMyItems(
-            @RequestParam(value = "option", defaultValue = "registrant") String option
+            @RequestParam(value = "option", defaultValue = "registrant") String option,
+            @RequestParam(value = "state", defaultValue = "1") int state
     ) {
         List<ItemDTO> dto;
 
         if (option.equals("registrant")) {
-            List<ItemVO> items = itemFindService.findByRegistrant();
+            List<ItemVO> items = itemFindService.findByRegistrant(state);
             dto = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
         } else if (option.equals("owner")) {
-            List<ItemVO> items = itemFindService.findByOwner();
+            List<ItemVO> items = itemFindService.findByOwner(state);
             dto = items.stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
         } else
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
