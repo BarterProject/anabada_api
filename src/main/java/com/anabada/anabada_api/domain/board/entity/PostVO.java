@@ -57,6 +57,10 @@ public class PostVO {
         this.title = title;
         this.content = content;
         this.user = user;
+        this.board = board;
     }
 
+    public void setReply(String reply){
+        this.reply = reply;
+    }
 }
