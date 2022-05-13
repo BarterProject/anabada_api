@@ -40,6 +40,14 @@ public class CategoryFindService {
         return category.get();
     }
 
+//    @Transactional(readOnly = true)
+//    public ItemCategoryVO existByName(String name) {
+//
+//        Optional<ItemCategoryVO> category = categoryRepository.findByName(name);
+//
+//        return category.get();
+//    }
+
     @Transactional(readOnly = true)
     public List<ItemCategoryVO> searchCategory(String name) {
         List<ItemCategoryVO> categoryVO = categoryRepository.findAllByNameContaining(name);

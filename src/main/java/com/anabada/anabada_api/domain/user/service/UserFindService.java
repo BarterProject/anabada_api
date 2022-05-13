@@ -34,7 +34,7 @@ public class UserFindService {
         Optional<UserVO>userVO= userRepository.findById(idx);
 
         if(userVO.isEmpty())
-            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+            throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
         return userVO.get();
     }
@@ -44,7 +44,7 @@ public class UserFindService {
         Optional<UserVO>userVO= userRepository.findById(idx);
 
         if(userVO.isEmpty())
-            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+            throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
         return userVO.get();
     }

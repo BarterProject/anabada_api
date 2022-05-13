@@ -19,12 +19,14 @@ public class ItemCategoryDTO {
     private String name;
 
     @Builder
-    public ItemCategoryDTO(ItemCategoryDTO upperCategory, String name) {
+    public ItemCategoryDTO(Long idx, String name) {
+        this.idx = idx;
         this.name = name;
     }
 
     public static ItemCategoryDTO fromEntity(ItemCategoryVO entity){
         return ItemCategoryDTO.builder()
+                .idx(entity.getIdx())
                 .name(entity.getName())
                 .build();
     }

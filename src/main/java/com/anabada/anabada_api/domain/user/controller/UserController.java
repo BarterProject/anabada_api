@@ -53,7 +53,7 @@ public class UserController {
 
     /* --- 관리자기능 --- */
 
-    @GetMapping("/admin/user")
+    @GetMapping("/v2/admin/user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<PageUserDTO> getUserList(
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
@@ -70,7 +70,7 @@ public class UserController {
         return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/user/{user-idx}")
+    @GetMapping("/v2/admin/user/{user-idx}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<UserDTO> getUserByIdx(
             @PathVariable(value = "user-idx") Long userIdx
@@ -81,7 +81,7 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
-    @PutMapping("/admin/user/{user-idx}/deactivation")
+    @PutMapping("/v2/admin/user/{user-idx}/deactivation")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> deactivateUser(
             @PathVariable(value = "user-idx") Long userIdx
@@ -91,7 +91,7 @@ public class UserController {
         return new ResponseEntity<>(new MessageDTO("user deactivated"), HttpStatus.OK);
     }
 
-    @PutMapping("/admin/user/{user-idx}/activation")
+    @PutMapping("/v2/admin/user/{user-idx}/activation")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> activateUser(
             @PathVariable(value = "user-idx") Long userIdx

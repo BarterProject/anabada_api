@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,14 +45,14 @@ public class CategoryController {
     @PostMapping("/v2/items/categories")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<CreateCategory.Response> saveCategory(
-            CreateCategory.Request request
+            @RequestBody @Valid CreateCategory.Request request
     ) {
         ItemCategoryVO category = categoryUpdateService.save(request);
 
         return new ResponseEntity<>(new CreateCategory.Response(category.getName()), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/items/categories/{category-idx}")
+    @DeleteMapping("/v2/items/categories/{category-idx}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> deleteCategory(
             @PathVariable(value = "category-idx") Long categoryIdx

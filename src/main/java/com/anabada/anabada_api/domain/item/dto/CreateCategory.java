@@ -12,6 +12,8 @@ public class CreateCategory {
 
     @Builder
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Request {
 
         @NotBlank(message = "name이 입력되지 않았습니다.")
@@ -21,6 +23,7 @@ public class CreateCategory {
 
     @Builder
     @AllArgsConstructor
+    @Getter
     public static class Response {
         String name;
     }

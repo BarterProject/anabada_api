@@ -168,7 +168,7 @@ public class ItemController {
     }
 
 
-    @GetMapping(value = "/items/images/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/v2/items/images/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getItemImageByName(
             @PathVariable(value = "image-name") String itemName
     ) {
@@ -179,7 +179,7 @@ public class ItemController {
 
     /* --- 관리자기능 --- */
 
-    @GetMapping(value = "/admin/items")
+    @GetMapping(value = "/v2/admin/items")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<PageItemDTO> getItemList(
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
@@ -197,7 +197,7 @@ public class ItemController {
         return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/admin/items/{item-idx}")
+    @GetMapping(value = "/v2/admin/items/{item-idx}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<ItemDTO> getItemByIdx(
             @PathVariable(value = "item-idx") Long itemIdx
@@ -208,7 +208,7 @@ public class ItemController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PutMapping("/admin/items/{item-idx}/deactivation")
+    @PutMapping("/v2/admin/items/{item-idx}/deactivation")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> deactivateItem(
             @PathVariable(value = "item-idx") Long itemIdx
@@ -217,7 +217,7 @@ public class ItemController {
         return new ResponseEntity<>(new MessageDTO("item deactivated"), HttpStatus.OK);
     }
 
-    @PutMapping("/admin/items/{item-idx}/activation")
+    @PutMapping("/v2/admin/items/{item-idx}/activation")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> activateItem(
             @PathVariable(value = "item-idx") Long itemIdx

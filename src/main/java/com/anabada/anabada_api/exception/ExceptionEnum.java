@@ -19,7 +19,8 @@ public enum ExceptionEnum {
     RUNTIME_EXCEPTION_NOT_SUPPORT(HttpStatus.BAD_REQUEST, "B0004", "지원하지 않는 입력방식입니다."),
     RUNTIME_EXCEPTION_NOT_ACTIVATED(HttpStatus.BAD_REQUEST, "B0005", "활성화 되지 않았습니다."),
     RUNTIME_EXCEPTION_VALID_ERROR(HttpStatus.BAD_REQUEST, "B0006", "필수 파라미터가 없거나 형식이 잘못되었습니다."),
-    RUNTIME_EXCEPTION_REQUEST_DUPLICATED(HttpStatus.BAD_REQUEST, "B0007", "request duplicated");
+    RUNTIME_EXCEPTION_REQUEST_DUPLICATED(HttpStatus.BAD_REQUEST, "B0007", "request duplicated"),
+    RUNTIME_EXCEPTION_CATEGORY_DUPLICATED(HttpStatus.BAD_REQUEST, "B0008", "category duplicated");
 
     private final HttpStatus status;
     private final String code;

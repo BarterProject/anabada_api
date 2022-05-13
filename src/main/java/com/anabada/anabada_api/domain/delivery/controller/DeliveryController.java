@@ -58,7 +58,7 @@ public class DeliveryController {
         return new ResponseEntity<>(new RegisterTracking.Response("saved"), HttpStatus.OK);
     }
 
-    @GetMapping("user/items/{item-idx}/deliveries")
+    @GetMapping("/v2/user/items/{item-idx}/deliveries")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public ResponseEntity<DeliveryDTO> getDelivery(
             @PathVariable(value = "item-idx") Long itemIdx
