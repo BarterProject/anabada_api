@@ -60,4 +60,8 @@ public class UserFindService {
 //                .build();
 
     }
+
+    public Page<UserVO> findByEmail(String query, Pageable pageable) {
+        return userRepository.findAllByEmailContains(query, pageable);
+    }
 }

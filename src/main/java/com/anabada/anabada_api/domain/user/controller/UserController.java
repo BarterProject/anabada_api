@@ -8,6 +8,8 @@ import com.anabada.anabada_api.domain.user.entity.UserVO;
 import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.domain.user.service.UserUpdateService;
+import com.anabada.anabada_api.exception.ApiException;
+import com.anabada.anabada_api.exception.ExceptionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,9 +58,20 @@ public class UserController {
     @GetMapping("/v2/admin/user")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<PageUserDTO> getUserList(
-            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(name = "mode", required = false, defaultValue = "all") String mode,
+            @RequestParam(name = "query", required = false, defaultValue = "") String query
     ) {
-        Page<UserVO> page = userFindService.findAll(pageable);
+        Page<UserVO> page;
+
+        if(mode.equals("all")){
+            page = userFindService.findAll(pageable);
+        } else if (mode.equals("email")) {
+            page = userFindService.findByEmail(query, pageable);
+        }else{
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+        }
+
         List<UserDTO> dtos = page.getContent().stream().map(UserDTO::allInfoFromEntity).collect(Collectors.toList());
 
         PageUserDTO pageDTO = PageUserDTO.builder()
