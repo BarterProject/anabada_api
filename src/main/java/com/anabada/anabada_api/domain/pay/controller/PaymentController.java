@@ -1,7 +1,11 @@
 package com.anabada.anabada_api.domain.pay.controller;
 
+import com.anabada.anabada_api.domain.item.dto.ItemDTO;
+import com.anabada.anabada_api.domain.item.entity.ItemVO;
+import com.anabada.anabada_api.domain.pay.dto.PaymentDTO;
 import com.anabada.anabada_api.domain.pay.dto.PaymentOptionDTO;
 import com.anabada.anabada_api.domain.pay.entity.PaymentOptionVO;
+import com.anabada.anabada_api.domain.pay.entity.PaymentVO;
 import com.anabada.anabada_api.domain.pay.service.PaymentFindOptionService;
 import com.anabada.anabada_api.domain.pay.service.PaymentFindService;
 import com.anabada.anabada_api.domain.pay.service.PaymentUpdateService;
@@ -36,6 +40,17 @@ public class PaymentController {
         List<PaymentOptionDTO> dtos = options.stream().map(PaymentOptionDTO::fromEntity).collect(Collectors.toList());
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/v2/items/{item-idx}/payments")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<PaymentDTO> getPaymentByItemIdx(
+            @PathVariable(value = "item-idx") Long itemIdx) {
+
+        PaymentVO payment = paymentFindService.findByItemIdx(itemIdx);
+        PaymentDTO dto = PaymentDTO.fromEntity(payment);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
 }

@@ -1,10 +1,12 @@
 package com.anabada.anabada_api.domain.pay.service;
 
+import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.pay.entity.PaymentVO;
 import com.anabada.anabada_api.domain.pay.dto.PagePaymentDTO;
 import com.anabada.anabada_api.domain.pay.dto.PaymentDTO;
 import com.anabada.anabada_api.domain.pay.repository.PayRepository;
 import com.anabada.anabada_api.domain.item.service.ItemFindService;
+import com.anabada.anabada_api.domain.user.entity.UserVO;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
@@ -21,9 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PaymentFindService {
-    @Autowired
     PayRepository payRepository;
-    @Autowired
     ItemFindService itemFindService;
     UserFindService userFindService;
 
@@ -31,7 +31,18 @@ public class PaymentFindService {
         this.payRepository = payRepository;
         this.itemFindService = itemFindService;
         this.userFindService = userFindService;
+    }
 
+    @Transactional(readOnly = true)
+    public PaymentVO findByItemIdx(Long itemIdx){
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+
+        if(item.getRegistrant() != user)
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        PaymentVO pay = item.getPayment();
+        return pay;
     }
 
 //    @Transactional(readOnly = true)

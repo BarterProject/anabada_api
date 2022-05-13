@@ -47,7 +47,7 @@ public class ItemVO {
     @Column(name = "end_at", updatable = true, nullable = true)
     private LocalDateTime endAt;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_idx_fk", nullable = false, updatable = true)
     PaymentVO payment;
 
