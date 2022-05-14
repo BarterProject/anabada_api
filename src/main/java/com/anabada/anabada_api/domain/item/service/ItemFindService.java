@@ -1,5 +1,6 @@
 package com.anabada.anabada_api.domain.item.service;
 
+import com.anabada.anabada_api.domain.item.entity.ItemCategoryVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.item.repository.ItemRepository;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
@@ -18,13 +19,16 @@ import java.util.Optional;
 
 @Service
 public class ItemFindService {
-    @Autowired
+
+
     ItemRepository itemRepository;
     UserFindService userFindService;
+    CategoryFindService categoryFindService;
 
-    public ItemFindService(ItemRepository itemRepository, UserFindService userFindService) {
+    public ItemFindService(ItemRepository itemRepository, UserFindService userFindService, CategoryFindService categoryFindService) {
         this.itemRepository = itemRepository;
         this.userFindService = userFindService;
+        this.categoryFindService = categoryFindService;
     }
 
     @Transactional(readOnly = true)
@@ -109,4 +113,13 @@ public class ItemFindService {
     }
 
 
+    public Page<ItemVO> findByItemName(Pageable pageable, String query) {
+        return itemRepository.findByNameContains(query, pageable);
+    }
+
+
+    public Page<ItemVO> findByCategory(Pageable pageable, Long categoryIdx) {
+        ItemCategoryVO category = categoryFindService.findByIdx(categoryIdx);
+        return itemRepository.findByItemCategory(category, pageable);
+    }
 }

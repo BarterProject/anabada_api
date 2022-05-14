@@ -191,9 +191,26 @@ public class ItemController {
     @GetMapping(value = "/v2/admin/items")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<PageItemDTO> getItemList(
-            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(name = "query", defaultValue = "") String query,
+            @RequestParam(name = "mode", defaultValue = "all") String mode,
+            @RequestParam(name = "categoryIdx", defaultValue = "0") Long categoryIdx
     ) {
-        Page<ItemVO> page = itemFindService.findWithPage(pageable);
+        Page<ItemVO> page;
+        switch (mode) {
+            case "all":
+                page = itemFindService.findWithPage(pageable);
+                break;
+            case "itemName":
+                page = itemFindService.findByItemName(pageable, query);
+                break;
+            case "category":
+                page = itemFindService.findByCategory(pageable, categoryIdx);
+                break;
+            default:
+                throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+        }
+
 
         List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
 

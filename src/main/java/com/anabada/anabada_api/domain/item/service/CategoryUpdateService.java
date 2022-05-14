@@ -3,12 +3,10 @@ package com.anabada.anabada_api.domain.item.service;
 
 import com.anabada.anabada_api.domain.item.dto.CreateCategory;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
-import com.anabada.anabada_api.domain.item.dto.ItemCategoryDTO;
 import com.anabada.anabada_api.domain.item.repository.CategoryRepository;
 import com.anabada.anabada_api.domain.item.entity.ItemCategoryVO;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
-import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +42,8 @@ public class CategoryUpdateService {
 
     @Transactional
     public void delete(Long categoryIdx) {
-        ItemCategoryVO category = categoryFindService.getByIdx(categoryIdx);
-        ItemCategoryVO defaultCategory = categoryFindService.getByIdx(7L);
+        ItemCategoryVO category = categoryFindService.findByIdx(categoryIdx);
+        ItemCategoryVO defaultCategory = categoryFindService.findByIdx(7L);
 
         List<ItemVO> itemList = category.getItemList();
         for(ItemVO item : itemList)

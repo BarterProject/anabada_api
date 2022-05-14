@@ -1,19 +1,16 @@
 package com.anabada.anabada_api.domain.item.service;
 
 
-import com.anabada.anabada_api.domain.item.dto.ItemCategoryDTO;
 import com.anabada.anabada_api.domain.item.repository.CategoryRepository;
 import com.anabada.anabada_api.domain.item.entity.ItemCategoryVO;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryFindService {
@@ -30,7 +27,7 @@ public class CategoryFindService {
 
 
     @Transactional(readOnly = true)
-    public ItemCategoryVO getByIdx(Long idx) {
+    public ItemCategoryVO findByIdx(Long idx) {
 
         Optional<ItemCategoryVO> category = categoryRepository.findById(idx);
 
