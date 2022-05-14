@@ -76,15 +76,25 @@ public class DeliveryController {
         return new ResponseEntity<>(tracking, HttpStatus.OK);
     }
 
-    @PostMapping("/v2/user/items/deliveries/{item-idx}/complete")
+    @PostMapping("/v2/user/items/deliveries/{item-idx}/returnDeposit")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<MessageDTO> completeDelivery(
+    public ResponseEntity<MessageDTO> requestDeposit(
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
-        deliveryUpdateService.completeDelivery(itemIdx);
-        return new ResponseEntity<>(new MessageDTO("COMPLETE DELIVERY"), HttpStatus.OK);
+        deliveryUpdateService.requestDeposit(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("request deposit return"), HttpStatus.OK);
     }
 
+
+    /* 관리자 기능 */
+    @PostMapping(value = "/v2/admin/deliveries/{item-idx}/returnDeposit")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+        public ResponseEntity<MessageDTO>returnComplete(
+                @PathVariable(value = "item-idx")Long itemIdx)
+    {
+        deliveryUpdateService.returnComplete(itemIdx);
+        return new ResponseEntity<>(new MessageDTO("return Deposit complete"), HttpStatus.OK);
+    }
 
 
 }

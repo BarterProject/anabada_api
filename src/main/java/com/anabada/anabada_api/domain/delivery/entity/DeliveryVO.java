@@ -67,8 +67,9 @@ public class DeliveryVO {
         INACTIVATED, // 비활성화
         APPLIED, // 등록됨
         EXCHANGING,//교환중
-        TERMINATED//종료
-
+        TERMINATED,//종료
+        RETURN, //보증금 반환 요청
+        RETURNEND // 보증금 반환 완료
     }
 
 
@@ -87,7 +88,11 @@ public class DeliveryVO {
         this.state = STATE.EXCHANGING.ordinal();
     }
 
-    public void completeState() {
-       this.state=STATE.TERMINATED.ordinal();
+    public void requestDeposit() {
+       this.state=STATE.RETURN.ordinal();
+    }
+
+    public void returnDeposit(){
+        this.state=STATE.RETURNEND.ordinal();
     }
 }

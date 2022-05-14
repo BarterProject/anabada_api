@@ -95,20 +95,30 @@ public class DeliveryUpdateService {
     }
 
     @Transactional
-    public void completeDelivery(Long ItemIdx) {
+    public void requestDeposit(Long ItemIdx) {
 
-        ItemVO item=itemFindService.findByIdx(ItemIdx);
-
+        ItemVO item = itemFindService.findByIdx(ItemIdx);
         String name = item.getName();
 
-        DeliveryVO delivery=item.getDelivery();
+        DeliveryVO delivery = item.getDelivery();
         String ItemName = deliveryFindService.getTracking(ItemIdx).getItemName();
 
         if (!name.equals(ItemName))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        delivery.completeState();
+        delivery.requestDeposit();
     }
 
+    @Transactional
+    public void returnComplete(Long itemIdx){
+        ItemVO item=itemFindService.findByIdx(itemIdx);
+        DeliveryVO delivery=item.getDelivery();
+
+        if(delivery.getState()!=DeliveryVO.STATE.RETURN.ordinal())
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+
+        delivery.returnDeposit();
+
+    }
 
 }
