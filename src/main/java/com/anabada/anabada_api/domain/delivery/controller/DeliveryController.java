@@ -52,6 +52,9 @@ public class DeliveryController {
     ) {
         deliveryUpdateService.saveTrackingNumber(idx, request);
 
+        DeliveryVO delivery = deliveryFindService.findByIdx(idx);
+        deliveryUpdateService.requestDeposit(delivery.getItem().getIdx());
+
         return new ResponseEntity<>(new RegisterTracking.Response("saved"), HttpStatus.OK);
     }
 
@@ -71,30 +74,18 @@ public class DeliveryController {
     public ResponseEntity<DeliveryTrackingDTO> getDeliveryTracking(
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
-        DeliveryTrackingDTO tracking = deliveryFindService.getTracking(itemIdx);
+        String trackingNumber = deliveryFindService.findByItem(itemIdx).getTrackingNumber();
+        DeliveryTrackingDTO tracking = deliveryFindService.getTracking(trackingNumber);
 
         return new ResponseEntity<>(tracking, HttpStatus.OK);
     }
 
-    @PostMapping("/v2/user/items/deliveries/{item-idx}/returnDeposit")
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
-    public ResponseEntity<MessageDTO> requestDeposit(
-            @PathVariable(value = "item-idx") Long itemIdx
-    ) {
-        deliveryUpdateService.requestDeposit(itemIdx);
-        return new ResponseEntity<>(new MessageDTO("request deposit return"), HttpStatus.OK);
-    }
-
-
     /* 관리자 기능 */
-    @PutMapping(value = "/v2/admin/deliveries/{item-idx}/returnDeposit")
+    @PostMapping(value = "/v2/admin/deliveries/{item-idx}/returnDeposit")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-        public ResponseEntity<MessageDTO>returnComplete(
-                @PathVariable(value = "item-idx")Long itemIdx)
-    {
+    public ResponseEntity<MessageDTO> returnComplete(
+            @PathVariable(value = "item-idx") Long itemIdx) {
         deliveryUpdateService.returnComplete(itemIdx);
         return new ResponseEntity<>(new MessageDTO("return Deposit complete"), HttpStatus.OK);
     }
-
-
 }

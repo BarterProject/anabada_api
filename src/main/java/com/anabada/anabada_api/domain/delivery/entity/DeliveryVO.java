@@ -64,14 +64,14 @@ public class DeliveryVO {
     }
 
     public enum STATE {
-        INACTIVATED, // 비활성화
-        APPLIED, // 등록됨
-        EXCHANGING,//교환중
-        TERMINATED,//종료
-        RETURN, //보증금 반환 요청
-        RETURNEND // 보증금 반환 완료
+        INACTIVATED,
+        APPLIED,
+        EXCHANGING,
+        TERMINATED
     }
-
+    public void completeDelivery(){
+        this.state= STATE.TERMINATED.ordinal();
+    }
 
     public void setItem(ItemVO itemVO) {
         this.item = item;
@@ -88,11 +88,6 @@ public class DeliveryVO {
         this.state = STATE.EXCHANGING.ordinal();
     }
 
-    public void requestDeposit() {
-       this.state=STATE.RETURN.ordinal();
-    }
 
-    public void returnDeposit(){
-        this.state=STATE.RETURNEND.ordinal();
-    }
+
 }

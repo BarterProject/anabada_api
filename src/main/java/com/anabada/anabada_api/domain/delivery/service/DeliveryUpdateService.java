@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.delivery.service;
 
 import com.anabada.anabada_api.domain.delivery.dto.CreateDelivery;
+import com.anabada.anabada_api.domain.delivery.dto.DeliveryTrackingDTO;
 import com.anabada.anabada_api.domain.delivery.dto.RegisterTracking;
 import com.anabada.anabada_api.domain.delivery.entity.DeliveryCompanyVO;
 import com.anabada.anabada_api.domain.delivery.entity.DeliveryVO;
@@ -87,7 +88,6 @@ public class DeliveryUpdateService {
        if(delivery.getItem().getRegistrant() != user)
            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
-
         DeliveryCompanyVO company = deliveryCompanyFindService.findByIdx(request.getDeliveryCompanyIdx());
         delivery.setTrackingInfo(request.getTrackingNumber(), company);
 
@@ -95,18 +95,20 @@ public class DeliveryUpdateService {
     }
 
     @Transactional
-    public void requestDeposit(Long ItemIdx) {
+    public void requestDeposit(Long itemIdx) {
 
-        ItemVO item = itemFindService.findByIdx(ItemIdx);
-        String name = item.getName();
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        ItemVO item = itemFindService.findByIdx(itemIdx);
 
-        DeliveryVO delivery = item.getDelivery();
-        String ItemName = deliveryFindService.getTracking(ItemIdx).getItemName();
+        DeliveryTrackingDTO trackingInfo = deliveryFindService.getTracking(item.getDelivery().getTrackingNumber());
 
-        if (!name.equals(ItemName))
+        if (!item.getName().equals(trackingInfo.getItemName()))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        delivery.requestDeposit();
+        if (user != item.getOwner())
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        item.requestDeposit();
     }
 
     @Transactional
@@ -114,11 +116,10 @@ public class DeliveryUpdateService {
         ItemVO item=itemFindService.findByIdx(itemIdx);
         DeliveryVO delivery=item.getDelivery();
 
-        if(delivery.getState()!=DeliveryVO.STATE.RETURN.ordinal())
+        if (item.getState() != ItemVO.STATE.RETURN.ordinal())
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        delivery.returnDeposit();
-
+        delivery.completeDelivery();
     }
 
 }
