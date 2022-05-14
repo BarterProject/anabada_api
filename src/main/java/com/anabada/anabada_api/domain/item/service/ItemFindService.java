@@ -62,6 +62,7 @@ public class ItemFindService {
     }
 
 
+
     @Transactional(readOnly = true)
     public List<ItemVO> findByRegistrant(int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
@@ -106,6 +107,16 @@ public class ItemFindService {
     @Transactional(readOnly = true)
     public Page<ItemVO> findWithPage(Pageable pageable) {
         return itemRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemVO> findItemByName(String itemName, Pageable pageable) {
+        return itemRepository.findByNameContaining(itemName, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemVO> findItemByCategory(String category, Pageable pageable) {
+        return itemRepository.findByItemCategoryName(category, pageable);
     }
 
 

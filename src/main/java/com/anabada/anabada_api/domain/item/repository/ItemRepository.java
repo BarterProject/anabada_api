@@ -2,9 +2,12 @@ package com.anabada.anabada_api.domain.item.repository;
 
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,4 +38,15 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
 
     @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
     public Optional<ItemVO> findWithAllByIdx(Long idx);
+
+    @Query(value = "select e from ItemVO e where e.name like %:name%")
+    @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
+    public Page<ItemVO> findByNameContaining(@Param("name") String itemName, Pageable pageable);
+
+    @Query(value = "select e from ItemVO e where e.itemCategory.name like :itemCategory% ")
+    @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
+    public Page<ItemVO>findByItemCategoryName(@Param("itemCategory") String category,Pageable pageable);
+
+
+
 }

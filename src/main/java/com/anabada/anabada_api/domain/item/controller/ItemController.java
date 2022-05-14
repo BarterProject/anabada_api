@@ -14,7 +14,6 @@ import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -243,6 +241,42 @@ public class ItemController {
         return new ResponseEntity<>(new MessageDTO("refund complete"), HttpStatus.OK);
     }
 
+    @GetMapping("/v2/admin/items/search/itemName")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<PageItemDTO>searchItemName( @RequestParam(value = "itemName")String itemName,
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<ItemVO> page= itemFindService.findItemByName(itemName,pageable);
+
+        List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
+
+        PageItemDTO pageDTO = PageItemDTO.builder()
+                .items(dtos)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
+
+        return new ResponseEntity<>(pageDTO,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/v2/admin/items/search/category")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<PageItemDTO>searchItemCategory(
+            @RequestParam(value = "category")String category,
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<ItemVO> page= itemFindService.findItemByCategory(category,pageable);
+
+        List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
+
+        PageItemDTO pageDTO = PageItemDTO.builder()
+                .items(dtos)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
+
+        return new ResponseEntity<>(pageDTO,HttpStatus.OK);
+
+    }
 
 }
 
