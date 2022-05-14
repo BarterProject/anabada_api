@@ -87,7 +87,7 @@ public class DeliveryController {
 
 
     /* 관리자 기능 */
-    @PostMapping(value = "/v2/admin/deliveries/{item-idx}/returnDeposit")
+    @PutMapping(value = "/v2/admin/deliveries/{item-idx}/returnDeposit")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
         public ResponseEntity<MessageDTO>returnComplete(
                 @PathVariable(value = "item-idx")Long itemIdx)
