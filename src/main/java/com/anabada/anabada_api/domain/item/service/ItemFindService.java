@@ -77,8 +77,10 @@ public class ItemFindService {
     @Transactional(readOnly = true)
     public List<ItemVO> findByOwner(int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
+
         if(state == -1)
             return itemRepository.findByOwner(user);
+
         return itemRepository.findByOwnerAndState(user, state);
     }
 
@@ -113,13 +115,26 @@ public class ItemFindService {
     }
 
 
+    @Transactional(readOnly = true)
     public Page<ItemVO> findByItemName(Pageable pageable, String query) {
         return itemRepository.findByNameContains(query, pageable);
     }
 
-
+    @Transactional(readOnly = true)
     public Page<ItemVO> findByCategory(Pageable pageable, Long categoryIdx) {
         ItemCategoryVO category = categoryFindService.findByIdx(categoryIdx);
         return itemRepository.findByItemCategory(category, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemVO> findByOwner(Long userIdx, Pageable pageable) {
+        UserVO user = userFindService.findByIdx(userIdx);
+        return itemRepository.findByOwner(user, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemVO> findByRegistrant(Long userIdx, Pageable pageable) {
+        UserVO user = userFindService.findByIdx(userIdx);
+        return itemRepository.findByRegistrant(user, pageable);
     }
 }

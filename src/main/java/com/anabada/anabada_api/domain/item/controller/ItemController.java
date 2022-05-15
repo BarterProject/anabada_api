@@ -63,14 +63,14 @@ public class ItemController {
     public ResponseEntity<CreateItem.Response> saveItem(
             @RequestPart(value = "item", required = true) String itemString,
             @RequestPart(value = "img", required = true) List<MultipartFile> mfList
-    ){
+    ) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer());
         Gson gson = gsonBuilder.setPrettyPrinting().create();
 
 
         CreateItem.Request request = gson.fromJson(itemString, CreateItem.Request.class);
-        if(!request.validate()) throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR);
+        if (!request.validate()) throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_VALID_ERROR);
 
         Long dto = itemUpdateService.save(request, mfList);
 
@@ -163,7 +163,7 @@ public class ItemController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<MessageDTO> deleteRequest(
             @PathVariable(value = "request-idx") Long itemIdx
-    ){
+    ) {
         dealRequestService.delete(itemIdx);
         return new ResponseEntity<>(new MessageDTO("delete success"), HttpStatus.NO_CONTENT);
     }
@@ -211,6 +211,33 @@ public class ItemController {
                 throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
 
+
+        List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
+
+        PageItemDTO pageDTO = PageItemDTO.builder()
+                .items(dtos)
+                .currentPage(pageable.getPageNumber())
+                .totalPage(page.getTotalPages() - 1)
+                .build();
+
+        return new ResponseEntity<>(pageDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/v2/admin/users/{user-idx}/items")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<PageItemDTO> getItemList(
+            @PathVariable(value = "user-idx") Long userIdx,
+            @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(name = "mode", defaultValue = "registrant") String mode
+    ) {
+        Page<ItemVO> page;
+
+        if(mode.equals("registrant")){
+            page = itemFindService.findByRegistrant(userIdx, pageable);
+        }else if(mode.equals("owner")){
+            page = itemFindService.findByOwner(userIdx, pageable);
+        }else
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
 
