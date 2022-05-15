@@ -52,9 +52,6 @@ public class DeliveryController {
     ) {
         deliveryUpdateService.saveTrackingNumber(idx, request);
 
-        DeliveryVO delivery = deliveryFindService.findByIdx(idx);
-        deliveryUpdateService.requestDeposit(delivery.getItem().getIdx());
-
         return new ResponseEntity<>(new RegisterTracking.Response("saved"), HttpStatus.OK);
     }
 
@@ -86,6 +83,6 @@ public class DeliveryController {
     public ResponseEntity<MessageDTO> returnComplete(
             @PathVariable(value = "item-idx") Long itemIdx) {
         deliveryUpdateService.returnComplete(itemIdx);
-        return new ResponseEntity<>(new MessageDTO("return Deposit complete"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("return deposit complete"), HttpStatus.OK);
     }
 }

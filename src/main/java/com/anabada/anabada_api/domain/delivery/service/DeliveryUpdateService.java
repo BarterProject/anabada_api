@@ -68,7 +68,6 @@ public class DeliveryUpdateService {
                 .item(item)
                 .build();
 
-
         item.setDelivery(deliveryVO);
         roomUpdateService.save(deliveryVO);
 
@@ -76,39 +75,27 @@ public class DeliveryUpdateService {
     }
 
     @Transactional
-    public Long saveTrackingNumber(Long deliveryIdx, RegisterTracking.Request request){
+    public Long saveTrackingNumber(Long deliveryIdx, RegisterTracking.Request request) {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
-
         DeliveryVO delivery = deliveryFindService.findByIdx(deliveryIdx);
 
         if (delivery.getTrackingNumber() != null)
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
-
-       if(delivery.getItem().getRegistrant() != user)
-           throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+        if (delivery.getItem().getRegistrant() != user)
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
         DeliveryCompanyVO company = deliveryCompanyFindService.findByIdx(request.getDeliveryCompanyIdx());
         delivery.setTrackingInfo(request.getTrackingNumber(), company);
 
-        return delivery.getIdx();
-    }
+        DeliveryTrackingDTO trackingInfo = deliveryFindService.getTracking(delivery.getTrackingNumber());
 
-    @Transactional
-    public void requestDeposit(Long itemIdx) {
-
-        UserVO user = userFindService.getMyUserWithAuthorities();
-        ItemVO item = itemFindService.findByIdx(itemIdx);
-
-        DeliveryTrackingDTO trackingInfo = deliveryFindService.getTracking(item.getDelivery().getTrackingNumber());
-
-        if (!item.getName().equals(trackingInfo.getItemName()))
+        if (!delivery.getItem().getName().equals(trackingInfo.getItemName()))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        if (user != item.getOwner())
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+        delivery.getItem().requestDeposit();
 
-        item.requestDeposit();
+        return delivery.getIdx();
     }
 
     @Transactional
