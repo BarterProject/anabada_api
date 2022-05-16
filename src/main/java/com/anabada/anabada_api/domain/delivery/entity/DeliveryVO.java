@@ -47,7 +47,6 @@ public class DeliveryVO {
     @JoinColumn(name = "delivery_company_fk", updatable = true)
     private DeliveryCompanyVO deliveryCompany;
 
-
     @Builder
     public DeliveryVO(int state,
                       String address, String phone, String receiverName, boolean clauseAgree, String trackingNumber,
@@ -69,8 +68,9 @@ public class DeliveryVO {
         EXCHANGING,
         TERMINATED
     }
-    public void completeDelivery(){
-        this.state= STATE.TERMINATED.ordinal();
+
+    public void completeDelivery() {
+        this.state = STATE.TERMINATED.ordinal();
     }
 
     public void setItem(ItemVO itemVO) {

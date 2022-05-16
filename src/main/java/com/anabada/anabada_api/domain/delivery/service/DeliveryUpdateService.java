@@ -46,16 +46,15 @@ public class DeliveryUpdateService {
         return deliveryRepository.save(vo);
     }
 
-
     @Transactional
-    public Long save(Long idx, CreateDelivery.Request request){
+    public Long save(Long idx, CreateDelivery.Request request) {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(idx);
 
         if (item.getDelivery() != null)
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
-        if(item.getOwner() != user)
+        if (item.getOwner() != user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
         DeliveryVO deliveryVO = DeliveryVO.builder()
@@ -64,7 +63,7 @@ public class DeliveryUpdateService {
                 .clauseAgree(request.isClauseAgree())
                 .phone(request.getPhone())
                 .address(request.getAddress())
-                .dueAt(LocalDateTime.now().plusMonths(1))
+                .dueAt(LocalDateTime.now().plusWeeks(2))
                 .item(item)
                 .build();
 
@@ -99,14 +98,15 @@ public class DeliveryUpdateService {
     }
 
     @Transactional
-    public void returnComplete(Long itemIdx){
-        ItemVO item=itemFindService.findByIdx(itemIdx);
-        DeliveryVO delivery=item.getDelivery();
+    public void returnComplete(Long itemIdx) {
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+        DeliveryVO delivery = item.getDelivery();
 
         if (item.getState() != ItemVO.STATE.RETURN.ordinal())
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         delivery.completeDelivery();
+        item.completeItem();
     }
 
 }

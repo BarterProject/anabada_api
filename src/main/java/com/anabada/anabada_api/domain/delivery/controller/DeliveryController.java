@@ -83,6 +83,7 @@ public class DeliveryController {
     public ResponseEntity<MessageDTO> returnComplete(
             @PathVariable(value = "item-idx") Long itemIdx) {
         deliveryUpdateService.returnComplete(itemIdx);
+
         return new ResponseEntity<>(new MessageDTO("return deposit complete"), HttpStatus.OK);
     }
 }

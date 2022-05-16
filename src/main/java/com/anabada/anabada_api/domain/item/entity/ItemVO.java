@@ -103,6 +103,10 @@ public class ItemVO {
         this.state=STATE.RETURN.ordinal();
     }
 
+    public void completeItem() {
+        this.state = STATE.TERMINATED.ordinal();
+    }
+
     public void setDelivery(DeliveryVO delivery) {
         this.delivery = delivery;
         this.state = STATE.EXCHANGING.ordinal();
