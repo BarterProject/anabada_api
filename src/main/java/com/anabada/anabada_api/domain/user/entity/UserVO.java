@@ -58,6 +58,9 @@ public class UserVO {
     @JoinColumn(name = "auth_name_fk", nullable = false, updatable = true)
     AuthVO auth;
 
+    @Column(name = "fcm", updatable = true, nullable = true, length = 255)
+    String fcm;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NoticeVO> notices = new ArrayList<>();
 
@@ -85,6 +88,14 @@ public class UserVO {
         this.oauth = oauth;
         this.activated = activated;
         this.auth = auth;
+    }
+
+    public void setFcm(String token) {
+        this.fcm = token;
+    }
+
+    public void deleteToken() {
+        this.fcm = null;
     }
 
     public enum Activated {

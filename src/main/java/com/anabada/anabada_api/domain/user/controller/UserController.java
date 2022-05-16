@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.user.controller;
 
 
+import com.anabada.anabada_api.domain.user.dto.ApplyFCMToken;
 import com.anabada.anabada_api.domain.user.dto.CreateUser;
 import com.anabada.anabada_api.domain.user.dto.PageUserDTO;
 import com.anabada.anabada_api.domain.user.dto.UserDTO;
@@ -37,7 +38,7 @@ public class UserController {
 
     @PostMapping(path = "/v2/user")
     public ResponseEntity<CreateUser.Response> getSignUp(
-            @RequestBody @Validated CreateUser.Request request){
+            @RequestBody @Validated CreateUser.Request request) {
 
         Long idx = userUpdateService.signUp(request);
 
@@ -53,6 +54,24 @@ public class UserController {
         return new ResponseEntity<>(UserDTO.myInfoFromEntity(user), HttpStatus.OK);
     }
 
+
+    @PutMapping("/v2/user/fcm/token")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<MessageDTO> updateFCMToken(
+            @RequestBody @Validated ApplyFCMToken.Request request
+    ) {
+        userUpdateService.updateFCMToken(request);
+        return new ResponseEntity<>(new MessageDTO("token updated"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/v2/user/fcm/token")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<MessageDTO> deleteFCMToken(
+    ) {
+        userUpdateService.deleteFCMToken();
+        return new ResponseEntity<>(new MessageDTO("token deleted"), HttpStatus.OK);
+    }
+
     /* --- 관리자기능 --- */
 
     @GetMapping("/v2/admin/user")
@@ -64,11 +83,11 @@ public class UserController {
     ) {
         Page<UserVO> page;
 
-        if(mode.equals("all")){
+        if (mode.equals("all")) {
             page = userFindService.findAll(pageable);
         } else if (mode.equals("email")) {
             page = userFindService.findByEmail(query, pageable);
-        }else{
+        } else {
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
         }
 
