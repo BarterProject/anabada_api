@@ -49,7 +49,7 @@ public class ItemFindService {
         if (item.isEmpty())
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
-        if(item.get().getOwner() != user)
+        if(item.get().getOwner() != user && item.get().getRegistrant() != user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_NOT_OWN_EXCEPTION);
 
         return item.get();
