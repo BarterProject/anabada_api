@@ -80,14 +80,15 @@ public class ItemVO {
     List<ItemImageVO> images = new ArrayList<>();
 
 
-    public enum STATE{
+    public enum STATE {
         INACTIVATED,
         APPLIED,
         EXCHANGING,
         TERMINATED,
         WAITING,
         REFUND,
-        REFUNDEND
+        REFUNDEND,
+        RETURN
     }
 
     public void requestRefund() {
@@ -96,6 +97,14 @@ public class ItemVO {
 
     public void refund() {
         this.state = STATE.REFUNDEND.ordinal();
+    }
+
+    public void requestDeposit(){
+        this.state=STATE.RETURN.ordinal();
+    }
+
+    public void completeItem() {
+        this.state = STATE.TERMINATED.ordinal();
     }
 
     public void setDelivery(DeliveryVO delivery) {
