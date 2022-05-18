@@ -42,7 +42,6 @@ public class ReportUpdateService {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
 
-        //아이템에서 신고할 아이템 idx를 가져온다.
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
         ReportVO report = ReportVO.builder()

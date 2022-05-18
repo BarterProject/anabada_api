@@ -100,12 +100,10 @@ public class DeliveryUpdateService {
     @Transactional
     public void returnComplete(Long itemIdx) {
         ItemVO item = itemFindService.findByIdx(itemIdx);
-        DeliveryVO delivery = item.getDelivery();
 
         if (item.getState() != ItemVO.STATE.RETURN.ordinal())
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        delivery.completeDelivery();
         item.completeItem();
     }
 

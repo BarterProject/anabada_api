@@ -11,6 +11,8 @@ import com.anabada.anabada_api.domain.delivery.service.DeliveryFindService;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryUpdateService;
 import com.anabada.anabada_api.domain.item.service.ItemFindService;
 import com.anabada.anabada_api.domain.message.dto.MessageDTO;
+import com.anabada.anabada_api.exception.ApiException;
+import com.anabada.anabada_api.exception.ExceptionEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -72,6 +74,10 @@ public class DeliveryController {
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
         String trackingNumber = deliveryFindService.findByItem(itemIdx).getTrackingNumber();
+
+        if (trackingNumber == null)
+            throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
+
         DeliveryTrackingDTO tracking = deliveryFindService.getTracking(trackingNumber);
 
         return new ResponseEntity<>(tracking, HttpStatus.OK);

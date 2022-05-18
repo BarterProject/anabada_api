@@ -37,6 +37,9 @@ public class MessageUpdateService {
         UserVO user = userFindService.getMyUserWithAuthorities();
         RoomVO room = roomFindService.getByName(request.getRoomName());
 
+        if(room.getState() != RoomVO.STATE.ACTIVATED.ordinal())
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
         List<RoomUserVO> roomUserMapping = room.getMappings();
 
         boolean isMyRoom = false;
