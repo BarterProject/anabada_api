@@ -39,21 +39,21 @@ public class DealRequestService {
     @Transactional
     public DealRequestVO save(DealRequestVO vo) {
 
-        UserVO responseUser = vo.getResponseItem().getOwner();
-        NoticeVO noticeVO = NoticeVO.builder()
-                .route("/item/~~")
-                .kind("item request")
-                .content("아이템 거래 요청왔어용")
-                .state(1L)
-                .user(responseUser)
-                .build();
-
+//        UserVO responseUser = vo.getResponseItem().getOwner();
+//        NoticeVO noticeVO = NoticeVO.builder()
+//                .route("/item/~~")
+//                .kind("item request")
+//                .content("아이템 거래 요청왔어용")
+//                .state(1L)
+//                .user(responseUser)
+//                .build();
 //        noticeUpdateService.save(noticeVO);
+
         return dealRequestRepository.save(vo);
     }
 
     @Transactional
-    public Long save(DealRequest.Request request){
+    public Long save(DealRequest.Request request) {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
 
@@ -67,30 +67,29 @@ public class DealRequestService {
         if (response.getOwner() == user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
-        if (response.getState() != 1 || requestItem.getState() != 1)
+        if (response.getState() != ItemVO.STATE.APPLIED.ordinal() || requestItem.getState() != ItemVO.STATE.APPLIED.ordinal())
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        if(this.dealRequestDuplicateCheck(requestItem, response))
+        if (this.dealRequestDuplicateCheck(requestItem, response))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION_REQUEST_DUPLICATED);
 
 
         DealRequestVO dealVO = DealRequestVO.builder()
                 .requestItem(requestItem)
                 .responseItem(response)
-                .state(DealRequestVO.STATE.ONGOING.ordinal())
+                .state(DealRequestVO.STATE.ACTIVATED.ordinal())
                 .build();
 
         return this.save(dealVO).getIdx();
     }
 
 
-
     @Transactional
-    public void delete(Long requestIdx){
+    public void delete(Long requestIdx) {
         DealRequestVO request = this.findByIdx(requestIdx);
         UserVO user = userFindService.getMyUserWithAuthorities();
 
-        if(request.getRequestItem().getOwner() != user)
+        if (request.getRequestItem().getOwner() != user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
         dealRequestRepository.delete(request);
@@ -103,41 +102,43 @@ public class DealRequestService {
         UserVO responseUser = userFindService.getMyUserWithAuthorities();
         UserVO requestUser = request.getRequestItem().getOwner();
 
-        if(request.getResponseItem().getOwner() != responseUser)
+        if (request.getResponseItem().getOwner() != responseUser)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
-        if(request.getState() != 1)
+        if (request.getState() != DealRequestVO.STATE.ACTIVATED.ordinal())
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        if(request.getCreatedAt().plusMinutes(1L).isBefore(LocalDateTime.now()))
+        if (request.getCreatedAt().plusMinutes(1L).isBefore(LocalDateTime.now()))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
-
-        if(accept){
-            request.getRequestItem().changeOwner(responseUser);
-            request.getResponseItem().changeOwner(requestUser);
-        }
 
         this.closeRequestByItem(request.getRequestItem());
         this.closeRequestByItem(request.getResponseItem());
 
+        if (accept) {
+            request.getRequestItem().changeOwner(responseUser);
+            request.getResponseItem().changeOwner(requestUser);
+            request.setState(DealRequestVO.STATE.ACCOMPLISHED.ordinal());
+        } else request.setState(DealRequestVO.STATE.DENIED.ordinal());
+
+
     }
 
     @Transactional
-    public void closeRequestByItem(ItemVO item){
+    public void closeRequestByItem(ItemVO item) {
         List<DealRequestVO> requestItems = item.getDealRequestItemList();
         List<DealRequestVO> responseItems = item.getDealResponseItemList();
 
-        for(DealRequestVO request : requestItems)
+        for (DealRequestVO request : requestItems)
             request.close();
 
-        for(DealRequestVO request : responseItems)
+        for (DealRequestVO request : responseItems)
             request.close();
 
     }
 
 
     @Transactional(readOnly = true)
-    public DealRequestVO findByIdx(Long idx){
+    public DealRequestVO findByIdx(Long idx) {
         return dealRequestRepository.findById(idx).orElseThrow(() -> new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION));
     }
 
@@ -148,7 +149,7 @@ public class DealRequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<DealRequestVO> getRequestsByItem(Long itemIdx, int state){
+    public List<DealRequestVO> getRequestsByItem(Long itemIdx, int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
@@ -156,7 +157,7 @@ public class DealRequestService {
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
 
-        return  dealRequestRepository.findByRequestItemAndState(item, state);
+        return dealRequestRepository.findByRequestItemAndState(item, state);
     }
 
     @Transactional(readOnly = true)
@@ -168,20 +169,18 @@ public class DealRequestService {
             throw new BadCredentialsException("not your own item");
         }
 
-        return  dealRequestRepository.findByResponseItemAndState(item, state);
+        return dealRequestRepository.findByResponseItemAndState(item, state);
     }
 
     @Transactional(readOnly = true)
     public DealRequestVO getByIdx(Long idx) {
         Optional<DealRequestVO> vo = dealRequestRepository.findById(idx);
 
-        if(vo.isEmpty())
+        if (vo.isEmpty())
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
         return vo.get();
     }
-
-
 
 
 }

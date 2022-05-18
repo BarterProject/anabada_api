@@ -37,8 +37,12 @@ public class DealRequestVO {
     @JoinColumn(name = "response_item_idx_fk")
     ItemVO responseItem;
 
+    public void setState(int state) {
+        this.state = state;
+    }
+
     public enum STATE{
-        DEACTIVATED, ONGOING, CLOSED, ACCOMPLISHED
+        DEACTIVATED, ACTIVATED, CLOSED, ACCOMPLISHED, DENIED
     }
 
     @Builder

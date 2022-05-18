@@ -109,6 +109,7 @@ public class ItemDTO {
                 )
 
                 .owner(UserDTO.simpleFromEntity(vo.getOwner()))
+                .registrant(UserDTO.simpleFromEntity(vo.getRegistrant()))
                 .delivery(vo.getDelivery() != null ? DeliveryDTO.fromEntity(vo.getDelivery()) : null)
                 .build();
     }
