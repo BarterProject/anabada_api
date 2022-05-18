@@ -18,22 +18,22 @@ public class NoticeDTO {
 
     private LocalDateTime createdAt;
 
-    private Long state;
+    private int state;
 
     private String route;
 
-    private String kind;
+    private String title;
 
     UserDTO user;
 
     @Builder
-    public NoticeDTO(Long idx, String content, LocalDateTime createdAt, Long state, String route, String kind, UserDTO user) {
+    public NoticeDTO(Long idx, String content, LocalDateTime createdAt, int state, String route, String title, UserDTO user) {
         this.idx = idx;
         this.content = content;
         this.createdAt = createdAt;
         this.state = state;
         this.route = route;
-        this.kind = kind;
+        this.title = title;
         this.user = user;
     }
 
@@ -44,7 +44,7 @@ public class NoticeDTO {
                 .content(vo.getContent())
                 .state(vo.getState())
                 .route(vo.getRoute())
-                .kind(vo.getKind())
+                .title(vo.getTitle())
                 .build();
     }
 }

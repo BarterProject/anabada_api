@@ -55,7 +55,7 @@ public class UserController {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
 //        fcmService.sendMessageTest();
-        fcmService.sendNotificationTest();
+//        fcmService.sendNotificationTest();
 
         return new ResponseEntity<>(UserDTO.myInfoFromEntity(user), HttpStatus.OK);
     }

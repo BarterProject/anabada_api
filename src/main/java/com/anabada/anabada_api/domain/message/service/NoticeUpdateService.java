@@ -28,21 +28,22 @@ public class NoticeUpdateService {
 
     @Transactional
     public NoticeVO save(NoticeVO noticeVO) {
-        NoticeVO notice = noticeRepository.save(noticeVO);
+        return noticeRepository.save(noticeVO);
 
-        //알람 소켓서버로 전달
-        HttpRequestUtil<NoticeDTO> requestUtil = new HttpRequestUtil<>();
+//        //알람 소켓서버로 전달
+//        HttpRequestUtil<NoticeDTO> requestUtil = new HttpRequestUtil<>();
+//
+//        RequestEntity requestEntity = new RequestEntity(socketUri);
+//        requestEntity.addBodyParam("content", notice.getContent())
+//                .addBodyParam("createdAt", notice.getCreatedAt().toString())
+//                .addBodyParam("state", notice.getState().toString())
+//                .addBodyParam("route", notice.getRoute())
+//                .addBodyParam("kind", notice.getKind())
+//                .addBodyParam("user", notice.getUser().getEmail());
+//
+//        requestUtil.request(requestEntity, HttpMethod.POST);
 
-        RequestEntity requestEntity = new RequestEntity(socketUri);
-        requestEntity.addBodyParam("content", notice.getContent())
-                .addBodyParam("createdAt", notice.getCreatedAt().toString())
-                .addBodyParam("state", notice.getState().toString())
-                .addBodyParam("route", notice.getRoute())
-                .addBodyParam("kind", notice.getKind())
-                .addBodyParam("user", notice.getUser().getEmail());
-
-        requestUtil.request(requestEntity, HttpMethod.POST);
-        return notice;
+//        return notice;
     }
 
 

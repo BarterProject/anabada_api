@@ -10,6 +10,7 @@ import com.anabada.anabada_api.domain.message.service.NoticeUpdateService;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
+import com.anabada.anabada_api.firebase.FCMService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,29 +26,18 @@ public class DealRequestService {
 
     UserFindService userFindService;
     ItemFindService itemFindService;
-    ItemUpdateService itemUpdateService;
-    NoticeUpdateService noticeUpdateService;
 
-    public DealRequestService(DealRequestRepository dealRequestRepository, UserFindService userFindService, ItemFindService itemFindService, ItemUpdateService itemUpdateService, NoticeUpdateService noticeUpdateService) {
+    public DealRequestService(DealRequestRepository dealRequestRepository, UserFindService userFindService, ItemFindService itemFindService) {
         this.dealRequestRepository = dealRequestRepository;
         this.userFindService = userFindService;
         this.itemFindService = itemFindService;
-        this.itemUpdateService = itemUpdateService;
-        this.noticeUpdateService = noticeUpdateService;
     }
 
     @Transactional
     public DealRequestVO save(DealRequestVO vo) {
 
-//        UserVO responseUser = vo.getResponseItem().getOwner();
-//        NoticeVO noticeVO = NoticeVO.builder()
-//                .route("/item/~~")
-//                .kind("item request")
-//                .content("아이템 거래 요청왔어용")
-//                .state(1L)
-//                .user(responseUser)
-//                .build();
-//        noticeUpdateService.save(noticeVO);
+        UserVO responseUser = vo.getResponseItem().getOwner();
+
 
         return dealRequestRepository.save(vo);
     }
@@ -181,6 +171,8 @@ public class DealRequestService {
 
         return vo.get();
     }
+
+
 
 
 }

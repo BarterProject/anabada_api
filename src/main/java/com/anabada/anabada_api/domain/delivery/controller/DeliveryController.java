@@ -10,6 +10,7 @@ import com.anabada.anabada_api.domain.delivery.service.DeliveryCompanyFindServic
 import com.anabada.anabada_api.domain.delivery.service.DeliveryFindService;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryUpdateService;
 import com.anabada.anabada_api.domain.item.service.ItemFindService;
+import com.anabada.anabada_api.firebase.FCMService;
 import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
@@ -17,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.security.auth.message.AuthException;
 
 @RestController
 @RequestMapping("/api")
@@ -26,12 +29,14 @@ public class DeliveryController {
     DeliveryFindService deliveryFindService;
     ItemFindService itemFindService;
     DeliveryCompanyFindService deliveryCompanyFindService;
+    FCMService fcmService;
 
-    public DeliveryController(DeliveryUpdateService deliveryUpdateService, DeliveryFindService deliveryFindService, ItemFindService itemFindService, DeliveryCompanyFindService deliveryCompanyFindService) {
+    public DeliveryController(DeliveryUpdateService deliveryUpdateService, DeliveryFindService deliveryFindService, ItemFindService itemFindService, DeliveryCompanyFindService deliveryCompanyFindService, FCMService fcmService) {
         this.deliveryUpdateService = deliveryUpdateService;
         this.deliveryFindService = deliveryFindService;
         this.itemFindService = itemFindService;
         this.deliveryCompanyFindService = deliveryCompanyFindService;
+        this.fcmService = fcmService;
     }
 
 
@@ -42,6 +47,7 @@ public class DeliveryController {
             @RequestBody CreateDelivery.Request request) {
 
         Long id = deliveryUpdateService.save(idx, request);
+        fcmService.sendDeliveryRequestedNotice(idx);
 
         return new ResponseEntity<>(new CreateDelivery.Response(id), HttpStatus.CREATED);
     }
@@ -53,6 +59,8 @@ public class DeliveryController {
             @RequestBody RegisterTracking.Request request
     ) {
         deliveryUpdateService.saveTrackingNumber(idx, request);
+
+        fcmService.sendDeliveryStartedNotice(idx);
 
         return new ResponseEntity<>(new RegisterTracking.Response("saved"), HttpStatus.OK);
     }
@@ -90,6 +98,7 @@ public class DeliveryController {
             @PathVariable(value = "item-idx") Long itemIdx) {
         deliveryUpdateService.returnComplete(itemIdx);
 
+        fcmService.sendReturnCompleteNotice(itemIdx);
         return new ResponseEntity<>(new MessageDTO("return deposit complete"), HttpStatus.OK);
     }
 }

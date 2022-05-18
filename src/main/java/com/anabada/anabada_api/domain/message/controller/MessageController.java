@@ -11,6 +11,7 @@ import com.anabada.anabada_api.domain.message.service.MessageFindService;
 import com.anabada.anabada_api.domain.message.service.MessageUpdateService;
 
 import com.anabada.anabada_api.domain.message.service.RoomFindService;
+import com.anabada.anabada_api.firebase.FCMService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,11 +32,13 @@ public class MessageController {
     RoomFindService roomFindService;
     MessageFindService messageFindService;
     MessageUpdateService messageUpdateService;
+    FCMService fcmService;
 
-    public MessageController(RoomFindService roomFindService, MessageFindService messageFindService, MessageUpdateService messageUpdateService) {
+    public MessageController(RoomFindService roomFindService, MessageFindService messageFindService, MessageUpdateService messageUpdateService, FCMService fcmService) {
         this.roomFindService = roomFindService;
         this.messageFindService = messageFindService;
         this.messageUpdateService = messageUpdateService;
+        this.fcmService = fcmService;
     }
 
     @GetMapping("/v2/rooms")
@@ -73,6 +76,7 @@ public class MessageController {
     ) {
         MessageVO message = messageUpdateService.save(request);
 
+        fcmService.sendMessage(message, "/");
         return new ResponseEntity<>(new CreateMessage.Response(message.getIdx()), HttpStatus.CREATED);
     }
 

@@ -12,6 +12,7 @@ import com.anabada.anabada_api.domain.item.service.ItemUpdateService;
 import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
+import com.anabada.anabada_api.firebase.FCMService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javassist.NotFoundException;
@@ -39,12 +40,14 @@ public class ItemController {
     ItemFindService itemFindService;
     DealRequestService dealRequestService;
     ItemImageService itemImageService;
+    FCMService fcmService;
 
-    public ItemController(ItemUpdateService itemUpdateService, ItemFindService itemFindService, DealRequestService dealRequestService, ItemImageService itemImageService) {
+    public ItemController(ItemUpdateService itemUpdateService, ItemFindService itemFindService, DealRequestService dealRequestService, ItemImageService itemImageService, FCMService fcmService) {
         this.itemUpdateService = itemUpdateService;
         this.itemFindService = itemFindService;
         this.dealRequestService = dealRequestService;
         this.itemImageService = itemImageService;
+        this.fcmService = fcmService;
     }
 
     @GetMapping("/v2/items/{item-idx}")
@@ -114,6 +117,8 @@ public class ItemController {
             @RequestBody DealRequest.Request request
     ) {
         Long idx = dealRequestService.save(request);
+        fcmService.sendRequestSavedNotice(idx);
+
         return new ResponseEntity<>(new DealRequest.Response(idx), HttpStatus.OK);
     }
 
@@ -145,6 +150,8 @@ public class ItemController {
     public ResponseEntity<MessageDTO> acceptRequest(
             @PathVariable(value = "request-idx") Long requestIdx) {
         dealRequestService.handleRequest(requestIdx, true);
+
+        fcmService.sendRequestCompletedNotice(requestIdx);
 
         return new ResponseEntity<>(new MessageDTO("deal accepted"), HttpStatus.OK);
     }
@@ -276,6 +283,8 @@ public class ItemController {
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
         itemUpdateService.activateItem(itemIdx, true);
+        fcmService.sendItemActivatedNotice(itemIdx);
+
         return new ResponseEntity<>(new MessageDTO("item activated"), HttpStatus.OK);
     }
 
@@ -284,6 +293,9 @@ public class ItemController {
     public ResponseEntity<MessageDTO> refundComplete(
             @PathVariable(value = "item-idx") Long itemIdx) {
         itemUpdateService.refundComplete(itemIdx);
+
+        fcmService.sendRefundCompleteNotice(itemIdx);
+
         return new ResponseEntity<>(new MessageDTO("refund complete"), HttpStatus.OK);
     }
 
