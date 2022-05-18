@@ -98,7 +98,7 @@ public class DealRequestService {
         if (request.getState() != DealRequestVO.STATE.ACTIVATED.ordinal())
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
-        if (request.getCreatedAt().plusMinutes(1L).isBefore(LocalDateTime.now()))
+        if (!request.getCreatedAt().plusMinutes(1L).isBefore(LocalDateTime.now()))
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         this.closeRequestByItem(request.getRequestItem());
