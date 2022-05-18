@@ -1,7 +1,9 @@
 package com.anabada.anabada_api.domain.user.controller;
 
 import com.anabada.anabada_api.domain.user.dto.AuthorizeUser;
+import com.anabada.anabada_api.firebase.FCMService;
 import com.anabada.anabada_api.jwt.TokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    @Autowired
+    FCMService fcmService;
 
     public AuthController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
         this.tokenProvider = tokenProvider;

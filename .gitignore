@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 !**/src/main/java/resources/application.yml
+!**/src/main/java/resources/clip-9b394-firebase-adminsdk-ddohm-e818bdb674.json
 
 ### STS ###
 .apt_generated

@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.user.service;
 
 
+import com.anabada.anabada_api.domain.user.dto.ApplyFCMToken;
 import com.anabada.anabada_api.domain.user.dto.CreateUser;
 import com.anabada.anabada_api.domain.user.repository.UserRepository;
 import com.anabada.anabada_api.exception.ApiException;
@@ -58,4 +59,15 @@ public class UserUpdateService {
         user.activate(isActivate);
     }
 
+    @Transactional
+    public void updateFCMToken(ApplyFCMToken.Request request) {
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        user.setFcm(request.getToken());
+    }
+
+    @Transactional
+    public void deleteFCMToken() {
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        user.deleteToken();
+    }
 }

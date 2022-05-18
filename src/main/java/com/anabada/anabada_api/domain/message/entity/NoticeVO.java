@@ -29,24 +29,24 @@ public class NoticeVO {
     private LocalDateTime createdAt;
 
     @Column(name = "state", updatable = true, nullable = true)
-    private Long state;
+    private int state;
 
     @Column(name = "route", updatable = true, nullable = true)
     private String route;
 
-    @Column(name = "kind", updatable = true, nullable = true, length = 45)
-    private String kind;
+    @Column(name = "title", updatable = true, nullable = true, length = 255)
+    private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx_fk", nullable = false, updatable = false)
     UserVO user;
 
     @Builder
-    public NoticeVO(String content, Long state, String route, String kind, UserVO user) {
+    public NoticeVO(String content, int state, String route, String title, UserVO user) {
         this.content = content;
         this.state = state;
         this.route = route;
-        this.kind = kind;
+        this.title = title;
         this.user = user;
     }
 

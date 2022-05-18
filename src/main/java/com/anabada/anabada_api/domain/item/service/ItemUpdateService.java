@@ -11,6 +11,7 @@ import com.anabada.anabada_api.domain.pay.service.PaymentUpdateService;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
+import com.anabada.anabada_api.firebase.FCMService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,17 +28,18 @@ public class ItemUpdateService {
     CategoryFindService categoryFindService;
     ItemImageService itemImageService;
     ItemFindService itemFindService;
+    FCMService fcmService;
 
 
-    public ItemUpdateService(ItemRepository itemRepository, UserFindService userFindService, PaymentUpdateService paymentUpdateService, CategoryFindService categoryFindService, ItemImageService itemImageService, ItemFindService itemFindService) {
+    public ItemUpdateService(ItemRepository itemRepository, UserFindService userFindService, PaymentUpdateService paymentUpdateService, CategoryFindService categoryFindService, ItemImageService itemImageService, ItemFindService itemFindService, FCMService fcmService) {
         this.itemRepository = itemRepository;
         this.userFindService = userFindService;
         this.paymentUpdateService = paymentUpdateService;
         this.categoryFindService = categoryFindService;
         this.itemImageService = itemImageService;
         this.itemFindService = itemFindService;
+        this.fcmService = fcmService;
     }
-
 
     @Transactional
     public Long save(CreateItem.Request request, List<MultipartFile> mfList) {
