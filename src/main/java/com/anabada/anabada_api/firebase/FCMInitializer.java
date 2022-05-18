@@ -28,6 +28,7 @@ public class FCMInitializer {
         try (InputStream is = resource.getInputStream()) {
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(is))
+//                    .setCredentials(GoogleCredentials.getApplicationDefault())
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {

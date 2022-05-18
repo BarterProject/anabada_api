@@ -42,7 +42,6 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.createToken(authentication);
-        fcmService.sendMessageTest();
 
         return new ResponseEntity<>(new AuthorizeUser.Response(jwt), HttpStatus.OK);
     }

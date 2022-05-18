@@ -11,6 +11,7 @@ import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.domain.user.service.UserUpdateService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
+import com.anabada.anabada_api.firebase.FCMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,9 @@ public class UserController {
     UserUpdateService userUpdateService;
 
     @Autowired
+    FCMService fcmService;
+
+    @Autowired
     UserFindService userFindService;
 
     @PostMapping(path = "/v2/user")
@@ -50,6 +54,8 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserInfo() {
 
         UserVO user = userFindService.getMyUserWithAuthorities();
+//        fcmService.sendMessageTest();
+        fcmService.sendNotificationTest();
 
         return new ResponseEntity<>(UserDTO.myInfoFromEntity(user), HttpStatus.OK);
     }
