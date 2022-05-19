@@ -38,7 +38,7 @@ public class DealRequestDTO {
         this.responseItem = responseItem;
     }
 
-    public static DealRequestDTO fromEntity(DealRequestVO vo){
+    public static DealRequestDTO fromEntity(DealRequestVO vo) {
         return DealRequestDTO.builder()
                 .idx(vo.getIdx())
                 .createdAt(vo.getCreatedAt())
@@ -48,4 +48,15 @@ public class DealRequestDTO {
                 .requestItem(ItemDTO.listFromEntity(vo.getRequestItem()))
                 .build();
     }
+
+    public static DealRequestDTO fromEntityByHistory(DealRequestVO vo) {
+        return DealRequestDTO.builder()
+                .idx(vo.getIdx())
+                .tradedAt(vo.getTradedAt())
+                .requestItem(ItemDTO.fromEntityByHistory(vo.getRequestItem()))
+                .responseItem(ItemDTO.fromEntityByHistory(vo.getResponseItem()))
+                .state(vo.getState())
+                .build();
+    }
+
 }
