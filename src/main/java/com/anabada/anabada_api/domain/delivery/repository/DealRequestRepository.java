@@ -20,6 +20,6 @@ public interface DealRequestRepository extends JpaRepository<DealRequestVO, Long
     public List<DealRequestVO> findByResponseItemAndState(ItemVO responseItem, int state);
 
     @Query(value = "select e from DealRequestVO e where ( e.responseItem= :responseItem or e.requestItem =:requestItem ) and e.state=:state order by  e.tradedAt desc ")
-    public List<DealRequestVO> findByHistory(@Param("responseItem") ItemVO responseItem, @Param("requestItem") ItemVO requestItem, @Param("state") int state);
+    public List<DealRequestVO> findByItemsAndState(@Param("responseItem") ItemVO responseItem, @Param("requestItem") ItemVO requestItem, @Param("state") int state);
 
 }

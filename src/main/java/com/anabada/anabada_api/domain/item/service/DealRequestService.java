@@ -105,6 +105,7 @@ public class DealRequestService {
             request.getRequestItem().changeOwner(responseUser);
             request.getResponseItem().changeOwner(requestUser);
             request.setState(DealRequestVO.STATE.ACCOMPLISHED.ordinal());
+            request.setTradeAt(LocalDateTime.now());
         } else request.setState(DealRequestVO.STATE.DENIED.ordinal());
 
 
@@ -177,7 +178,7 @@ public class DealRequestService {
         if (user != item.getOwner())
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
-        return dealRequestRepository.findByHistory(item, item, state);
+        return dealRequestRepository.findByItemsAndState(item, item, state);
     }
 
 

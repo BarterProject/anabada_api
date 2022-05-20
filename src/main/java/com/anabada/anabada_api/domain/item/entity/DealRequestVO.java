@@ -54,7 +54,22 @@ public class DealRequestVO {
         this.responseItem = responseItem;
     }
 
-    public void close(){
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public void setTradeAt(LocalDateTime tradedAt) {
+        this.tradedAt = tradedAt;
+        DealRequestVO.builder()
+                .tradedAt(this.tradedAt)
+                .build();
+    }
+
+    public void close() {
         this.state = STATE.CLOSED.ordinal();
+    }
+
+    public enum STATE {
+        DEACTIVATED, ACTIVATED, CLOSED, ACCOMPLISHED, DENIED
     }
 }
