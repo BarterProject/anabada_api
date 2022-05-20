@@ -19,16 +19,15 @@ import java.io.InputStream;
 public class FCMInitializer {
 
     @Value("${fcm.certification}")
-    private String googleApplicationCredential;
+    private String credential;
 
     @PostConstruct
     public void initialize(){
-        ClassPathResource resource = new ClassPathResource(googleApplicationCredential);
+        ClassPathResource resource = new ClassPathResource(credential);
 
-        try (InputStream is = resource.getInputStream()) {
+        try (InputStream stream = resource.getInputStream()) {
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(is))
-//                    .setCredentials(GoogleCredentials.getApplicationDefault())
+                    .setCredentials(GoogleCredentials.fromStream(stream))
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
@@ -41,6 +40,4 @@ public class FCMInitializer {
         }
 
     }
-
-
 }
