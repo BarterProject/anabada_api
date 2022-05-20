@@ -41,6 +41,13 @@ public class DealRequestVO {
         this.state = state;
     }
 
+    public void setTradeAt(LocalDateTime tradedAt) {
+        this.tradedAt = tradedAt;
+        DealRequestVO.builder()
+                .tradedAt(this.tradedAt)
+                .build();
+    }
+
     public enum STATE{
         DEACTIVATED, ACTIVATED, CLOSED, ACCOMPLISHED, DENIED
     }

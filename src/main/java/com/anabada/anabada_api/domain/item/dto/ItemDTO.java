@@ -1,8 +1,8 @@
 package com.anabada.anabada_api.domain.item.dto;
 
-import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.delivery.dto.DeliveryDTO;
 import com.anabada.anabada_api.domain.etc.dto.ValidationGroups;
+import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.pay.dto.PaymentDTO;
 import com.anabada.anabada_api.domain.user.dto.UserDTO;
 import lombok.AccessLevel;
@@ -132,6 +132,17 @@ public class ItemDTO {
 
                 .owner(UserDTO.simpleFromEntity(vo.getOwner()))
                 .payment(PaymentDTO.fromEntity(vo.getPayment()))
+                .build();
+    }
+
+    public static ItemDTO fromEntityByHistory(ItemVO vo) {
+        return ItemDTO.builder()
+                .idx(vo.getIdx())
+                .name(vo.getName())
+                .images(
+                        vo.getImages().stream().map(ItemImageDTO::fromEntity).collect(Collectors.toList())
+                )
+                .deposit(vo.getDeposit())
                 .build();
     }
 

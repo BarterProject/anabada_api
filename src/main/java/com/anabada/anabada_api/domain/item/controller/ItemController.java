@@ -15,7 +15,6 @@ import com.anabada.anabada_api.exception.ExceptionEnum;
 import com.anabada.anabada_api.firebase.FCMService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -191,6 +189,16 @@ public class ItemController {
             @PathVariable(value = "item-idx") Long itemIdx) {
         itemUpdateService.refundRequest(itemIdx);
         return new ResponseEntity<>(new MessageDTO("refund requested"), HttpStatus.OK);
+    }
+
+    @GetMapping("/v2/user/items/{item-idx}/dealHistory")
+    public ResponseEntity<List<DealRequestDTO>> getDealHistory(
+            @PathVariable(value = "item-idx") Long itemIdx,
+            @RequestParam(value = "state", defaultValue = "3") int state
+    ) {
+        List<DealRequestVO> list = dealRequestService.getDealHistory(itemIdx, state);
+        List<DealRequestDTO> dto = list.stream().map(DealRequestDTO::fromEntityByHistory).collect(Collectors.toList());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     /* --- 관리자기능 --- */

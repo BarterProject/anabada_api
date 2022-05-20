@@ -1,16 +1,13 @@
 package com.anabada.anabada_api.domain.item.service;
 
+import com.anabada.anabada_api.domain.delivery.repository.DealRequestRepository;
 import com.anabada.anabada_api.domain.item.dto.DealRequest;
 import com.anabada.anabada_api.domain.item.entity.DealRequestVO;
-import com.anabada.anabada_api.domain.message.entity.NoticeVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
-import com.anabada.anabada_api.domain.delivery.repository.DealRequestRepository;
-import com.anabada.anabada_api.domain.message.service.NoticeUpdateService;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
-import com.anabada.anabada_api.firebase.FCMService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +105,7 @@ public class DealRequestService {
             request.getRequestItem().changeOwner(responseUser);
             request.getResponseItem().changeOwner(requestUser);
             request.setState(DealRequestVO.STATE.ACCOMPLISHED.ordinal());
+            request.setTradeAt(LocalDateTime.now());
         } else request.setState(DealRequestVO.STATE.DENIED.ordinal());
 
 
@@ -170,6 +168,17 @@ public class DealRequestService {
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
         return vo.get();
+    }
+
+    @Transactional(readOnly = true)
+    public List<DealRequestVO> getDealHistory(Long itemIdx, int state) {
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+
+        if (user != item.getOwner())
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        return dealRequestRepository.findByItemsAndState(item, item, state);
     }
 
 
