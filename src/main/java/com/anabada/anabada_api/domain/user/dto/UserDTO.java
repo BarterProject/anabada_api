@@ -20,7 +20,9 @@ public class UserDTO {
     String address;
     String bankAccount;
     String bankKind;
+    boolean activated;
 
+    int state;
     LocalDateTime createdAt;
 
     String auth;
@@ -36,6 +38,7 @@ public class UserDTO {
                 .phone(user.getPhone())
                 .createdAt(user.getCreatedAt())
                 .auth(user.getAuth().getName())
+                .activated(user.isActivated())
                 .build();
     }
 
@@ -50,6 +53,7 @@ public class UserDTO {
                 .bankKind(user.getBankKind())
                 .createdAt(user.getCreatedAt())
                 .auth(user.getAuth().getName())
+                .activated(user.isActivated())
                 .build();
     }
 
@@ -57,6 +61,7 @@ public class UserDTO {
         return UserDTO.builder()
                 .idx(user.getIdx())
                 .email(user.getEmail())
+                .activated(user.isActivated())
                 .build();
     }
 
