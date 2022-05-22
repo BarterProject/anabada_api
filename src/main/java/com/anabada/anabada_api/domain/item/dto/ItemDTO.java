@@ -55,7 +55,7 @@ public class ItemDTO {
     private DeliveryDTO delivery;
 
     @Builder
-    public ItemDTO(Long idx, String name, String description, LocalDateTime createdAt, LocalDateTime endAt, Long deposit, boolean clause_agree, PaymentDTO payment, ItemCategoryDTO itemCategory, UserDTO registrant, UserDTO owner, int state, List<ItemImageDTO> images,DeliveryDTO delivery) {
+    public ItemDTO(Long idx, String name, String description, LocalDateTime createdAt, LocalDateTime endAt, Long deposit, boolean clause_agree, PaymentDTO payment, ItemCategoryDTO itemCategory, UserDTO registrant, UserDTO owner, int state, List<ItemImageDTO> images, DeliveryDTO delivery) {
         this.idx = idx;
         this.name = name;
         this.description = description;
@@ -69,10 +69,10 @@ public class ItemDTO {
         this.itemCategory = itemCategory;
         this.owner = owner;
         this.images = images;
-        this.delivery=delivery;
+        this.delivery = delivery;
     }
 
-    public static ItemDTO listFromEntity(ItemVO vo){
+    public static ItemDTO listFromEntity(ItemVO vo) {
 
         return ItemDTO.builder()
                 .idx(vo.getIdx())
@@ -92,7 +92,7 @@ public class ItemDTO {
                 .build();
     }
 
-    public static ItemDTO fromEntityByOwner(ItemVO vo){
+    public static ItemDTO fromEntityByOwner(ItemVO vo) {
         return ItemDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -114,7 +114,7 @@ public class ItemDTO {
                 .build();
     }
 
-    public static ItemDTO fromEntityByRegistrant(ItemVO vo){
+    public static ItemDTO fromEntityByRegistrant(ItemVO vo) {
         return ItemDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -140,13 +140,13 @@ public class ItemDTO {
                 .idx(vo.getIdx())
                 .name(vo.getName())
                 .images(
-                        vo.getImages().stream().map(ItemImageDTO::fromEntity).collect(Collectors.toList())
+                        vo.getImages().stream().map(ItemImageDTO::fromEntity).limit(1).collect(Collectors.toList())
                 )
                 .deposit(vo.getDeposit())
                 .build();
     }
 
-    public static ItemDTO allFromEntity(ItemVO vo){
+    public static ItemDTO allFromEntity(ItemVO vo) {
         return ItemDTO.builder()
                 .idx(vo.getIdx())
                 .name(vo.getName())
@@ -166,7 +166,7 @@ public class ItemDTO {
                 .build();
     }
 
-    public static ItemDTO onlyIdxFromEntity(ItemVO vo){
+    public static ItemDTO onlyIdxFromEntity(ItemVO vo) {
         return ItemDTO.builder()
                 .idx(vo.getIdx())
                 .build();

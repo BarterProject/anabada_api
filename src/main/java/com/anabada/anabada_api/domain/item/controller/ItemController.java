@@ -193,10 +193,9 @@ public class ItemController {
 
     @GetMapping("/v2/user/items/{item-idx}/dealHistory")
     public ResponseEntity<List<DealRequestDTO>> getDealHistory(
-            @PathVariable(value = "item-idx") Long itemIdx,
-            @RequestParam(value = "state", defaultValue = "3") int state
+            @PathVariable(value = "item-idx") Long itemIdx
     ) {
-        List<DealRequestVO> list = dealRequestService.getDealHistory(itemIdx, state);
+        List<DealRequestVO> list = dealRequestService.getDealHistory(itemIdx);
         List<DealRequestDTO> dto = list.stream().map(DealRequestDTO::fromEntityByHistory).collect(Collectors.toList());
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
