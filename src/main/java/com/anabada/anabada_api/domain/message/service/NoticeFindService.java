@@ -6,6 +6,8 @@ import com.anabada.anabada_api.domain.message.dto.NoticeDTO;
 import com.anabada.anabada_api.domain.message.repository.NoticeRepository;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,8 @@ public class NoticeFindService {
     }
 
     @Transactional(readOnly = true)
-    public List<NoticeVO> getMyNotices(){
+    public Page<NoticeVO> getMyNotices(Pageable pageable) {
         UserVO user = userFindService.getMyUserWithAuthorities();
-        return noticeRepository.getAllByUser(user);
+        return noticeRepository.getAllByUser(user, pageable);
     }
 }
