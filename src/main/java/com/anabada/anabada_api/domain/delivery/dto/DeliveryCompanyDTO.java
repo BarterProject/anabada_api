@@ -26,8 +26,8 @@ public class DeliveryCompanyDTO {
     public static DeliveryCompanyDTO fromEntity(DeliveryCompanyVO vo){
         return DeliveryCompanyDTO.builder()
                 .idx(vo.getIdx())
-                .code(vo.getCode())
-                .name(vo.getName())
+//                .code(vo.getCode())
+//                .name(vo.getName())
                 .build();
     }
 
