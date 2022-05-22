@@ -36,6 +36,14 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
     @Query(value = "select e.idx from ItemVO e where e.state = :state")
     public List<Long> findIdxByState(int state);
 
+    @EntityGraph(attributePaths = {"itemCategory", "owner", "images"})
+    @Query(value = "select e from ItemVO e " +
+            "where e.state = :state AND e.owner <> :owner " +
+            "and e not in " +
+            "   (select d.responseItem from DealRequestVO d where d.requestItem.owner = :owner)" +
+            "order by RAND()")
+    public Page<ItemVO> findRandomByStateAndLimit(int state, UserVO owner, Pageable pageable);
+
     @EntityGraph(attributePaths = {"itemCategory", "images", "owner"})
     @Query(value = "select e from ItemVO e where e.idx IN (:idxList)")
     public List<ItemVO> findByIdxList(List<Long> idxList);
