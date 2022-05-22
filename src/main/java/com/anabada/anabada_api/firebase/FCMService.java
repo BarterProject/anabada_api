@@ -131,7 +131,6 @@ public class FCMService {
 
         try{
             String response = FirebaseMessaging.getInstance().send(message);
-            System.out.println(response);
 
             NoticeVO notice = NoticeVO.builder()
                     .user(user)
