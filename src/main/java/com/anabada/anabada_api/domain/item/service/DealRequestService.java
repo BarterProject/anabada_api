@@ -1,7 +1,10 @@
 package com.anabada.anabada_api.domain.item.service;
 
 import com.anabada.anabada_api.domain.delivery.repository.DealRequestRepository;
+import com.anabada.anabada_api.domain.item.dto.DealHistoryDTO;
 import com.anabada.anabada_api.domain.item.dto.DealRequest;
+import com.anabada.anabada_api.domain.item.dto.ItemDTO;
+import com.anabada.anabada_api.domain.item.dto.ItemImageDTO;
 import com.anabada.anabada_api.domain.item.entity.DealRequestVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
@@ -173,7 +176,7 @@ public class DealRequestService {
 
 
     @Transactional(readOnly = true)
-    public List<ItemVO> getDealHistory(Long itemIdx) {
+    public List<DealHistoryDTO> getDealHistory(Long itemIdx) {
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
@@ -183,8 +186,18 @@ public class DealRequestService {
         List<DealRequestVO> history = dealRequestRepository.findByHistory(item, 3);
         return history.stream().map(
                 i -> {
-                    if (i.getResponseItem() == item) return i.getRequestItem();
-                    else return i.getResponseItem();
+                    ItemVO tmpItem;
+                    if (i.getResponseItem() == item)
+                        tmpItem = i.getRequestItem();
+                    else
+                        tmpItem = i.getResponseItem();
+
+                    return DealHistoryDTO.builder()
+                            .name(tmpItem.getName())
+                            .deposit(tmpItem.getDeposit())
+                            .itemImages(tmpItem.getImages().stream().limit(1).map(ItemImageDTO::fromEntity).collect(Collectors.toList()))
+                            .tradedAt(i.getTradedAt())
+                            .build();
                 }
         ).collect(Collectors.toList());
     }

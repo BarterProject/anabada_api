@@ -195,8 +195,8 @@ public class ItemController {
     public ResponseEntity<List<DealHistoryDTO>> getDealHistory(
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
-        List<ItemVO> list = dealRequestService.getDealHistory(itemIdx);
-        List<DealHistoryDTO> dto = list.stream().map(DealHistoryDTO::fromEntity).collect(Collectors.toList());
+        List<DealHistoryDTO> dto = dealRequestService.getDealHistory(itemIdx);
+//        List<DealHistoryDTO> dto = list.stream().map(DealHistoryDTO::fromEntity).collect(Collectors.toList());
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
