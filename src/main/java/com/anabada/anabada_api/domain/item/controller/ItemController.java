@@ -192,13 +192,12 @@ public class ItemController {
     }
 
     @GetMapping("/v2/user/items/{item-idx}/dealHistory")
-    public ResponseEntity<DealItemDTO.Response> getDealHistory(
+    public ResponseEntity<List<DealHistoryDTO>> getDealHistory(
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
-        List<DealRequestVO> list = dealRequestService.getDealHistory(itemIdx);
-        List<DealItemDTO> requestItem = list.stream().map(DealItemDTO::fromEntityRequest).collect(Collectors.toList());
-        List<DealItemDTO> responseItem = list.stream().map(DealItemDTO::fromEntityResponse).collect(Collectors.toList());
-        return new ResponseEntity<>(new DealItemDTO.Response(requestItem, responseItem), HttpStatus.OK);
+        List<ItemVO> list = dealRequestService.getDealHistory(itemIdx);
+        List<DealHistoryDTO> dto = list.stream().map(DealHistoryDTO::fromEntity).collect(Collectors.toList());
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     /* --- 관리자기능 --- */
@@ -247,11 +246,11 @@ public class ItemController {
     ) {
         Page<ItemVO> page;
 
-        if(mode.equals("registrant")){
+        if (mode.equals("registrant")) {
             page = itemFindService.findByRegistrant(userIdx, pageable);
-        }else if(mode.equals("owner")){
+        } else if (mode.equals("owner")) {
             page = itemFindService.findByOwner(userIdx, pageable);
-        }else
+        } else
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DealRequestService {
@@ -170,17 +171,23 @@ public class DealRequestService {
         return vo.get();
     }
 
+
     @Transactional(readOnly = true)
-    public List<DealRequestVO> getDealHistory(Long itemIdx) {
+    public List<ItemVO> getDealHistory(Long itemIdx) {
         UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
         if (user != item.getOwner())
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
-        return dealRequestRepository.findByItemsAndState(item, item, 3);
+        List<DealRequestVO> history = dealRequestRepository.findByHistory(item, 3);
+        return history.stream().map(
+                i -> {
+                    if (i.getResponseItem() == item) return i.getRequestItem();
+                    else return i.getResponseItem();
+                }
+        ).collect(Collectors.toList());
     }
-
 
 
 
