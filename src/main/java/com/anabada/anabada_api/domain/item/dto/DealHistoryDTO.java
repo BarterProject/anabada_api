@@ -1,7 +1,6 @@
 package com.anabada.anabada_api.domain.item.dto;
 
 
-import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,6 @@ public class DealHistoryDTO {
     Long deposit;
     List<ItemImageDTO> itemImages;
     LocalDateTime tradedAt;
-    List<ItemVO> items;
 
     @Builder
     public DealHistoryDTO(String name, Long deposit, List<ItemImageDTO> itemImages, LocalDateTime tradedAt) {
