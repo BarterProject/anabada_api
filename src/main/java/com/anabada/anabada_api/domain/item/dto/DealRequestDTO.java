@@ -14,19 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DealRequestDTO {
 
-    private Long idx;
-
-    private LocalDateTime createdAt;
-
-    private int state;
-
-    private LocalDateTime tradedAt;
-
     @NotNull(groups = {ValidationGroups.dealRequestGroup.class}, message = "요청 아이템이 입력되지 않았습니다.")
     ItemDTO requestItem;
-
     @NotNull(groups = {ValidationGroups.dealRequestGroup.class}, message = "요청 대상 아이템이 입력되지 않았습니다.")
     ItemDTO responseItem;
+    private Long idx;
+    private LocalDateTime createdAt;
+    private int state;
+    private LocalDateTime tradedAt;
 
     @Builder
     public DealRequestDTO(Long idx, LocalDateTime createdAt, int state, LocalDateTime tradedAt, ItemDTO requestItem, ItemDTO responseItem) {
@@ -38,7 +33,7 @@ public class DealRequestDTO {
         this.responseItem = responseItem;
     }
 
-    public static DealRequestDTO fromEntity(DealRequestVO vo){
+    public static DealRequestDTO fromEntity(DealRequestVO vo) {
         return DealRequestDTO.builder()
                 .idx(vo.getIdx())
                 .createdAt(vo.getCreatedAt())
@@ -48,4 +43,6 @@ public class DealRequestDTO {
                 .requestItem(ItemDTO.listFromEntity(vo.getRequestItem()))
                 .build();
     }
+
+
 }

@@ -1,16 +1,16 @@
 package com.anabada.anabada_api.domain.item.service;
 
+import com.anabada.anabada_api.domain.delivery.repository.DealRequestRepository;
+import com.anabada.anabada_api.domain.item.dto.DealHistoryDTO;
 import com.anabada.anabada_api.domain.item.dto.DealRequest;
+import com.anabada.anabada_api.domain.item.dto.ItemDTO;
+import com.anabada.anabada_api.domain.item.dto.ItemImageDTO;
 import com.anabada.anabada_api.domain.item.entity.DealRequestVO;
-import com.anabada.anabada_api.domain.message.entity.NoticeVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
-import com.anabada.anabada_api.domain.delivery.repository.DealRequestRepository;
-import com.anabada.anabada_api.domain.message.service.NoticeUpdateService;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
-import com.anabada.anabada_api.firebase.FCMService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DealRequestService {
@@ -108,6 +109,7 @@ public class DealRequestService {
             request.getRequestItem().changeOwner(responseUser);
             request.getResponseItem().changeOwner(requestUser);
             request.setState(DealRequestVO.STATE.ACCOMPLISHED.ordinal());
+            request.setTradeAt(LocalDateTime.now());
         } else request.setState(DealRequestVO.STATE.DENIED.ordinal());
 
 
@@ -172,6 +174,33 @@ public class DealRequestService {
         return vo.get();
     }
 
+
+    @Transactional(readOnly = true)
+    public List<DealHistoryDTO> getDealHistory(Long itemIdx) {
+        UserVO user = userFindService.getMyUserWithAuthorities();
+        ItemVO item = itemFindService.findByIdx(itemIdx);
+
+        if (user != item.getOwner())
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        List<DealRequestVO> history = dealRequestRepository.findByHistory(item, 3);
+        return history.stream().map(
+                i -> {
+                    ItemVO tmpItem;
+                    if (i.getResponseItem() == item)
+                        tmpItem = i.getRequestItem();
+                    else
+                        tmpItem = i.getResponseItem();
+
+                    return DealHistoryDTO.builder()
+                            .name(tmpItem.getName())
+                            .deposit(tmpItem.getDeposit())
+                            .itemImages(tmpItem.getImages().stream().limit(1).map(ItemImageDTO::fromEntity).collect(Collectors.toList()))
+                            .tradedAt(i.getTradedAt())
+                            .build();
+                }
+        ).collect(Collectors.toList());
+    }
 
 
 

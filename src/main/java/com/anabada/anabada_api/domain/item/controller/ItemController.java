@@ -15,7 +15,6 @@ import com.anabada.anabada_api.exception.ExceptionEnum;
 import com.anabada.anabada_api.firebase.FCMService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -193,6 +191,14 @@ public class ItemController {
         return new ResponseEntity<>(new MessageDTO("refund requested"), HttpStatus.OK);
     }
 
+    @GetMapping("/v2/user/items/{item-idx}/dealHistory")
+    public ResponseEntity<List<DealHistoryDTO>> getDealHistory(
+            @PathVariable(value = "item-idx") Long itemIdx
+    ) {
+        List<DealHistoryDTO> dto = dealRequestService.getDealHistory(itemIdx);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
     /* --- 관리자기능 --- */
 
     @GetMapping(value = "/v2/admin/items")
@@ -239,11 +245,11 @@ public class ItemController {
     ) {
         Page<ItemVO> page;
 
-        if(mode.equals("registrant")){
+        if (mode.equals("registrant")) {
             page = itemFindService.findByRegistrant(userIdx, pageable);
-        }else if(mode.equals("owner")){
+        } else if (mode.equals("owner")) {
             page = itemFindService.findByOwner(userIdx, pageable);
-        }else
+        } else
             throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
 
         List<ItemDTO> dtos = page.getContent().stream().map(ItemDTO::listFromEntity).collect(Collectors.toList());
