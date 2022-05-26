@@ -160,6 +160,7 @@ public class ItemDTO {
                 .images(
                         vo.getImages().stream().map(ItemImageDTO::fromEntity).collect(Collectors.toList())
                 )
+                .delivery(DeliveryDTO.fromEntity(vo.getDelivery()))
                 .registrant(UserDTO.simpleFromEntity(vo.getRegistrant()))
                 .owner(UserDTO.simpleFromEntity(vo.getOwner()))
 //                .payment(PaymentDTO.fromEntity(vo.getPayment()))
