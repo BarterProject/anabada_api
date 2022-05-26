@@ -93,8 +93,8 @@ public class ItemUpdateService {
 
         item.getDealResponseItemList().clear();
         item.requestRefund();
-        item.closeRequest();
 
+        item.closeRequest();
     }
 
     @Transactional
