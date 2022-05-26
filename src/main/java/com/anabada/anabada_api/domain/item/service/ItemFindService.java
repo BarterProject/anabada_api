@@ -93,20 +93,28 @@ public class ItemFindService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemVO> findWithPage(Pageable pageable) {
-        return itemRepository.findAll(pageable);
+    public Page<ItemVO> findWithPage(Pageable pageable, int state) {
+        if(state == -1)
+            return itemRepository.findAll(pageable);
+        return itemRepository.findAllByState(pageable, state);
+
     }
 
 
     @Transactional(readOnly = true)
-    public Page<ItemVO> findByItemName(Pageable pageable, String query) {
-        return itemRepository.findByNameContains(query, pageable);
+    public Page<ItemVO> findByItemName(Pageable pageable, String query, int state) {
+        if(state == -1)
+            return itemRepository.findByNameContains(query, pageable);
+        return itemRepository.findByNameContainsAndState(query, pageable, state);
     }
 
     @Transactional(readOnly = true)
-    public Page<ItemVO> findByCategory(Pageable pageable, Long categoryIdx) {
+    public Page<ItemVO> findByCategory(Pageable pageable, Long categoryIdx, int state) {
         ItemCategoryVO category = categoryFindService.findByIdx(categoryIdx);
-        return itemRepository.findByItemCategory(category, pageable);
+
+        if(state == -1)
+            return itemRepository.findByItemCategory(category, pageable);
+        return itemRepository.findByItemCategoryAndState(category, pageable, state);
     }
 
     @Transactional(readOnly = true)

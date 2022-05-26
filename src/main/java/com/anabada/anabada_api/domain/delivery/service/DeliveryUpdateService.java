@@ -70,6 +70,8 @@ public class DeliveryUpdateService {
         item.setDelivery(deliveryVO);
         roomUpdateService.save(deliveryVO);
 
+        item.closeRequest();
+
         return deliveryVO.getIdx();
     }
 

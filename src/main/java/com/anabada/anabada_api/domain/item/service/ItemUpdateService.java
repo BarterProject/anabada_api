@@ -91,7 +91,10 @@ public class ItemUpdateService {
         if(item.getOwner() != user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
+        item.getDealResponseItemList().clear();
         item.requestRefund();
+        item.closeRequest();
+
     }
 
     @Transactional

@@ -14,6 +14,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -79,6 +80,18 @@ public class ItemVO {
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     List<ItemImageVO> images = new ArrayList<>();
 
+    public void closeRequest() {
+        for(DealRequestVO em : this.getDealRequestItemList()){
+            if(em.getState() == 1)
+                em.close();
+        }
+
+        for(DealRequestVO em : this.getDealResponseItemList()){
+            if(em.getState() == 1)
+                em.close();
+        }
+    }
+
 
     public enum STATE {
         INACTIVATED,
@@ -94,6 +107,8 @@ public class ItemVO {
     public void requestRefund() {
         this.state = STATE.REFUND.ordinal();
     }
+
+
 
     public void refund() {
         this.state = STATE.REFUNDEND.ordinal();

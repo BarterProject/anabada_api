@@ -207,18 +207,19 @@ public class ItemController {
             @PageableDefault(size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(name = "query", defaultValue = "") String query,
             @RequestParam(name = "mode", defaultValue = "all") String mode,
+            @RequestParam(name = "state", defaultValue = "-1") int state,
             @RequestParam(name = "categoryIdx", defaultValue = "0") Long categoryIdx
     ) {
         Page<ItemVO> page;
         switch (mode) {
             case "all":
-                page = itemFindService.findWithPage(pageable);
+                page = itemFindService.findWithPage(pageable, state);
                 break;
             case "itemName":
-                page = itemFindService.findByItemName(pageable, query);
+                page = itemFindService.findByItemName(pageable, query, state);
                 break;
             case "category":
-                page = itemFindService.findByCategory(pageable, categoryIdx);
+                page = itemFindService.findByCategory(pageable, categoryIdx, state);
                 break;
             default:
                 throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);

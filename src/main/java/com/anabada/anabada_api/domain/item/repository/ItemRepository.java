@@ -40,7 +40,7 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
     @Query(value = "select e from ItemVO e " +
             "where e.state = :state AND e.owner <> :owner " +
             "and e not in " +
-            "   (select d.responseItem from DealRequestVO d where d.requestItem.owner = :owner)" +
+            "   (select d.responseItem from DealRequestVO d where d.requestItem.owner = :owner and d.state = 1)" +
             "order by RAND()")
     public Page<ItemVO> findRandomByStateAndLimit(int state, UserVO owner, Pageable pageable);
 
@@ -57,5 +57,15 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
     Page<ItemVO> findByNameContains(String name, Pageable pageable);
 
     @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
+    Page<ItemVO> findByNameContainsAndState(String name, Pageable pageable, int state);
+
+    @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
     Page<ItemVO> findByItemCategory(ItemCategoryVO categoryVO, Pageable pageable);
+
+    Page<ItemVO> findAllByState(Pageable pageable, int state);
+
+    @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
+    Page<ItemVO> findByItemCategoryAndState(ItemCategoryVO category, Pageable pageable, int state);
+
+
 }
