@@ -53,8 +53,7 @@ public class ItemController {
     public ResponseEntity<ItemDTO> getMyItemByIdx(
             @PathVariable(value = "item-idx") Long itemIdx) {
 
-        ItemVO item = itemFindService.findWithAllByIdx(itemIdx);
-        ItemDTO dto = ItemDTO.fromEntityByOwner(item);
+        ItemDTO dto = itemFindService.findWithAllByIdx(itemIdx);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -269,8 +268,7 @@ public class ItemController {
     public ResponseEntity<ItemDTO> getItemByIdx(
             @PathVariable(value = "item-idx") Long itemIdx
     ) {
-        ItemVO item = itemFindService.findWithAllByIdxAdmin(itemIdx);
-        ItemDTO dto = ItemDTO.allFromEntity(item);
+        ItemDTO dto = itemFindService.findWithAllByIdxAdmin(itemIdx);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
