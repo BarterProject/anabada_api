@@ -177,11 +177,11 @@ public class DealRequestService {
 
     @Transactional(readOnly = true)
     public List<DealHistoryDTO> getDealHistory(Long itemIdx) {
-        UserVO user = userFindService.getMyUserWithAuthorities();
+//        UserVO user = userFindService.getMyUserWithAuthorities();
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
-        if (user != item.getOwner())
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+//        if (user != item.getOwner())
+//            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
         List<DealRequestVO> history = dealRequestRepository.findByHistory(item, 3);
         return history.stream().map(
