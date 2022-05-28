@@ -120,11 +120,14 @@ public class DealRequestService {
         List<DealRequestVO> requestItems = item.getDealRequestItemList();
         List<DealRequestVO> responseItems = item.getDealResponseItemList();
 
-        for (DealRequestVO request : requestItems)
-            request.close();
-
-        for (DealRequestVO request : responseItems)
-            request.close();
+        for (DealRequestVO request : requestItems){
+            if(request.getState() == 1)
+                request.close();
+        }
+        for (DealRequestVO request : responseItems){
+            if(request.getState() == 1)
+                request.close();
+        }
 
     }
 
