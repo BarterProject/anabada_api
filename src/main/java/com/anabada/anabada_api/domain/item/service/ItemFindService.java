@@ -7,13 +7,11 @@ import com.anabada.anabada_api.domain.user.entity.UserVO;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +47,7 @@ public class ItemFindService {
         if (item.isEmpty())
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
-        if(item.get().getOwner() != user && item.get().getRegistrant() != user)
+        if (item.get().getOwner() != user && item.get().getRegistrant() != user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_NOT_OWN_EXCEPTION);
 
         return item.get();
@@ -69,7 +67,7 @@ public class ItemFindService {
     @Transactional(readOnly = true)
     public List<ItemVO> findByRegistrant(int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
-        if(state == -1)
+        if (state == -1)
             return itemRepository.findByRegistrant(user);
         return itemRepository.findByRegistrantAndState(user, state);
     }
@@ -78,7 +76,7 @@ public class ItemFindService {
     public List<ItemVO> findByOwner(int state) {
         UserVO user = userFindService.getMyUserWithAuthorities();
 
-        if(state == -1)
+        if (state == -1)
             return itemRepository.findByOwner(user);
 
         return itemRepository.findByOwnerAndState(user, state);
@@ -94,7 +92,7 @@ public class ItemFindService {
 
     @Transactional(readOnly = true)
     public Page<ItemVO> findWithPage(Pageable pageable, int state) {
-        if(state == -1)
+        if (state == -1)
             return itemRepository.findAll(pageable);
         return itemRepository.findAllByState(pageable, state);
 
@@ -103,7 +101,7 @@ public class ItemFindService {
 
     @Transactional(readOnly = true)
     public Page<ItemVO> findByItemName(Pageable pageable, String query, int state) {
-        if(state == -1)
+        if (state == -1)
             return itemRepository.findByNameContains(query, pageable);
         return itemRepository.findByNameContainsAndState(query, pageable, state);
     }
@@ -112,7 +110,7 @@ public class ItemFindService {
     public Page<ItemVO> findByCategory(Pageable pageable, Long categoryIdx, int state) {
         ItemCategoryVO category = categoryFindService.findByIdx(categoryIdx);
 
-        if(state == -1)
+        if (state == -1)
             return itemRepository.findByItemCategory(category, pageable);
         return itemRepository.findByItemCategoryAndState(category, pageable, state);
     }

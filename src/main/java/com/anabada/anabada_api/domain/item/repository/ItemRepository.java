@@ -19,8 +19,10 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
 
     @EntityGraph(attributePaths = {"itemCategory", "registrant", "owner", "images"})
     public List<ItemVO> findByRegistrantAndState(UserVO registrant, int state);
+
     @EntityGraph(attributePaths = {"itemCategory", "registrant", "owner", "images"})
     public List<ItemVO> findByRegistrant(UserVO registrant);
+
     @EntityGraph(attributePaths = {"itemCategory", "images"})
     public List<ItemVO> findByOwnerAndState(UserVO Owner, int state);
 
@@ -50,7 +52,7 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
 
     public Optional<ItemVO> findByIdxAndState(Long idx, int state);
 
-    @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})
+    @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner", "delivery.deliveryCompany"})
     public Optional<ItemVO> findWithAllByIdx(Long idx);
 
     @EntityGraph(attributePaths = {"payment", "delivery", "itemCategory", "images", "registrant", "owner"})

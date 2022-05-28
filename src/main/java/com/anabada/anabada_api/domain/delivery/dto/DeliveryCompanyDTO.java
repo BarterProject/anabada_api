@@ -23,11 +23,11 @@ public class DeliveryCompanyDTO {
         this.name=name;
     }
 
-    public static DeliveryCompanyDTO fromEntity(DeliveryCompanyVO vo){
+    public static DeliveryCompanyDTO fromEntity(DeliveryCompanyVO vo) {
         return DeliveryCompanyDTO.builder()
                 .idx(vo.getIdx())
-//                .code(vo.getCode())
-//                .name(vo.getName())
+                .code(vo.getCode())
+                .name(vo.getName())
                 .build();
     }
 
