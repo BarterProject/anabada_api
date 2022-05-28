@@ -32,19 +32,19 @@ public class DeliveryCompanyVO {
     List<DeliveryVO> deliveries=new ArrayList<>();
 
 
-   @Builder
-    public DeliveryCompanyVO(String code,String name) {
-    this.code=code;
-    this.name=name;
-   }
+    @Builder
+    public DeliveryCompanyVO(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
 
-   public DeliveryCompanyDTO dto(){
-       return DeliveryCompanyDTO.builder()
-               .idx(idx)
-               .name(name)
-               .code(code)
-               .build();
-   }
+    public DeliveryCompanyDTO dto() {
+        return DeliveryCompanyDTO.builder()
+                .idx(idx)
+                .name(name)
+                .code(code)
+                .build();
+    }
 
 
 }

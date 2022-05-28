@@ -1,6 +1,5 @@
 package com.anabada.anabada_api.domain.item.service;
 
-import com.anabada.anabada_api.domain.item.dto.ItemDTO;
 import com.anabada.anabada_api.domain.item.entity.ItemCategoryVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.item.repository.ItemRepository;
@@ -41,7 +40,7 @@ public class ItemFindService {
     }
 
     @Transactional(readOnly = true)
-    public ItemDTO findWithAllByIdx(Long idx) {
+    public ItemVO findWithAllByIdx(Long idx) {
         Optional<ItemVO> item = itemRepository.findWithAllByIdx(idx);
         UserVO user = userFindService.getMyUserWithAuthorities();
 
@@ -51,19 +50,17 @@ public class ItemFindService {
         if (item.get().getOwner() != user && item.get().getRegistrant() != user)
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_NOT_OWN_EXCEPTION);
 
-        ItemDTO dto = ItemDTO.fromEntityByOwner(item.get());
-        return dto;
+        return item.get();
     }
 
     @Transactional(readOnly = true)
-    public ItemDTO findWithAllByIdxAdmin(Long idx) {
+    public ItemVO findWithAllByIdxAdmin(Long idx) {
         Optional<ItemVO> item = itemRepository.findWithAllByIdx(idx);
 
         if (item.isEmpty())
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
-        ItemDTO dto = ItemDTO.allFromEntity(item.get());
-        return dto;
+        return item.get();
     }
 
 
