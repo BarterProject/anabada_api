@@ -74,7 +74,7 @@ public class FCMService {
         DealRequestVO request = dealRequestService.findByIdx(requestIdx);
 
         HashMap<String, String> data = new HashMap<>();
-        data.put("itemId", request.getRequestItem().getIdx().toString());
+        data.put("itemId", request.getResponseItem().getIdx().toString());
 
         sendNotification(request.getResponseItem().getOwner(),
                 "거래승인 알림",
