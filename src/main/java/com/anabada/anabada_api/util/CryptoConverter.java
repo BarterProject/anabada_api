@@ -26,9 +26,7 @@ public class CryptoConverter implements AttributeConverter<String, String> {
         try{
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            String s = new String(Base64.getEncoder().encode(cipher.doFinal(attribute.getBytes())), StandardCharsets.UTF_8);
-            System.out.println(s);
-            return s;
+            return new String(Base64.getEncoder().encode(cipher.doFinal(attribute.getBytes())), StandardCharsets.UTF_8);
         }catch (Exception e){
             e.printStackTrace();
             throw new ApiException(ExceptionEnum.INTERNAL_SERVER_ERROR);
@@ -41,9 +39,7 @@ public class CryptoConverter implements AttributeConverter<String, String> {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, key);
-            String s = new String(cipher.doFinal(Base64.getDecoder().decode(dbData)), StandardCharsets.UTF_8);
-            System.out.println(s);
-            return s;
+            return new String(cipher.doFinal(Base64.getDecoder().decode(dbData)), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
