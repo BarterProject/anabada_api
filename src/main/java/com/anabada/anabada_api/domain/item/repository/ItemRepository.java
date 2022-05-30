@@ -18,13 +18,13 @@ import java.util.Optional;
 public interface ItemRepository extends JpaRepository<ItemVO, Long> {
 
     @EntityGraph(attributePaths = {"itemCategory", "registrant", "owner", "images"})
-    public List<ItemVO> findByRegistrantAndState(UserVO registrant, int state);
+    public List<ItemVO> findByRegistrantAndStateIn(UserVO registrant, List<Integer> stateList);
 
     @EntityGraph(attributePaths = {"itemCategory", "registrant", "owner", "images"})
     public List<ItemVO> findByRegistrant(UserVO registrant);
 
     @EntityGraph(attributePaths = {"itemCategory", "images"})
-    public List<ItemVO> findByOwnerAndState(UserVO Owner, int state);
+    public List<ItemVO> findByOwnerAndStateIn(UserVO Owner, List<Integer> stateList);
 
     @EntityGraph(attributePaths = {"itemCategory", "images"})
     public List<ItemVO> findByOwner(UserVO Owner);
