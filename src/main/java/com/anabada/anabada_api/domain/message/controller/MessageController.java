@@ -85,7 +85,7 @@ public class MessageController {
         return new ResponseEntity<>(pageDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/rooms/messages")
+    @PostMapping("/v2/rooms/messages")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<CreateMessage.Response> saveMessage(
             @RequestBody CreateMessage.Request request

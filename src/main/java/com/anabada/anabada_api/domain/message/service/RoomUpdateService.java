@@ -47,7 +47,7 @@ public class RoomUpdateService {
                 .build();
 
         roomVO = this.save(roomVO);
-        UserVO user = deliveryVO.getItem().getOwner(); //user부분 수정 필요
+        UserVO user = deliveryVO.getItem().getRegistrant(); //user부분 수정 필요
         roomUserUpdateService.save(user, roomVO);
         UserVO user2 = userFindService.getMyUserWithAuthorities();
         roomUserUpdateService.save(user2, roomVO);
