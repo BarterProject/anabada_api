@@ -76,7 +76,7 @@ public class MessageController {
     ) {
         MessageVO message = messageUpdateService.save(request);
 
-        fcmService.sendMessage(message, "/");
+        fcmService.sendMessage(message);
         return new ResponseEntity<>(new CreateMessage.Response(message.getIdx()), HttpStatus.CREATED);
     }
 
