@@ -40,7 +40,7 @@ public class FCMService {
 
     @Async
     @Transactional
-    public void sendItemActivatedNotice(Long itemIdx){
+    public void sendItemActivatedNotice(Long itemIdx) {
         ItemVO item = itemFindService.findByIdx(itemIdx);
 
         HashMap<String, String> data = new HashMap<>();
@@ -55,7 +55,7 @@ public class FCMService {
 
     @Async
     @Transactional
-    public void sendRequestSavedNotice(Long requestIdx){
+    public void sendRequestSavedNotice(Long requestIdx) {
         DealRequestVO request = dealRequestService.findByIdx(requestIdx);
 
         HashMap<String, String> data = new HashMap<>();
@@ -70,7 +70,7 @@ public class FCMService {
 
     @Async
     @Transactional
-    public void sendRequestCompletedNotice(Long requestIdx){
+    public void sendRequestCompletedNotice(Long requestIdx) {
         DealRequestVO request = dealRequestService.findByIdx(requestIdx);
 
         HashMap<String, String> data = new HashMap<>();
@@ -148,7 +148,7 @@ public class FCMService {
     @Transactional
     public void sendNotification(UserVO user, String title, String body, String channelId, Map<String, String> data) {
 
-        if(user.getFcm() == null)
+        if (user.getFcm() == null)
             return;
 
         Notification notification = new Notification(title, body);
@@ -164,7 +164,7 @@ public class FCMService {
                 .putAllData(data)
                 .build();
 
-        try{
+        try {
             String response = FirebaseMessaging.getInstance().send(message);
 
             NoticeVO notice = NoticeVO.builder()
@@ -176,7 +176,7 @@ public class FCMService {
                     .build();
 
             noticeUpdateService.save(notice);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.warn(user.getEmail() + ": 알림 전송에 실패하였습니다.");
         }
 
@@ -185,21 +185,32 @@ public class FCMService {
 
     @Async
     @Transactional
-    public void sendMessage(MessageVO messageVO, String route){
+    public void sendMessage(MessageVO messageVO) {
 
         List<UserVO> users = messageVO.getRoom().getMappings().stream().map(RoomUserVO::getUser).collect(Collectors.toList());
+
+        AndroidConfig androidConfig = AndroidConfig.builder()
+                .putData("channelId", "chatting")
+                .build();
+
+        Notification notification = new Notification(
+                "메시지가 수신되었습니다.",
+                messageVO.getContent()
+        );
 
         MulticastMessage message = MulticastMessage.builder()
                 .putData("roomName", messageVO.getRoom().getName())
                 .putData("content", messageVO.getContent())
-                .putData("route", route)
+                .putData("sender", messageVO.getSender().getEmail())
+                .setNotification(notification)
+                .setAndroidConfig(androidConfig)
                 .addAllTokens(users.stream().map(UserVO::getFcm).collect(Collectors.toList()))
                 .build();
 
-        try{
+        try {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
             System.out.println(response.getSuccessCount());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.warn(message.toString() + ": 메시지 전송에 실패하였습니다.");
         }
     }
