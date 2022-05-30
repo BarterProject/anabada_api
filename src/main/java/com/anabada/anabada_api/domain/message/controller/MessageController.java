@@ -2,6 +2,8 @@ package com.anabada.anabada_api.domain.message.controller;
 
 
 import com.anabada.anabada_api.domain.etc.dto.PageDTO;
+import com.anabada.anabada_api.domain.item.entity.ItemVO;
+import com.anabada.anabada_api.domain.item.service.ItemFindService;
 import com.anabada.anabada_api.domain.message.dto.CreateMessage;
 import com.anabada.anabada_api.domain.message.dto.MessageEntityDTO;
 import com.anabada.anabada_api.domain.message.dto.RoomDTO;
@@ -32,12 +34,14 @@ public class MessageController {
     RoomFindService roomFindService;
     MessageFindService messageFindService;
     MessageUpdateService messageUpdateService;
+    ItemFindService itemFindService;
     FCMService fcmService;
 
-    public MessageController(RoomFindService roomFindService, MessageFindService messageFindService, MessageUpdateService messageUpdateService, FCMService fcmService) {
+    public MessageController(RoomFindService roomFindService, MessageFindService messageFindService, MessageUpdateService messageUpdateService, ItemFindService itemFindService, FCMService fcmService) {
         this.roomFindService = roomFindService;
         this.messageFindService = messageFindService;
         this.messageUpdateService = messageUpdateService;
+        this.itemFindService = itemFindService;
         this.fcmService = fcmService;
     }
 
@@ -49,6 +53,18 @@ public class MessageController {
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
+
+    @GetMapping("/v2/items/{item-idx}/rooms")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<RoomDTO> getRoomByItem(
+            @PathVariable("item-idx") Long itemIdx
+    ) {
+        RoomVO roomVO = roomFindService.getByItem(itemIdx);
+        RoomDTO dto = RoomDTO.fromEntity(roomVO);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
 
     @GetMapping("/v2/rooms/{room-idx}/messages")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")

@@ -1,5 +1,7 @@
 package com.anabada.anabada_api.domain.message.service;
 
+import com.anabada.anabada_api.domain.item.entity.ItemVO;
+import com.anabada.anabada_api.domain.item.service.ItemFindService;
 import com.anabada.anabada_api.domain.message.entity.RoomUserVO;
 import com.anabada.anabada_api.domain.message.entity.RoomVO;
 import com.anabada.anabada_api.domain.message.dto.RoomDTO;
@@ -22,13 +24,14 @@ import java.util.stream.Collectors;
 public class RoomFindService {
     RoomUserRepository roomUserRepository;
     RoomRepository roomRepository;
-
+    ItemFindService itemFindService;
     UserFindService userFindService;
 
 
-    public RoomFindService(RoomUserRepository roomUserRepository, RoomRepository roomRepository, UserFindService userFindService) {
+    public RoomFindService(RoomUserRepository roomUserRepository, RoomRepository roomRepository, ItemFindService itemFindService, UserFindService userFindService) {
         this.roomUserRepository = roomUserRepository;
         this.roomRepository = roomRepository;
+        this.itemFindService = itemFindService;
         this.userFindService = userFindService;
     }
 
@@ -38,6 +41,20 @@ public class RoomFindService {
         List<RoomUserVO>  mappings = roomUserRepository.findAllByUser(user);
 
         return mappings.stream().map(RoomUserVO::getRoom).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public RoomVO getByItem(Long itemIdx){
+        ItemVO itemVO = itemFindService.findByIdx(itemIdx);
+        UserVO user = userFindService.getMyUserWithAuthorities();
+
+        if(user != itemVO.getOwner() || user != itemVO.getRegistrant())
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
+
+        if(itemVO.getDelivery() != null)
+            return itemVO.getDelivery().getRoom();
+        else
+            throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
     }
 
     @Transactional(readOnly = true)
