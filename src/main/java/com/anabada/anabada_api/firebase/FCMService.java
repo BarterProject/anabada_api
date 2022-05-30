@@ -76,7 +76,7 @@ public class FCMService {
         HashMap<String, String> data = new HashMap<>();
         data.put("itemId", request.getRequestItem().getIdx().toString());
 
-        sendNotification(request.getRequestItem().getOwner(),
+        sendNotification(request.getResponseItem().getOwner(),
                 "거래승인 알림",
                 "니의 " + request.getRequestItem().getName() + "아이템이 " + request.getResponseItem().getName() + "아이템과 교환되었습니다.",
                 "DealCompleted",
@@ -166,7 +166,7 @@ public class FCMService {
 
         try {
             String response = FirebaseMessaging.getInstance().send(message);
-
+//            System.out.println(response);
             NoticeVO notice = NoticeVO.builder()
                     .user(user)
                     .content(body)
