@@ -82,12 +82,12 @@ public class ItemVO {
 
     public void closeRequest() {
         for(DealRequestVO em : this.getDealRequestItemList()){
-            if(em.getState() == 1)
+            if(em.getState() == DealRequestVO.STATE.ACTIVATED.ordinal())
                 em.close();
         }
 
         for(DealRequestVO em : this.getDealResponseItemList()){
-            if(em.getState() == 1)
+            if(em.getState() == DealRequestVO.STATE.ACTIVATED.ordinal())
                 em.close();
         }
     }
