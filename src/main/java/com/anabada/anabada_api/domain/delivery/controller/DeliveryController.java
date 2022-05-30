@@ -1,10 +1,8 @@
 package com.anabada.anabada_api.domain.delivery.controller;
 
 
-import com.anabada.anabada_api.domain.delivery.dto.CreateDelivery;
-import com.anabada.anabada_api.domain.delivery.dto.DeliveryDTO;
-import com.anabada.anabada_api.domain.delivery.dto.DeliveryTrackingDTO;
-import com.anabada.anabada_api.domain.delivery.dto.RegisterTracking;
+import com.anabada.anabada_api.domain.delivery.dto.*;
+import com.anabada.anabada_api.domain.delivery.entity.DeliveryCompanyVO;
 import com.anabada.anabada_api.domain.delivery.entity.DeliveryVO;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryCompanyFindService;
 import com.anabada.anabada_api.domain.delivery.service.DeliveryFindService;
@@ -20,6 +18,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.message.AuthException;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api")
@@ -89,6 +90,15 @@ public class DeliveryController {
         DeliveryTrackingDTO tracking = deliveryFindService.getTracking(trackingNumber);
 
         return new ResponseEntity<>(tracking, HttpStatus.OK);
+    }
+
+    @GetMapping("/v2/items/deliveries/companies")
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    public ResponseEntity<List<DeliveryCompanyDTO>> getDeliveryCompanies() {
+        List<DeliveryCompanyVO> vos = deliveryCompanyFindService.findAll();
+        List<DeliveryCompanyDTO> dtos = vos.stream().map(DeliveryCompanyDTO::fromEntity).collect(Collectors.toList());
+
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
     /* 관리자 기능 */
