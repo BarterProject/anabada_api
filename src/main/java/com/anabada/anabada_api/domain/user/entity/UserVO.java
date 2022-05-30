@@ -4,6 +4,7 @@ package com.anabada.anabada_api.domain.user.entity;
 import com.anabada.anabada_api.domain.message.entity.NoticeVO;
 import com.anabada.anabada_api.domain.etc.entity.ReportVO;
 import com.anabada.anabada_api.domain.board.entity.PostVO;
+import com.anabada.anabada_api.util.CryptoConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,13 +33,16 @@ public class UserVO {
     @Column(name = "password", updatable = true, nullable = false, length = 255)
     String password;
 
-    @Column(name = "phone", updatable = true, nullable = true, length = 45)
+    @Column(name = "phone", updatable = true, nullable = true, length = 255)
+    @Convert(converter = CryptoConverter.class)
     String phone;
 
-    @Column(name = "address", updatable = true, nullable = true, length = 200)
+    @Column(name = "address", updatable = true, nullable = true, length = 255)
+    @Convert(converter = CryptoConverter.class)
     String address;
 
-    @Column(name = "bank_account", updatable = true, nullable = true, length = 45)
+    @Column(name = "bank_account", updatable = true, nullable = true, length = 255)
+    @Convert(converter = CryptoConverter.class)
     String bankAccount;
 
     @Column(name = "bank_kind", updatable = true, nullable = true, length = 45)

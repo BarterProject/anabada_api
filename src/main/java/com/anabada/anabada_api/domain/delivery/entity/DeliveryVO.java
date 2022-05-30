@@ -2,6 +2,7 @@ package com.anabada.anabada_api.domain.delivery.entity;
 
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.message.entity.RoomVO;
+import com.anabada.anabada_api.util.CryptoConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,23 +24,35 @@ public class DeliveryVO {
 
     @Column(name = "clause_agree", updatable = true, nullable = true)
     private boolean clauseAgree;
+
     @Column(name = "tracking_number", updatable = true, nullable = true, length = 50)
     private String trackingNumber;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
     @Column(name = "due_at")
     private LocalDateTime dueAt;
+
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     ItemVO item;
+
     @Column(name = "address", updatable = true, nullable = false)
+    @Convert(converter = CryptoConverter.class)
     private String address;
+
     @Column(name = "state", updatable = true, nullable = true, length = 200)
     private int state;
-    @Column(name = "phone", updatable = true, nullable = true, length = 50)
+
+    @Column(name = "phone", updatable = true, nullable = true, length = 255)
+    @Convert(converter = CryptoConverter.class)
     private String phone;
-    @Column(name = "receiver_name", updatable = true, nullable = true, length = 50)
+
+    @Column(name = "receiver_name", updatable = true, nullable = true, length = 255)
+    @Convert(converter = CryptoConverter.class)
     private String receiverName;
+
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private RoomVO room;
 
