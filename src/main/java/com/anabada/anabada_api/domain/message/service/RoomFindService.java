@@ -48,7 +48,7 @@ public class RoomFindService {
         ItemVO itemVO = itemFindService.findByIdx(itemIdx);
         UserVO user = userFindService.getMyUserWithAuthorities();
 
-        if(user != itemVO.getOwner() || user != itemVO.getRegistrant())
+        if(user != itemVO.getOwner() && user != itemVO.getRegistrant())
             throw new ApiException(ExceptionEnum.ACCESS_DENIED_EXCEPTION);
 
         if(itemVO.getDelivery() != null)
