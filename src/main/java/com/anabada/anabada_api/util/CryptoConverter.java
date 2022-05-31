@@ -26,7 +26,7 @@ public class CryptoConverter implements AttributeConverter<String, String> {
         try{
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            return new String(Base64.getEncoder().encode(cipher.doFinal(attribute.getBytes())), StandardCharsets.UTF_8);
+            return new String(Base64.getEncoder().encode(cipher.doFinal(attribute.getBytes(StandardCharsets.UTF_8))));
         }catch (Exception e){
             e.printStackTrace();
             throw new ApiException(ExceptionEnum.INTERNAL_SERVER_ERROR);
