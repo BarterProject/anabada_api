@@ -1,6 +1,7 @@
 package com.anabada.anabada_api.domain.user.entity;
 
 import com.anabada.anabada_api.domain.etc.entity.FileInfo;
+import com.anabada.anabada_api.domain.user.dto.UserImageDTO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,9 @@ public class UserImageVO {
     @Column(name = "idx")
     private Long idx;
 
+    @Column(name = "name")
+    private String name;
+
     @Embedded
     private FileInfo fileInfo;
 
@@ -31,9 +35,22 @@ public class UserImageVO {
     private UserVO user;
 
     @Builder
-    public UserImageVO(Long idx, FileInfo fileInfo, LocalDateTime createdAt) {
-        this.idx = idx;
+    public UserImageVO(String name, FileInfo fileInfo) {
+        this.name = name;
         this.fileInfo = fileInfo;
+    }
+
+    public UserImageDTO dto() {
+        return UserImageDTO.builder()
+                .idx(idx)
+                .name(name)
+                .extension(fileInfo.getExtension())
+                .originalName(fileInfo.getOriginalName())
+                .saveName(fileInfo.getSaveName())
+                .uploadPath("*")
+                .createdAt(createdAt)
+                .size(fileInfo.getSize())
+                .build();
     }
 
     public void setUser(UserVO user) {

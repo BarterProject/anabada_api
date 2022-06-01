@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 public class UserDTO {
 
-    private Long idx;
-
     String email;
     String password;
     String phone;
@@ -21,13 +19,13 @@ public class UserDTO {
     String bankAccount;
     String bankKind;
     boolean activated;
-
+    UserImageDTO image;
     int state;
     LocalDateTime createdAt;
-
     String auth;
+    private Long idx;
 
-    public static UserDTO myInfoFromEntity(UserVO user){
+    public static UserDTO myInfoFromEntity(UserVO user) {
         return UserDTO.builder()
                 .idx(user.getIdx())
                 .email(user.getEmail())
@@ -39,10 +37,11 @@ public class UserDTO {
                 .createdAt(user.getCreatedAt())
                 .auth(user.getAuth().getName())
                 .activated(user.isActivated())
+                .image(user.getUserImage() != null ? UserImageDTO.fromEntity(user.getUserImage()) : null)
                 .build();
     }
 
-    public static UserDTO allInfoFromEntity(UserVO user){
+    public static UserDTO allInfoFromEntity(UserVO user) {
         return UserDTO.builder()
                 .idx(user.getIdx())
                 .email(user.getEmail())
@@ -54,17 +53,17 @@ public class UserDTO {
                 .createdAt(user.getCreatedAt())
                 .auth(user.getAuth().getName())
                 .activated(user.isActivated())
+                .image(user.getUserImage() != null ? UserImageDTO.fromEntity(user.getUserImage()) : null)
                 .build();
     }
 
-    public static UserDTO simpleFromEntity(UserVO user){
+    public static UserDTO simpleFromEntity(UserVO user) {
         return UserDTO.builder()
                 .idx(user.getIdx())
                 .email(user.getEmail())
                 .activated(user.isActivated())
                 .build();
     }
-
 
 
 }
