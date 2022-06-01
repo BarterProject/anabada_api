@@ -199,7 +199,7 @@ public class FCMService {
         );
 
         MulticastMessage message = MulticastMessage.builder()
-                .putData("roomId", messageVO.getRoom().getIdx().toString())
+                .putData("itemId", messageVO.getRoom().getDelivery().getItem().getIdx().toString())
                 .putData("content", messageVO.getContent())
                 .putData("sender", messageVO.getSender().getEmail())
                 .setNotification(notification)
