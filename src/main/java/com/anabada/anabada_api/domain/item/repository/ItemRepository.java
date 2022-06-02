@@ -2,6 +2,8 @@ package com.anabada.anabada_api.domain.item.repository;
 
 import com.anabada.anabada_api.domain.item.entity.ItemCategoryVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
+import com.anabada.anabada_api.domain.message.entity.MessageVO;
+import com.anabada.anabada_api.domain.message.entity.RoomVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,4 +72,6 @@ public interface ItemRepository extends JpaRepository<ItemVO, Long> {
     Page<ItemVO> findByItemCategoryAndState(ItemCategoryVO category, Pageable pageable, int state);
 
 
+    @Query(value = "select i from ItemVO i where i.delivery.room = :room")
+    Optional<ItemVO> findByRoom(RoomVO room);
 }

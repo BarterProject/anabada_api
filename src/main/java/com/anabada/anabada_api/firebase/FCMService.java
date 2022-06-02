@@ -198,8 +198,10 @@ public class FCMService {
                 messageVO.getContent()
         );
 
+        ItemVO item = itemFindService.findByRoom(messageVO.getRoom());
+
         MulticastMessage message = MulticastMessage.builder()
-                .putData("itemId", messageVO.getRoom().getDelivery().getItem().getIdx().toString())
+                .putData("itemId", item.getIdx().toString())
                 .putData("content", messageVO.getContent())
                 .putData("sender", messageVO.getSender().getEmail())
                 .setNotification(notification)
@@ -209,7 +211,6 @@ public class FCMService {
 
         try {
             BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-            System.out.println(response.getSuccessCount());
         } catch (Exception e) {
             log.warn(message.toString() + ": 메시지 전송에 실패하였습니다.");
         }

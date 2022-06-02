@@ -3,6 +3,8 @@ package com.anabada.anabada_api.domain.item.service;
 import com.anabada.anabada_api.domain.item.entity.ItemCategoryVO;
 import com.anabada.anabada_api.domain.item.entity.ItemVO;
 import com.anabada.anabada_api.domain.item.repository.ItemRepository;
+import com.anabada.anabada_api.domain.message.entity.MessageVO;
+import com.anabada.anabada_api.domain.message.entity.RoomVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
 import com.anabada.anabada_api.exception.ApiException;
@@ -125,5 +127,12 @@ public class ItemFindService {
     public Page<ItemVO> findByRegistrant(Long userIdx, Pageable pageable) {
         UserVO user = userFindService.findByIdx(userIdx);
         return itemRepository.findByRegistrant(user, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public ItemVO findByRoom(RoomVO room) {
+        return itemRepository.findByRoom(room).orElseThrow(
+                () -> new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION)
+        );
     }
 }
