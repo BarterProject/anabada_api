@@ -1,13 +1,14 @@
 package com.anabada.anabada_api.domain.user.controller;
 
 
+import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import com.anabada.anabada_api.domain.user.dto.ApplyFCMToken;
 import com.anabada.anabada_api.domain.user.dto.CreateUser;
 import com.anabada.anabada_api.domain.user.dto.PageUserDTO;
 import com.anabada.anabada_api.domain.user.dto.UserDTO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
-import com.anabada.anabada_api.domain.message.dto.MessageDTO;
 import com.anabada.anabada_api.domain.user.service.UserFindService;
+import com.anabada.anabada_api.domain.user.service.UserImageService;
 import com.anabada.anabada_api.domain.user.service.UserUpdateService;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
@@ -18,11 +19,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +42,9 @@ public class UserController {
 
     @Autowired
     UserFindService userFindService;
+
+    @Autowired
+    UserImageService userImageService;
 
     @PostMapping(path = "/v2/user")
     public ResponseEntity<CreateUser.Response> getSignUp(
@@ -60,6 +66,22 @@ public class UserController {
         return new ResponseEntity<>(UserDTO.myInfoFromEntity(user), HttpStatus.OK);
     }
 
+    @PutMapping(value = "/v2/user/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+    public ResponseEntity<MessageDTO> updateUserImage(
+            @RequestPart(value = "img", required = true) MultipartFile mf
+    ) {
+        userUpdateService.saveUserImage(mf);
+        return new ResponseEntity<>(new MessageDTO("success"), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/v2/user/image/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getUserImage(
+            @PathVariable(value = "image-name") String userImage
+    ) {
+        byte[] image = userImageService.getByName(userImage);
+        return new ResponseEntity<>(image, HttpStatus.OK);
+    }
 
     @PutMapping("/v2/user/fcm/token")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
