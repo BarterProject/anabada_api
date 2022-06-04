@@ -1,9 +1,9 @@
 package com.anabada.anabada_api.domain.user.entity;
 
 
-import com.anabada.anabada_api.domain.message.entity.NoticeVO;
-import com.anabada.anabada_api.domain.etc.entity.ReportVO;
 import com.anabada.anabada_api.domain.board.entity.PostVO;
+import com.anabada.anabada_api.domain.etc.entity.ReportVO;
+import com.anabada.anabada_api.domain.message.entity.NoticeVO;
 import com.anabada.anabada_api.util.CryptoConverter;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -71,7 +71,7 @@ public class UserVO {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostVO> posts = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_image_idx_fk")
     private UserImageVO userImage;
 

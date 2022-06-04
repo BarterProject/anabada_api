@@ -7,26 +7,32 @@ import com.anabada.anabada_api.domain.user.repository.UserImageRepository;
 import com.anabada.anabada_api.exception.ApiException;
 import com.anabada.anabada_api.exception.ExceptionEnum;
 import com.anabada.anabada_api.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+
 @Service
 public class UserImageService {
     private static final String UPLOADPATH = "/img";
 
+    @Autowired
     UserImageRepository userImageRepository;
+    UserFindService userFindService;
 
     FileUtil fileUtil;
     int maxFileSize;
 
 
-    public UserImageService(UserImageRepository userImageRepository, FileUtil fileUtil, @Value("${static.max-file-size}") int maxFileSize) {
+    public UserImageService(UserImageRepository userImageRepository, FileUtil fileUtil, @Value("${static.max-file-size}") int maxFileSize, UserFindService userFindService) {
         this.userImageRepository = userImageRepository;
+        this.userFindService = userFindService;
         this.fileUtil = fileUtil;
         this.maxFileSize = maxFileSize;
     }
@@ -67,14 +73,21 @@ public class UserImageService {
         return this.save(vo);
     }
 
-    public byte[] getByName(String name) {
-        Optional<UserImageVO> optionalImage = userImageRepository.findByName(name);
+    public byte[] getByUserIdx(Long userIdx) {
 
-        if (optionalImage.isEmpty())
+        UserVO user = userFindService.findByIdx(userIdx);
+        UserImageVO userImage = user.getUserImage();
+
+        if (userImage == null)
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
-        return fileUtil.getFile(optionalImage.get().getFileInfo());
+        return fileUtil.getFile(userImage.getFileInfo());
     }
 
+    @Transactional(readOnly = true)
+    public UserImageVO findByIdx(Long idx) {
+        Optional<UserImageVO> image = userImageRepository.findByIdx(idx);
+        return image.get();
+    }
 
 }
