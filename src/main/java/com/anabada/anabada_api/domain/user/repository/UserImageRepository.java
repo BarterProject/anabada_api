@@ -11,5 +11,4 @@ public interface UserImageRepository extends JpaRepository<UserImageVO, Long> {
 
     Optional<UserImageVO> findByIdx(Long idx);
 
-
 }

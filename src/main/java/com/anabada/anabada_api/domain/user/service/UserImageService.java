@@ -69,24 +69,27 @@ public class UserImageService {
                 )
                 .build();
 
-        vo.setUser(user);
+        vo.addUsers(user);
         return this.save(vo);
     }
 
     public byte[] getByUserIdx(Long userIdx) {
 
         UserVO user = userFindService.findByIdx(userIdx);
-        UserImageVO userImage = user.getUserImage();
 
-        if (userImage == null)
+        if (user.getUserImage() == null)
             throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
 
-        return fileUtil.getFile(userImage.getFileInfo());
+        return fileUtil.getFile(user.getUserImage().getFileInfo());
     }
 
     @Transactional(readOnly = true)
     public UserImageVO findByIdx(Long idx) {
         Optional<UserImageVO> image = userImageRepository.findByIdx(idx);
+
+        if (image.isEmpty())
+            throw new ApiException(ExceptionEnum.NOT_FOUND_EXCEPTION);
+
         return image.get();
     }
 

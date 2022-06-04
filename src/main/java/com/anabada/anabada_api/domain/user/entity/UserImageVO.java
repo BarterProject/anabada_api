@@ -10,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,8 +33,8 @@ public class UserImageVO {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "userImage")
-    private UserVO user;
+    @OneToMany(mappedBy = "userImage")
+    private List<UserVO> users = new ArrayList<>();
 
     @Builder
     public UserImageVO(String name, FileInfo fileInfo) {
@@ -53,11 +55,10 @@ public class UserImageVO {
                 .build();
     }
 
-    public void setUser(UserVO user) {
-        this.user = user;
+    public void addUsers(UserVO user) {
+        this.users.add(user);
         user.setUserImage(this);
     }
-
 
 
 }
