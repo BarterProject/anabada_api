@@ -4,6 +4,7 @@ package com.anabada.anabada_api.domain.user.service;
 import com.anabada.anabada_api.domain.user.dto.ApplyFCMToken;
 import com.anabada.anabada_api.domain.user.dto.CreateUser;
 import com.anabada.anabada_api.domain.user.entity.AuthVO;
+import com.anabada.anabada_api.domain.user.entity.UserImageVO;
 import com.anabada.anabada_api.domain.user.entity.UserVO;
 import com.anabada.anabada_api.domain.user.repository.UserRepository;
 import com.anabada.anabada_api.exception.ApiException;
@@ -55,10 +56,14 @@ public class UserUpdateService {
     }
 
     @Transactional
-    public UserVO saveUserImage(MultipartFile mf) {
+    public void saveUserImage(MultipartFile mf) {
         UserVO user = userFindService.getMyUserWithAuthorities();
-        userImageService.save(mf, user);
-        return user;
+
+        if (user.getUserImage() == null) {
+            UserImageVO defaultImage = userImageService.findByIdx(10L);
+            user.setUserImage(defaultImage);
+        } else
+            userImageService.save(mf, user);
     }
 
     @Transactional

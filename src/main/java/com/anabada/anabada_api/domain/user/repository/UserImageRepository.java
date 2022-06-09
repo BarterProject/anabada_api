@@ -8,5 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserImageRepository extends JpaRepository<UserImageVO, Long> {
-    public Optional<UserImageVO> findByName(String name);
+
+    Optional<UserImageVO> findByIdx(Long idx);
+
 }

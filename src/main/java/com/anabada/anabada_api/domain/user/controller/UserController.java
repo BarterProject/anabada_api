@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Controller
 @RequestMapping("/api")
 public class UserController {
@@ -69,17 +70,18 @@ public class UserController {
     @PutMapping(value = "/v2/user/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<MessageDTO> updateUserImage(
-            @RequestPart(value = "img", required = true) MultipartFile mf
+            @RequestPart(value = "img", required = false) MultipartFile mf
     ) {
         userUpdateService.saveUserImage(mf);
         return new ResponseEntity<>(new MessageDTO("success"), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/v2/user/image/{image-name}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/v2/user/{user-idx}/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getUserImage(
-            @PathVariable(value = "image-name") String userImage
+            @PathVariable(value = "user-idx") Long userIdx
     ) {
-        byte[] image = userImageService.getByName(userImage);
+
+        byte[] image = userImageService.getByUserIdx(userIdx);
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
